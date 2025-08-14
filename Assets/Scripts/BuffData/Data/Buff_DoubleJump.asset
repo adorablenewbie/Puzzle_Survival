@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 412b329e48974b8418ce15cf133b2f00, type: 3}
+  m_Name: Buff_DoubleJump
+  m_EditorClassIdentifier: 
+  displayName: "\uB354\uBE14\uC810\uD504"
+  description: "\uD55C \uBC88 \uB354 \u3137\u3137"
+  icon: {fileID: 21300000, guid: 5e5f8f7761ea3db4b952f05607fdec07, type: 3}
+  buffUI: {fileID: 3650489054991689688, guid: 96755fa73b2bb104a8ae875d9192907c, type: 3}
+  effects:
+  - type: 2
+    value: 0
+    isOn: 1

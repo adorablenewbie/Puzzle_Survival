@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 412b329e48974b8418ce15cf133b2f00, type: 3}
+  m_Name: Buff_SpeedUp
+  m_EditorClassIdentifier: 
+  displayName: "\uC2A4\uD53C\uB4DC\uC5C5"
+  description: "\uBE68\uB77C\uC9D0 \u3137\u3137"
+  icon: {fileID: 21300000, guid: 5e5f8f7761ea3db4b952f05607fdec07, type: 3}
+  buffUI: {fileID: 3665842724573231681, guid: 264ecd6a9e801fd4fb1ccdeb6c4b47ca, type: 3}
+  effects:
+  - type: 0
+    value: 5
+    isOn: 0
