@@ -2739,6 +2739,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Ch46_nonPBR
       objectReference: {fileID: 0}
+    - target: {fileID: 5866666021909216657, guid: ac1eb5cbc09aa464390ac8430ecb9311, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: fa5d9ad1339d25c43a6d379e49bd5c99, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -13578,7 +13582,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1389920687}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.083493985, y: -0.0000000042865755, z: 3.591574e-10, w: 0.9965083}
+  m_LocalRotation: {x: 0.083493985, y: 0.0000000042865755, z: -3.591574e-10, w: 0.9965083}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
