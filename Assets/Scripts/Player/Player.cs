@@ -6,6 +6,7 @@ public class Player : MonoBehaviour
     public PlayerController controller;
     public PlayerCondition condition;
     public UIBuffManager uiBuffManager;
+    public DialogueManager dialogueManager;
 
     public ItemData itemData;
     public Action addItem;
