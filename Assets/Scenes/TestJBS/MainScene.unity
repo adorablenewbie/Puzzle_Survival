@@ -17961,10 +17961,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98e555ee8d339a64aa1ef559f0d71fcc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  resourcePrefab:
-  - {fileID: 8946202190628991995, guid: ce3cccf7b172bb34f930f994d920e2f6, type: 3}
-  spawnAreaMin: {x: -50, y: -50}
-  spawnAreaMax: {x: 50, y: 50}
+  resourcePrefab: []
+  spawnAreaMin: {x: 0, y: 0}
+  spawnAreaMax: {x: 0, y: 0}
+  RandomSpawnPosition: {x: 0, y: 0, z: 0}
+  prefab: {fileID: 0}
+  maxItemCount: 10
 --- !u!4 &1809174052
 Transform:
   m_ObjectHideFlags: 0

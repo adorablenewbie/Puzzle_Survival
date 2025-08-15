@@ -13,14 +13,6 @@ public class Resource : MonoBehaviour
 
     public ResorceSpawnManager resourceSpawnManager;
 
-    private Vector3 spawnPosition;
-
-    private void Awake()
-    {
-        
-        spawnPosition = transform.position;
-        initialCapacity = capacity;
-    }
     public void Gather(Vector3 hitPoint, Vector3 hitNormal)
     {
         if (capacity <= 0) return;
