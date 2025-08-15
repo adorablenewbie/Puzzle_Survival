@@ -6126,6 +6126,7 @@ MonoBehaviour:
   controller: {fileID: 558821000}
   condition: {fileID: 0}
   uiBuffManager: {fileID: 1957694606}
+  dialogueManager: {fileID: 0}
   itemData: {fileID: 0}
   equip: {fileID: 558821009}
   dropPosition: {fileID: 558820998}
@@ -13484,7 +13485,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1389920687}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.083493985, y: 0.0000000042865755, z: -3.591574e-10, w: 0.9965083}
+  m_LocalRotation: {x: 0.083493985, y: -0.0000000042865755, z: 3.591574e-10, w: 0.9965083}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -17942,7 +17943,7 @@ GameObject:
   - component: {fileID: 1809174052}
   - component: {fileID: 1809174051}
   m_Layer: 0
-  m_Name: ResorceSpawn
+  m_Name: ResorceSpawnManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -17960,14 +17961,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98e555ee8d339a64aa1ef559f0d71fcc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  resorcePrefab:
-  - {fileID: 5796455369743643575, guid: d4f432ea5b3c3904fa4c6495895057df, type: 3}
-  poolSizePerPrefab: 10
-  spawnRadius: 50
-  groundLayer:
-    serializedVersion: 2
-    m_Bits: 8
-  yOffset: 0
+  resourcePrefab:
+  - {fileID: 8946202190628991995, guid: ce3cccf7b172bb34f930f994d920e2f6, type: 3}
+  spawnAreaMin: {x: -50, y: -50}
+  spawnAreaMax: {x: 50, y: 50}
 --- !u!4 &1809174052
 Transform:
   m_ObjectHideFlags: 0
