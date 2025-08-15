@@ -4102,6 +4102,16 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4384400948941904, guid: 41e722f5443cbd048b675375e24f1beb, type: 3}
   m_PrefabInstance: {fileID: 307107672}
   m_PrefabAsset: {fileID: 0}
+--- !u!4 &315173462 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4313040567215160236, guid: 7f2fbe9b308515c4cbac349022abc6df, type: 3}
+  m_PrefabInstance: {fileID: 806884038}
+  m_PrefabAsset: {fileID: 0}
+--- !u!20 &315173464 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 761980374061252927, guid: 7f2fbe9b308515c4cbac349022abc6df, type: 3}
+  m_PrefabInstance: {fileID: 806884038}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &334294901
 GameObject:
   m_ObjectHideFlags: 0
@@ -7765,6 +7775,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 761980374061252927, guid: 7f2fbe9b308515c4cbac349022abc6df, type: 3}
+      propertyPath: m_Depth
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 761980374061252927, guid: 7f2fbe9b308515c4cbac349022abc6df, type: 3}
+      propertyPath: m_CullingMask.m_Bits
+      value: 256
+      objectReference: {fileID: 0}
     - target: {fileID: 2177412915471747865, guid: 7f2fbe9b308515c4cbac349022abc6df, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -7805,6 +7823,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4972866489563235733, guid: 7f2fbe9b308515c4cbac349022abc6df, type: 3}
+      propertyPath: equipParent
+      value: 
+      objectReference: {fileID: 315173462}
+    - target: {fileID: 5519117546727620128, guid: 7f2fbe9b308515c4cbac349022abc6df, type: 3}
+      propertyPath: subCamera
+      value: 
+      objectReference: {fileID: 315173464}
     - target: {fileID: 5818612673203318411, guid: 7f2fbe9b308515c4cbac349022abc6df, type: 3}
       propertyPath: m_Name
       value: Player
@@ -20554,6 +20580,7 @@ MonoBehaviour:
   minXLook: -85
   maxXLook: 85
   lookSensitivity: 0.2
+  subCamera: {fileID: 0}
   cameraTransform: {fileID: 0}
   canLook: 1
   onDoubleJump: 0
