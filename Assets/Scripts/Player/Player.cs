@@ -17,6 +17,10 @@ public class Player : MonoBehaviour
 
     private void Awake()
     {
+        // test
+        Debug.Log(Camera.main.targetDisplay);
+        //Debug.Log(SubCamera.targetDisplay);
+
         PlayerManager.Instance.Player = this;
         controller = GetComponent<PlayerController>();
         condition = GetComponent<PlayerCondition>();
