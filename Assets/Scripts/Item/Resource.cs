@@ -22,7 +22,7 @@ public class Resource : MonoBehaviour
 
         if (capacity <= 0)
         {
-            resourceSpawnManager.RequestRespawn(prefabreference, respawnDelay);
+            resourceSpawnManager.RequestRespawn(respawnDelay);
             Destroy(gameObject);
         }
     }

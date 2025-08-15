@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3fbb268901bbc21499fbde8f173221bd, type: 3}
-  m_Name: Item_Woods
+  m_Name: Item_Grass_HarvestableObject
   m_EditorClassIdentifier: 
-  displayName: "\uB098\uBB34"
-  description: "\uB098\uBB34\uC6B0"
+  displayName: "\uCE90\uB294 \uD480"
+  description: "\uD480\uC744 \uCE90\uBA74 \uD480\uC774 \uB098\uC635\uB2C8\uB2E4."
   type: 0
-  icon: {fileID: 21300000, guid: 35bf718f485827741b9c47c2a72a17ce, type: 3}
-  dropPrefab: {fileID: 8946202190628991995, guid: ce3cccf7b172bb34f930f994d920e2f6, type: 3}
-  canStack: 1
-  maxStackAmount: 64
+  icon: {fileID: 21300000, guid: 5eb50e470b5cd4c4bb585786b1cb2eb9, type: 3}
+  dropPrefab: {fileID: 7267328339608103543, guid: 353548381917f3242a809f415a4539e5, type: 3}
+  canStack: 0
+  maxStackAmount: 0
   consumables: []
   resourceAmount: 0
   equipPrefab: {fileID: 0}
