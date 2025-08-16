@@ -42,9 +42,10 @@ public class EquipTool : Equip
     {
         if (!attacking)
         {
-            attacking = true;
-            animator.SetTrigger("Attack");
-            Invoke("OnCanAttack", attackRate);
+            //attacking = true;
+            //animator.SetTrigger("Attack");
+            //Invoke("OnCanAttack", attackRate);
+            // 스태미나가 충분하면 공격/자원채취 할 수 있게 하기 
             if (PlayerManager.Instance.Player.condition.UseStamina(useStamina))
             {
                 attacking = true;
