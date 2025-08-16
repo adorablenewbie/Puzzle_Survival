@@ -13,6 +13,12 @@ public enum ConsumableType
     Hunger,
     Health,
 }
+public enum HarvestableType
+{
+    Wood,
+    Stone,
+    Grass
+}
 
 [System.Serializable]
 public class ItemDataConsumable

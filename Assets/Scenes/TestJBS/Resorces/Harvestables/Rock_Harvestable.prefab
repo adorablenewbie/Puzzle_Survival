@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4545940023674908210}
   - component: {fileID: 2463901601549568336}
   - component: {fileID: 5014794149018347530}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Rock_Harvestable
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -115,9 +115,9 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2276514867221777045}
   serializedVersion: 4
-  m_Mass: 1
+  m_Mass: 1000
   m_Drag: 0
-  m_AngularDrag: 0.05
+  m_AngularDrag: 100
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
