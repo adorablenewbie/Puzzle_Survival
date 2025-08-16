@@ -49,8 +49,9 @@ public class EquipTool : Equip
             if (PlayerManager.Instance.Player.condition.UseStamina(useStamina))
             {
                 attacking = true;
-                animator.SetTrigger("Attack");
-                Invoke("OnCanAttack", attackRate);
+                animator.SetTrigger("Attack"); // 공격 애니메이션 
+                // 데미지 처리 
+                Invoke("OnCanAttack", attackRate); // attackRate초 후에 다시 공격할 수 있게 
             }
         }
     }
@@ -118,6 +119,17 @@ public class EquipTool : Equip
                     }
                 }
             }
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        Debug.Log("충돌함");
+        //if(attacking && collision.gameObject.layer == (1 << LayerMask.NameToLayer("Monster")))
+        //if (attacking && collision.gameObject.layer == LayerMask.NameToLayer("Monster"))
+        if (attacking && collision.gameObject.layer == 10)
+        {
+            Debug.Log("몬스터 맞음");
         }
     }
 }
