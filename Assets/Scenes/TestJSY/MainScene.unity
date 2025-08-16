@@ -6077,7 +6077,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2112ca82f85f4f41a3d610eba5df75a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemToGive: {fileID: 11400000, guid: 1fefdd96251bfbf42896236a023eeb7f, type: 2}
+  itemToGive: {fileID: 11400000, guid: 32a00b21238eaca458762a4daf27686b, type: 2}
   quantityPerHit: 1
   capacity: 5
   prefabreference: {fileID: 0}

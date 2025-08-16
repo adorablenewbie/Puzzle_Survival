@@ -77,7 +77,7 @@ public class EquipTool : Equip
 
     public void OnHit()
     {
-        Ray ray = camera.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 200, 100));
+        Ray ray = camera.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 100));
         RaycastHit hit;
         Debug.DrawRay(ray.origin, ray.direction * attackDistance, Color.red, 20000f);
         if (Physics.Raycast(ray, out hit, attackDistance))
@@ -85,6 +85,16 @@ public class EquipTool : Equip
             if (doesGatherResources && hit.collider.TryGetComponent(out Resource resource))
             {
                 resource.Gather(hit.point, hit.normal);
+            }
+
+            if (doesDealDamage)
+            {
+                Enemy_Bear bear = hit.collider.GetComponent<Enemy_Bear>();
+
+                if(bear != null)
+                {
+                    bear.TakePhysicalDamage(damage);
+                }
             }
         }
     }
@@ -139,11 +149,11 @@ public class EquipTool : Equip
     private void OnCollisionEnter(Collision collision)
     {
         Debug.Log("충돌함");
-        //if(attacking && collision.gameObject.layer == (1 << LayerMask.NameToLayer("Monster")))
-        //if (attacking && collision.gameObject.layer == LayerMask.NameToLayer("Monster"))
-        if (attacking && collision.gameObject.layer == 10)
-        {
-            Debug.Log("몬스터 맞음");
-        }
+        ////if(attacking && collision.gameObject.layer == (1 << LayerMask.NameToLayer("Monster")))
+        ////if (attacking && collision.gameObject.layer == LayerMask.NameToLayer("Monster"))
+        //if (attacking && collision.gameObject.layer == 10)
+        //{
+        //    Debug.Log("몬스터 맞음");
+        //}
     }
 }
