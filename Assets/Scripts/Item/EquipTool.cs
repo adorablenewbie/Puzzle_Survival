@@ -5,7 +5,7 @@ public class EquipTool : Equip
 {
     public float attackRate;
     private bool attacking;
-    public float attackDistance;
+    public float attackDistance = 50f;
 
     [Header("Resource Gathering")]
     public bool doesGatherResources;
@@ -17,12 +17,26 @@ public class EquipTool : Equip
     private Animator animator;
     private Camera camera;
 
+
+
     public float useStamina;
     private void Awake()
     {
         camera = Camera.main;
         animator = GetComponent<Animator>();
     }
+    private void Update()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            OnAttackInput();
+        }
+        if (Input.GetMouseButtonDown(1))
+        {
+            OnHit();
+        }
+    }
+
 
     [Header("Buff")]
     public ItemData itemData;
@@ -63,9 +77,9 @@ public class EquipTool : Equip
 
     public void OnHit()
     {
-        Ray ray = camera.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
+        Ray ray = camera.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 200, 100));
         RaycastHit hit;
-
+        Debug.DrawRay(ray.origin, ray.direction * attackDistance, Color.red, 20000f);
         if (Physics.Raycast(ray, out hit, attackDistance))
         {
             if (doesGatherResources && hit.collider.TryGetComponent(out Resource resource))

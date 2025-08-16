@@ -1,154 +1,99 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using UnityEngine;
 
 public class ResorceSpawnManager : MonoBehaviour
 {
     [Header("Respawn Settings")]
-    public List<GameObject> resourcePrefab;
+    public List<GameObject> HarvestablePrefab;
+    public float respawnDelay; // 리스폰 딜레이 시간.
     public Vector3 spawnAreaMin;
     public Vector3 spawnAreaMax;
-    public Vector3 RandomSpawnPosition;
-
-    public GameObject prefab;
-
-    [SerializeField]
-    private  int maxItemCount = 10;
 
 
+    //private string[] tagCheck { get; set; } = { "Ground", "Rock", "Stone" };
 
-    
+    [Header("아이템 넣을께")]
+    public int curItemCount;
+    public int maxItemCount;
+    public int minItemCount = 5;
+
+    // 리스트가 있다, (배열)
+    // 리스트의 길이를 50을 해놓고
+    // 생성을 하고 리스트에 에드
+    // 리스트의 길이 -> 지금 들어가 있는 오브젝트의 개수 -> 지금 생성되어 있는 오브젝트의 개수
+    // 50개 까지만 생성을 하고 -> Add 해준다.
+    // 
+
+    // 플레이어가 오브젝트를 채집하면 디스트로이 하고 리스트에서 리무브
+    // 현재 길이 49 -> 50개가 되어야 한다. 리스트 카운트가 50이 안되면 
+    // 디스트로이를 하고 길이를 확인하고 애드
+    // 델리게이트러 디스트로이가 될 때 매니저에 있는 카운트를 낮춰주는 매서드를
+    //
+
+    private void Start()
+    {
+        StartCoroutine(RespawnCoroutine());
+    }
+
     private void Update()
     {
         // Debuging 용
         if (Input.GetKeyDown(KeyCode.R))
         {
-            RequestRespawn(prefab, 5f);
+            RequestRespawn(respawnDelay);
         }
     }
 
-
-    public void RequestRespawn(GameObject prefab, float delay)
+    // 디버깅용
+    public void RequestRespawn(float delay)
     {
-        StartCoroutine(RespawnCoroutine(prefab, delay));
+        StartCoroutine(RespawnCoroutine());
     }
 
-
-    private IEnumerator RespawnCoroutine(GameObject target, float delay)
+    private IEnumerator RespawnCoroutine()
     {
-        yield return new WaitForSeconds(5f);
-        Instantiate(prefab, GetRandomSpawnPosition(), Quaternion.identity);
+        while(true)
+        {
+            yield return new WaitForSeconds(respawnDelay);
+
+            if(curItemCount < maxItemCount)
+            {
+                SpawnRandomPrefab();
+                curItemCount++;
+            }
+        }
 
     }
-
+    // 랜덤으로 위치를 잡아주는 함수
     private Vector3 GetRandomSpawnPosition()
     {
-
-
-        float x = Random.Range(spawnAreaMin.x, spawnAreaMax.x);
-        float y = Random.Range(spawnAreaMin.y, spawnAreaMax.y);
-        float z = Random.Range(spawnAreaMin.z, spawnAreaMax.z);
-        return new Vector3(x, y, z);
+        float x = UnityEngine.Random.Range(spawnAreaMin.x, spawnAreaMax.x);
+        float z = UnityEngine.Random.Range(spawnAreaMin.z, spawnAreaMax.z);
+        return new Vector3(x,0f, z);
     }
 
+    // 리스트에 담은 프리펩을 랜덤으로 생성하는 함수~
+    public void SpawnRandomPrefab()
+    {
+        if (HarvestablePrefab == null || HarvestablePrefab.Count == 0)
+        {
+            Debug.Log("아이템 프리펩을 매니저 에다 넣어야지 뭐해");
+            return;
+        }
+        int randomIndex = UnityEngine.Random.Range(0, HarvestablePrefab.Count);
+        GameObject prefabToSpawn = Instantiate (HarvestablePrefab[randomIndex], GetRandomSpawnPosition(), Quaternion.identity);
 
 
+    }
 
-//{
-//    private Coroutine waveRoutine; // 현재 실행 중인 웨이브 코루틴
-//    [SerializeField]
-//    private List<GameObject> enemyPrefabs; // 생성할 적 프리팹 리스트
-//    [SerializeField]
-//    private List<Rect> spawnAreas; // 적을 생성할 영역 리스트
-//    [SerializeField]
-//    private Color gizmoColor = new Color(1, 0, 0, 0.3f); // 기즈모 색상
-//    private List<EnemyController> activeEnemies = new List<EnemyController>(); // 현재 활성화된 적들
-//    private bool enemySpawnComplite; // 현재 웨이브 스폰이 완료되었는지 여부
-//    [SerializeField] private float timeBetweenSpawns = 0.2f; // 개별 적 생성 간 간격
-//    [SerializeField] private float timeBetweenWaves = 1f; // 웨이브 간 대기 시간
-//    GameManager gameManager;
+    //private void OnCollisionEnter(Collision collision)
+    //{
+    //    if(Array.Exists(tagCheck, tag => collision.gameObject.CompareTag(tag)))
+    //    {
+            
+    //    }
+    //}
 
-//    public void Init(GameManager gameManager)
-//    {
-//        this.gameManager = gameManager;
-//    }
-
-//    // 웨이브 시작 (waveCount: 생성할 적 수)
-//    public void StartWave(int waveCount)
-//    {
-//        if (waveCount <= 0)
-//        {
-//            gameManager.EndOfWave();
-//            return;
-//        }
-//        // 기존 웨이브가 진행 중이면 중단
-//        if (waveRoutine != null)
-//            StopCoroutine(waveRoutine);
-//        // 새 웨이브 시작
-//        waveRoutine = StartCoroutine(SpawnWave(waveCount));
-//    }
-
-//    // 현재 진행 중인 모든 웨이브/스폰을 중지
-//    public void StopWave()
-//    {
-//        StopAllCoroutines();
-//    }
-
-//    // 지정된 수 만큼 적을 생성하는 코루틴
-//    private IEnumerator SpawnWave(int waveCount)
-//    {
-//        enemySpawnComplite = false;
-//        yield return new WaitForSeconds(timeBetweenWaves);
-//        for (int i = 0; i < waveCount; i++)
-//        {
-//            // 웨이브 간 대기 시간
-//            yield return new WaitForSeconds(timeBetweenSpawns);
-//            SpawnRandomEnemy();
-//        }
-//        enemySpawnComplite = true;
-//    }
-
-//    // 적 하나를 랜덤 위치에 생성
-//    private void SpawnRandomEnemy()
-//    {
-//        if (enemyPrefabs.Count == 0 || spawnAreas.Count == 0)
-//        {
-//            Debug.LogWarning("Enemy Prefabs 또는 Spawn Areas가 설정되지 않았습니다.");
-//            return;
-//        }
-//        // 랜덤한 적 프리팹 선택
-//        GameObject randomPrefab = enemyPrefabs[Random.Range(0, enemyPrefabs.Count)];
-//        // 랜덤한 영역 선택
-//        Rect randomArea = spawnAreas[Random.Range(0, spawnAreas.Count)];
-//        // Rect 영역 내부의 랜덤 위치 계산
-//        Vector2 randomPosition = new Vector2(
-//            Random.Range(randomArea.xMin, randomArea.xMax),
-//            Random.Range(randomArea.yMin, randomArea.yMax)
-//        );
-//        // 적 생성 및 리스트에 추가
-//        GameObject spawnedEnemy = Instantiate(randomPrefab, new Vector3(randomPosition.x, randomPosition.y), Quaternion.identity);
-//        EnemyController enemyController = spawnedEnemy.GetComponent<EnemyController>();
-//        enemyController.Init(this, gameManager.player.transform);
-//        activeEnemies.Add(enemyController);
-//    }
-//    // 기즈모를 그려 영역을 시각화 (선택된 경우에만 표시)
-//    private void OnDrawGizmosSelected()
-//    {
-//        if (spawnAreas == null) return;
-//        Gizmos.color = gizmoColor;
-//        foreach (var area in spawnAreas)
-//        {
-//            Vector3 center = new Vector3(area.x + area.width / 2, area.y + area.height / 2);
-//            Vector3 size = new Vector3(area.width, area.height);
-//            Gizmos.DrawCube(center, size);
-//        }
-//    }
-//    public void RemoveEnemyOnDeath(EnemyController enemy)
-//    {
-//        activeEnemies.Remove(enemy);
-//        if (enemySpawnComplite && activeEnemies.Count == 0)
-//            gameManager.EndOfWave();
-//    }
-//}
 }

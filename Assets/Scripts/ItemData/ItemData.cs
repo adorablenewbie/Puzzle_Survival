@@ -4,13 +4,20 @@ public enum ItemType
 {
     Resource,
     Equipable,
-    Consumable
+    Consumable,
+    Harvestable
 }
 
 public enum ConsumableType
 {
     Hunger,
     Health,
+}
+public enum HarvestableType
+{
+    Wood,
+    Stone,
+    Grass
 }
 
 [System.Serializable]
