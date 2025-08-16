@@ -1,5 +1,7 @@
+using System;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Resource : MonoBehaviour
 {
@@ -8,15 +10,8 @@ public class Resource : MonoBehaviour
     public ItemData itemToGive;
     public int quantityPerHit = 1;
     public int capacity = 3;
-    public GameObject prefabreference;
-    public float respawnDelay = 150f;
-    public int initialCapacity;
-    public ResorceSpawnManager resourceSpawnManager;
 
-    public EquipTool equipTool;
-
-    
-
+    public event Action<Resource> OnDepleted;
 
     public void Gather(Vector3 hitPoint, Vector3 hitNormal)
     {
@@ -31,6 +26,7 @@ public class Resource : MonoBehaviour
         if (capacity <= 0)
         {
             Debug.Log("자원이 다 떨어졌습니다. 리소스가 사라집니다.");
+            OnDepleted?.Invoke(this);
             Destroy(gameObject);
         }
     }

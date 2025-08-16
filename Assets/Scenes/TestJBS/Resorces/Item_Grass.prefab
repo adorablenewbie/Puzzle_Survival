@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2051729113073754954}
   - component: {fileID: 4957330734069001314}
-  - component: {fileID: 7000410063952925495}
   m_Layer: 0
   m_Name: Item_Grass
   m_TagString: Untagged
@@ -51,25 +50,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   data: {fileID: 11400000, guid: 87682b33f5fcec84c81e7386e6f87ea1, type: 2}
---- !u!114 &7000410063952925495
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4122927143796032}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b2112ca82f85f4f41a3d610eba5df75a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  itemToGive: {fileID: 11400000, guid: 1fefdd96251bfbf42896236a023eeb7f, type: 2}
-  quantityPerHit: 1
-  capacity: 3
-  prefabreference: {fileID: 0}
-  respawnDelay: 150
-  initialCapacity: 0
-  resourceSpawnManager: {fileID: 0}
 --- !u!1001 &1251501953333255010
 PrefabInstance:
   m_ObjectHideFlags: 0
