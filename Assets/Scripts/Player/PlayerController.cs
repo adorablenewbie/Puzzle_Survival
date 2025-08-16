@@ -44,6 +44,7 @@ public class PlayerController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
     }
 
+
     private void FixedUpdate()
     {
         Move();
@@ -87,8 +88,33 @@ public class PlayerController : MonoBehaviour
             rigidbody.AddForce(Vector2.up * jumpPower, ForceMode.Impulse);
             canDoubleJump = true; // 더블 점프 가능 상태로 설정
         }
-        
+
     }
+    public void OnDeleteInput(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Started)
+        {
+            Debug.Log("Delete Input Triggered");
+            DeleteObject();
+            
+        }
+    }
+
+    private void DeleteObject()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2));
+        Debug.Log($"dddddd");
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray,out hit, 100f))
+        {
+            Debug.Log($"Deleted: {hit.collider.name}");
+            Destroy(hit.collider.gameObject);
+            
+        }
+    }
+
+
 
     private void Move()
     {

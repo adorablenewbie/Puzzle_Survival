@@ -15,9 +15,12 @@ public class Interaction : MonoBehaviour
     public TextMeshProUGUI promptText;
     private Camera camera;
 
+    private DialogueManager dialogueManager;
+
     void Start()
     {
         camera = Camera.main;
+        dialogueManager = PlayerManager.Instance.Player.dialogueManager;
     }
 
     // Update is called once per frame
@@ -62,6 +65,30 @@ public class Interaction : MonoBehaviour
             curInteractGameObject = null;
             curInteractable = null;
             promptText.gameObject.SetActive(false);
+            
+        }
+        if (context.phase == InputActionPhase.Started && dialogueManager.gameObject.activeSelf)
+        {
+            if (dialogueManager.isDialogue)
+            {
+                if (dialogueManager.isChoice)
+                {
+                    // 선택지 대화 중이라면 선택지 버튼을 클릭한 것으로 간주
+                    
+                }
+                if (dialogueManager.isLastLine)
+                {
+                    dialogueManager.gameObject.SetActive(false);
+                    dialogueManager.isLastLine = false;
+                    dialogueManager.isDialogue = false;
+                    dialogueManager.npcCameara.gameObject.SetActive(false); // NPC 대화용 카메라 비활성화
+                    return;
+                }
+                dialogueManager.ShowNextLine();
+                return;
+            }
+            dialogueManager.ShowDialogue(dialogueManager.currentBranch, dialogueManager.currentIndex);
+            dialogueManager.isDialogue = true;
         }
     }
 }

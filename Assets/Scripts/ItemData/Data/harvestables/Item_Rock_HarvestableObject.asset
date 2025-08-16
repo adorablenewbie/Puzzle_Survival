@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3fbb268901bbc21499fbde8f173221bd, type: 3}
-  m_Name: Item_Woods
+  m_Name: Item_Rock_HarvestableObject
   m_EditorClassIdentifier: 
-  displayName: "\uB098\uBB34"
-  description: "\uB098\uBB34\uC6B0"
-  type: 0
-  icon: {fileID: 21300000, guid: 35bf718f485827741b9c47c2a72a17ce, type: 3}
-  dropPrefab: {fileID: 8946202190628991995, guid: ce3cccf7b172bb34f930f994d920e2f6, type: 3}
-  canStack: 1
-  maxStackAmount: 64
+  displayName: "\uCE90\uB294 \uB3CC"
+  description: "\uB3CC\uC744 \uCE90\uBA74 \uB3CC\uC774 \uB098\uC635\uB2C8\uB2E4."
+  type: 3
+  icon: {fileID: 10915, guid: 0000000000000000f000000000000000, type: 0}
+  dropPrefab: {fileID: 2251403238516582963, guid: 04b4f6334e2488a47970103cea5914a5, type: 3}
+  canStack: 0
+  maxStackAmount: 1
   consumables: []
   resourceAmount: 0
   equipPrefab: {fileID: 0}
