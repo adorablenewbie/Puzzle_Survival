@@ -9,6 +9,7 @@ public class NPC : MonoBehaviour, IInteractable
     public string npcName; // NPC 이름
     public string npcDescription; // NPC 설명
     public Camera npcCamera; // NPC 대화용 카메라
+    public Animator npcAnimator; // NPC 애니메이터 (필요시 사용)
 
     private DialogueManager dialogueManager; // DialogueManager 참조
 
@@ -31,6 +32,7 @@ public class NPC : MonoBehaviour, IInteractable
         dialogueManager.LoadCSV(); // CSV 파일 로드
         npcCamera.gameObject.SetActive(true); // NPC 대화용 카메라 활성화
         dialogueManager.npcCameara = npcCamera; // NPC 대화용 카메라 설정
+        dialogueManager.npcAnimator = npcAnimator; // NPC 애니메이터 설정
     }
 
 }
