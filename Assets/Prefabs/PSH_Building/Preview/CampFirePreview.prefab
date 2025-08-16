@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6948638794580832032}
   - component: {fileID: 8903205749354517025}
   - component: {fileID: 2051599004501819469}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: CampFirePreview
   m_TagString: Untagged
   m_Icon: {fileID: 0}
