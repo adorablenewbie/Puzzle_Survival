@@ -4,13 +4,20 @@ public enum ItemType
 {
     Resource,
     Equipable,
-    Consumable
+    Consumable,
+    Harvestable
 }
 
 public enum ConsumableType
 {
     Hunger,
     Health,
+}
+public enum HarvestableType
+{
+    Wood,
+    Stone,
+    Grass
 }
 
 [System.Serializable]
@@ -43,6 +50,9 @@ public class ItemData : ScriptableObject
 
     [Header("Consumable")]
     public ItemDataConsumable[] consumables;
+
+    [Header("Resource")]
+    public int resourceAmount;
 
     [Header("Equip")]
     public GameObject equipPrefab;

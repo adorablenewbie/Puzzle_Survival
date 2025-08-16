@@ -44,10 +44,11 @@ public class PlayerController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
     }
 
+
     private void FixedUpdate()
     {
         Move();
-        RotateToCamera(); // 추가
+        //RotateToCamera(); // 추가
     }
 
     private void LateUpdate()
@@ -87,8 +88,33 @@ public class PlayerController : MonoBehaviour
             rigidbody.AddForce(Vector2.up * jumpPower, ForceMode.Impulse);
             canDoubleJump = true; // 더블 점프 가능 상태로 설정
         }
-        
+
     }
+    public void OnDeleteInput(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Started)
+        {
+            Debug.Log("Delete Input Triggered");
+            DeleteObject();
+            
+        }
+    }
+
+    private void DeleteObject()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2));
+        Debug.Log($"dddddd");
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray,out hit, 100f))
+        {
+            Debug.Log($"Deleted: {hit.collider.name}");
+            Destroy(hit.collider.gameObject);
+            
+        }
+    }
+
+
 
     private void Move()
     {
@@ -104,27 +130,28 @@ public class PlayerController : MonoBehaviour
         camCurXRot += mouseDelta.y * lookSensitivity;
         camCurXRot = Mathf.Clamp(camCurXRot, minXLook, maxXLook);
         cameraContainer.localEulerAngles = new Vector3(-camCurXRot, 0, 0);
+        transform.eulerAngles += new Vector3(0, mouseDelta.x * lookSensitivity, 0);
     }
 
-    private void RotateToCamera() //씨네머신 때문에 생긴거~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    {
-        // 전진 입력일 때만 회전 적용, 나중에 조금 손 보자
-        if (curMovementInput.sqrMagnitude > 0.01f && curMovementInput.y > 0)
-        {
-            Vector3 camForward = cameraTransform.forward;
-            camForward.y = 0;
-            camForward.Normalize();
+    //private void RotateToCamera() //씨네머신 때문에 생긴거~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //{
+    //    // 전진 입력일 때만 회전 적용, 나중에 조금 손 보자
+    //    if (curMovementInput.sqrMagnitude > 0.01f && curMovementInput.y > 0)
+    //    {
+    //        Vector3 camForward = cameraTransform.forward;
+    //        camForward.y = 0;
+    //        camForward.Normalize();
 
-            Vector3 moveDir = camForward * curMovementInput.y + cameraTransform.right * curMovementInput.x;
-            moveDir.y = 0;
+    //        Vector3 moveDir = camForward * curMovementInput.y + cameraTransform.right * curMovementInput.x;
+    //        moveDir.y = 0;
 
-            if (moveDir.sqrMagnitude > 0.01f)
-            {
-                Quaternion targetRotation = Quaternion.LookRotation(moveDir);
-                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 0.2f);
-            }
-        }
-    }
+    //        if (moveDir.sqrMagnitude > 0.01f)
+    //        {
+    //            Quaternion targetRotation = Quaternion.LookRotation(moveDir);
+    //            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 0.2f);
+    //        }
+    //    }
+    //}
 
     bool IsGrounded()
     {

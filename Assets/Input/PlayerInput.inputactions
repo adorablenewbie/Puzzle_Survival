@@ -67,6 +67,16 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+
+                    "name": "Build",
+                    "type": "Button",
+                    "id": "69895bf1-d219-4901-846b-ef82e77b14f4",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -188,6 +198,19 @@
                     "processors": "",
                     "groups": "",
                     "action": "Attack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+
+                    "id": "0aeeebf8-3095-440e-9591-bfc45c10110c",
+                    "path": "<Keyboard>/z",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Build",
+
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
