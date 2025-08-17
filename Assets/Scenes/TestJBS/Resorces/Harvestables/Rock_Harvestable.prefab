@@ -161,11 +161,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2112ca82f85f4f41a3d610eba5df75a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemToGive: {fileID: 0}
+  itemToGive: {fileID: 11400000, guid: 87682b33f5fcec84c81e7386e6f87ea1, type: 2}
   quantityPerHit: 1
   capacity: 3
-  prefabreference: {fileID: 2251403238516582963, guid: 04b4f6334e2488a47970103cea5914a5, type: 3}
-  respawnDelay: 150
-  initialCapacity: 0
-  resorceSpawnManager: {fileID: 0}
-  equipTool: {fileID: 0}

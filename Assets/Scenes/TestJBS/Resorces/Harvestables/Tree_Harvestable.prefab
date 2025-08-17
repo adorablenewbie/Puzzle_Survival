@@ -167,8 +167,3 @@ MonoBehaviour:
   itemToGive: {fileID: 11400000, guid: 1077c817091735e478e1025602876dea, type: 2}
   quantityPerHit: 1
   capacity: 3
-  prefabreference: {fileID: 8946202190628991995, guid: ce3cccf7b172bb34f930f994d920e2f6, type: 3}
-  respawnDelay: 150
-  initialCapacity: 0
-  resorceSpawnManager: {fileID: 0}
-  equipTool: {fileID: 0}

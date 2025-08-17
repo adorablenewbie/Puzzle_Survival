@@ -27,7 +27,6 @@ public class ResorceSpawnManager : MonoBehaviour
     //private string[] tagCheck { get; set; } = { "Ground", "Rock", "Stone" };
 
     [Header("아이템 넣을께")]
-    public int curItemCount;
     public int maxItemCount;
     public int minItemCount = 5;
 
@@ -37,6 +36,8 @@ public class ResorceSpawnManager : MonoBehaviour
     private void Start()
     {
         StartCoroutine(RespawnCoroutine());
+        SpawnOne();
+        
     }
 
     private void Update()
@@ -45,6 +46,7 @@ public class ResorceSpawnManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.R))
         {
             StartCoroutine(RespawnCoroutine());
+            Debug.Log(alive.Count);
         }
     }
 
@@ -63,14 +65,15 @@ public class ResorceSpawnManager : MonoBehaviour
     }
     private void SpawnOne()
     {
-        if (harvestablePrefab.Count == 0) return;
+        if (harvestablePrefab.Count == 0) 
+            return;
 
         int randomIndex = UnityEngine.Random.Range(0, harvestablePrefab.Count);
         var prefrab = harvestablePrefab[randomIndex];
 
         Vector3 pos = GetRandomSpawnPosition();
         var go = Instantiate(prefrab, pos, Quaternion.identity);
-
+        
         Resource resource = go.GetComponent<Resource>();
         if(resource != null)
         {
@@ -84,15 +87,30 @@ public class ResorceSpawnManager : MonoBehaviour
     private Vector3 GetRandomSpawnPosition()
     {
         float x = UnityEngine.Random.Range(spawnAreaMin.x, spawnAreaMax.x);
+        float y = UnityEngine.Random.Range(spawnAreaMin.y, spawnAreaMax.y);
         float z = UnityEngine.Random.Range(spawnAreaMin.z, spawnAreaMax.z);
-        return new Vector3(x,0f, z);
+        return new Vector3(x, y, z);
     }
 
+    
     private void HandleResourceDepleted(Resource resource)
     {
         if(resource == null) return;
         alive.Remove(resource);
         resource.OnDepleted -= HandleResourceDepleted;
+
+        StartCoroutine(RespawnAfterDelay());
+    }
+
+    private IEnumerator RespawnAfterDelay()
+    {
+        yield return new WaitForSeconds(respawnDelay);
+
+        int need =  maxItemCount - alive.Count;
+        for (int i = 0; i < need; i++)
+        {
+            SpawnOne();
+        }
     }
 
     //private void OnCollisionEnter(Collision collision)
