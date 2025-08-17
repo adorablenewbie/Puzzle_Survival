@@ -40,7 +40,7 @@ public class DialogueManager : MonoBehaviour
 
     public void LoadCSV()
     {
-        if(csvFile == currCsv) return; // 이미 로드된 CSV 파일이면 중복 로드 방지
+        if (csvFile == currCsv) return; // 이미 로드된 CSV 파일이면 중복 로드 방지
         currCsv = csvFile; // 현재 CSV 파일로 설정
 
         string[] lines = csvFile.text.Split('\n'); // CSV 파일을 줄 단위로 분리
@@ -127,12 +127,12 @@ public class DialogueManager : MonoBehaviour
             fullText = line.text;
             dialogueText.fontSize = line.fontSize;
             dialogueText.color = line.fontColor;
-            if(line.shake)
+            if (line.shake)
             {
                 StartCoroutine(ScreenShake()); // 화면 진동 효과
             }
             npcAnimator.SetInteger("actionValue", line.animation); // 애니메이션 상태 설정
-            typingCoroutine = StartCoroutine(ShowText(line.typingSpeed)); // 타이핑 효과로 대사 출력
+            typingCoroutine = StartCoroutine(ShowTypingEffect(line.typingSpeed)); // 타이핑 효과로 대사 출력
 
             // 선택지가 있다면 버튼 생성
             foreach (Transform child in choiceContainer)
@@ -147,7 +147,7 @@ public class DialogueManager : MonoBehaviour
                     int nextIndex = line.nextIndex[i];
                     Button btn = Instantiate(choiceButtonPrefab, choiceContainer);
                     if (i == 0) eventSystem.SetSelectedGameObject(btn.gameObject); // 첫 번째 버튼 선택
-                    btn.interactable = true; // 버튼 활성화
+                    StartCoroutine(BtnInteractableDelay(btn)); // 버튼 활성화 딜레이
                     btn.GetComponentInChildren<TMP_Text>().text = line.actions[i];
                     btn.onClick.AddListener(() => OnChoiceSelected(nextBranch, nextIndex));
                 }
@@ -156,8 +156,8 @@ public class DialogueManager : MonoBehaviour
         }
         if (currentLineIndex == currentLines.Count)
         {
-            if(currentLines[currentLineIndex-1].actions == null) isLastLine = true;
-            if (currentLines[currentLines.Count-1].indextransition == 1)
+            if (currentLines[currentLineIndex - 1].actions == null) isLastLine = true;
+            if (currentLines[currentLines.Count - 1].indextransition == 1)
             {
                 currentIndex++; // 인덱스 전환이 필요하면 다음 인덱스로 이동
             }
@@ -167,7 +167,7 @@ public class DialogueManager : MonoBehaviour
 
     public void OnChoiceSelected(int nextBranch, int nextIndex)
     {
-        if (currentBranch == nextBranch && currentIndex == nextIndex) 
+        if (currentBranch == nextBranch && currentIndex == nextIndex)
         {
             // 현재 분기와 인덱스가 같으면 대화 종료 즉, 더 생각한다는 선택지
             gameObject.SetActive(false);
@@ -200,15 +200,21 @@ public class DialogueManager : MonoBehaviour
 
     }
 
-    IEnumerator ShowText(float typingSpeed)
+    IEnumerator ShowTypingEffect(float typingSpeed)
     {
         isTyping = true; // 타이핑 시작
         dialogueText.text = ""; // 처음엔 빈 문자열
         foreach (char c in fullText)
         {
+            if (!isTyping) yield break; // 타이핑 중지 시 코루틴 종료
             dialogueText.text += c;  // 한 글자씩 추가
-            yield return new WaitForSeconds(0.02f/typingSpeed); // 출력 속도 조절
+            yield return new WaitForSeconds(0.02f / typingSpeed); // 출력 속도 조절
         }
         isTyping = false; // 타이핑 완료
+    }
+    IEnumerator BtnInteractableDelay(Button btn)
+    {
+        yield return new WaitForSeconds(0.5f); // 딜레이 시간 대기
+        btn.interactable = true; // 버튼 활성화
     }
 }

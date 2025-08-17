@@ -73,12 +73,7 @@ public class Interaction : MonoBehaviour
             {
                 if (dialogueManager.isTyping) //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~``수정하자
                 {
-                    if (dialogueManager.typingCoroutine != null)
-                    {
-                        StopCoroutine(dialogueManager.typingCoroutine);
-                        dialogueManager.typingCoroutine = null;
-                    }
-                    dialogueManager.isTyping = false;
+                    dialogueManager.isTyping = false; // 타이핑 중지
                     dialogueManager.dialogueText.text = dialogueManager.fullText; // 현재 대사 전체 표시
                     return;
                 }
