@@ -14,14 +14,15 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class ResorceSpawnManager : MonoBehaviour
 {
     [Header("Respawn Settings")]
     public List<GameObject> harvestablePrefab;
     public float respawnDelay; // 리스폰 딜레이 시간.
-    public Vector3 spawnAreaMin;
-    public Vector3 spawnAreaMax;
+    // 스폰 포인트를 지정할 수 있는 리스트
+    public List<GameObject> spawnPoint;
 
 
     //private string[] tagCheck { get; set; } = { "Ground", "Rock", "Stone" };
@@ -63,6 +64,7 @@ public class ResorceSpawnManager : MonoBehaviour
         }
 
     }
+    // 오브젝트를 하나 생성하는 함수
     private void SpawnOne()
     {
         if (harvestablePrefab.Count == 0) 
@@ -83,16 +85,24 @@ public class ResorceSpawnManager : MonoBehaviour
 
     }
 
-    // 랜덤으로 위치를 잡아주는 함수
+    // 랜덤으로 리스트에 있는 오브젝트의 기준으로 위치를 잡아주는 함수
     private Vector3 GetRandomSpawnPosition()
     {
-        float x = UnityEngine.Random.Range(spawnAreaMin.x, spawnAreaMax.x);
-        float y = UnityEngine.Random.Range(spawnAreaMin.y, spawnAreaMax.y);
-        float z = UnityEngine.Random.Range(spawnAreaMin.z, spawnAreaMax.z);
-        return new Vector3(x, y, z);
+        int random = UnityEngine.Random.Range(0, spawnPoint.Count);
+        Collider spawnPosition = spawnPoint[random].GetComponent<Collider>();
+
+        if (spawnPosition == null)
+        {
+            Debug.Log("야 없어");
+            return Vector3.zero;
+        }
+
+        Bounds bounds = spawnPosition.bounds;
+        float x = UnityEngine.Random.Range(bounds.min.x, bounds.max.x);
+        float z = UnityEngine.Random.Range(bounds.min.z, bounds.max.z);
+        return new Vector3(x, 1f, z);
     }
 
-    
     private void HandleResourceDepleted(Resource resource)
     {
         if(resource == null) return;

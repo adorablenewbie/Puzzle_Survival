@@ -10,39 +10,52 @@ public class Resource : MonoBehaviour
     public ItemData itemToGive;
     public int quantityPerHit = 1;
     public int capacity = 3;
-    private float CheckposY = -5f;
+    private Rigidbody rb;
+
+    bool raycastHit = true;
 
     public event Action<Resource> OnDepleted;
+
+    private void Awake()
+    {
+        rb = GetComponent<Rigidbody>();
+    }
     private void Start()
     {
         //gameObject.SetActive(false);
     }
-    private void Update()
-    {
-        PositionCheck();
-    }
-
-    private void PositionCheck()
-    {
-
-        if (transform.position.y <= CheckposY)
-        {
-
-            Debug.Log("알맞은 위치를 찾는 중이야.");
-            OnDepleted?.Invoke(this);
-            Destroy(gameObject);
-        }
-    }
+    //private void Update()
+    //{
+    //    PositionChecki();
+    //    if(transform.position.y <= -5f)
+    //    {
+    //        Destroy(gameObject);
+    //        OnDepleted?.Invoke(this);
+    //    }
+    //}
 
     //방법을 다시 고민 해 봐야 할 듯
-    //private void OnCollisionEnter(Collision collision)
+    //private void PositionChecki()
     //{
-    //    if (collision.gameObject.CompareTag("Ground"))
+    //    Ray ray = new Ray(transform.position, Vector3.down);
+    //    RaycastHit hit;
+    //    int layerMask = LayerMask.GetMask("Ground");
+    //    if (raycastHit)
     //    {
-    //        Debug.Log("Resource collided with ground, destroying.");
-    //        gameObject.SetActive(true);
+    //        if (Physics.Raycast(ray, out hit, 100f, layerMask))
+    //        {
+    //            Debug.Log("Raycast hit: " + hit.transform.name);
+
+    //            Vector3 pos = transform.position;
+    //            pos.y = hit.point.y; // 0.5f 는 약간의 오차를 주기 위함
+    //            transform.position = pos;
+
+    //            rb.MovePosition(pos);
+    //            raycastHit = false;
+    //        }
+            
     //    }
-        
+       
     //}
     public void Gather(Vector3 hitPoint, Vector3 hitNormal)
     {
