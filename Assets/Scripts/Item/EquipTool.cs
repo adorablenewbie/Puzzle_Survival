@@ -145,15 +145,4 @@ public class EquipTool : Equip
             }
         }
     }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        Debug.Log("충돌함");
-        ////if(attacking && collision.gameObject.layer == (1 << LayerMask.NameToLayer("Monster")))
-        ////if (attacking && collision.gameObject.layer == LayerMask.NameToLayer("Monster"))
-        //if (attacking && collision.gameObject.layer == 10)
-        //{
-        //    Debug.Log("몬스터 맞음");
-        //}
-    }
 }
