@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   displayName: "\uB3CC"
   description: "\uC601\uC591\uB9CC\uC810 \uB3CC\uC774\uB2E4. \uB3CC"
-  type: 2
+  type: 0
   icon: {fileID: 21300000, guid: 84923fb900edf5b41b616678932efd67, type: 3}
   dropPrefab: {fileID: 5123580909229770709, guid: 714b8f50c4a9a8748ab170b54493f39a, type: 3}
   canStack: 1
@@ -24,6 +24,7 @@ MonoBehaviour:
     value: 50
   - type: 0
     value: 100
+  resourceAmount: 0
   equipPrefab: {fileID: 0}
   itemBuff:
   - buffData: {fileID: 11400000, guid: 79be71e964ef27c499142c69076a09dc, type: 2}

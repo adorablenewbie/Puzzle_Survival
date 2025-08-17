@@ -53,7 +53,6 @@ public class Resource : MonoBehaviour
         Debug.Log(itemToGive.dropPrefab);
         Instantiate(itemToGive.dropPrefab, hitPoint + Vector3.up, Quaternion.LookRotation(hitNormal, Vector3.up));
 
-
         if (capacity <= 0)
         {
             Debug.Log("자원이 다 떨어졌어 사라질께");

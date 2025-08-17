@@ -56,14 +56,16 @@ public class EquipTool : Equip
     {
         if (!attacking)
         {
-            attacking = true;
-            animator.SetTrigger("Attack");
-            Invoke("OnCanAttack", attackRate);
+            //attacking = true;
+            //animator.SetTrigger("Attack");
+            //Invoke("OnCanAttack", attackRate);
+            // 스태미나가 충분하면 공격/자원채취 할 수 있게 하기 
             if (PlayerManager.Instance.Player.condition.UseStamina(useStamina))
             {
                 attacking = true;
-                animator.SetTrigger("Attack");
-                Invoke("OnCanAttack", attackRate);
+                animator.SetTrigger("Attack"); // 공격 애니메이션 
+                // 데미지 처리 
+                Invoke("OnCanAttack", attackRate); // attackRate초 후에 다시 공격할 수 있게 
             }
         }
     }
@@ -75,7 +77,7 @@ public class EquipTool : Equip
 
     public void OnHit()
     {
-        Ray ray = camera.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 200, 100));
+        Ray ray = camera.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 100));
         RaycastHit hit;
         Debug.DrawRay(ray.origin, ray.direction * attackDistance, Color.red, 20000f);
         if (Physics.Raycast(ray, out hit, attackDistance))
@@ -83,6 +85,16 @@ public class EquipTool : Equip
             if (doesGatherResources && hit.collider.TryGetComponent(out Resource resource))
             {
                 resource.Gather(hit.point, hit.normal);
+            }
+
+            if (doesDealDamage)
+            {
+                Enemy_Bear bear = hit.collider.GetComponent<Enemy_Bear>();
+
+                if(bear != null)
+                {
+                    bear.TakePhysicalDamage(damage);
+                }
             }
         }
     }
