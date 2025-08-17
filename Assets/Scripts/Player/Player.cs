@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
@@ -7,6 +8,7 @@ public class Player : MonoBehaviour
     public PlayerCondition condition;
     public UIBuffManager uiBuffManager;
     public DialogueManager dialogueManager;
+    public PlayerInput playerInput;
 
     public ItemData itemData;
     public Action addItem;
@@ -21,5 +23,6 @@ public class Player : MonoBehaviour
         controller = GetComponent<PlayerController>();
         condition = GetComponent<PlayerCondition>();
         equip = GetComponent<Equipment>();
+        playerInput = GetComponent<PlayerInput>();
     }
 }

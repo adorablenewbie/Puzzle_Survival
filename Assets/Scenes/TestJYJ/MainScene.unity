@@ -2842,6 +2842,8 @@ MonoBehaviour:
   npcName: "\uC8FC\uC5BC\uB9AC\uC9F1"
   npcDescription: "\uBCF4\uC11D\uAC19\uC740 \uADF8\uB140"
   npcCamera: {fileID: 526113466}
+  npcCameraOriginPosition: {x: 0, y: 1.3, z: 1.4}
+  npcCameraZoomPosition: {x: 0, y: 1.3, z: 0.7}
   npcAnimator: {fileID: 1831371253}
 --- !u!65 &213130389
 BoxCollider:
@@ -6734,6 +6736,7 @@ MonoBehaviour:
   condition: {fileID: 0}
   uiBuffManager: {fileID: 1957694606}
   dialogueManager: {fileID: 1744902804}
+  playerInput: {fileID: 0}
   itemData: {fileID: 0}
   equip: {fileID: 558821009}
   dropPosition: {fileID: 558820998}
@@ -17858,13 +17861,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   csvFile: {fileID: 0}
   dialogueText: {fileID: 106659349}
+  fullText: 
   nameText: {fileID: 2147457365}
   choiceContainer: {fileID: 2043022269}
   choiceButtonPrefab: {fileID: 738084747139232403, guid: 6bdce69ab4766a84a9efc18b805018f7, type: 3}
   eventSystem: {fileID: 1037588389}
-  npcCameara: {fileID: 0}
+  npcCamera: {fileID: 0}
+  npcCameraOriginPosition: {x: 0, y: 0, z: 0}
+  npcCameraZoomPosition: {x: 0, y: 0, z: 0}
   isDialogue: 0
   isLastLine: 0
+  isTyping: 0
   currentBranch: 1
   currentIndex: 1
   npcAnimator: {fileID: 0}
