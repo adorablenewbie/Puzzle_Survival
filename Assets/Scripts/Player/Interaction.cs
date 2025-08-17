@@ -11,6 +11,7 @@ public class Interaction : MonoBehaviour
 
     public GameObject curInteractGameObject;
     private IInteractable curInteractable;
+    private PlayerInput playerInput;
 
     public TextMeshProUGUI promptText;
     private Camera camera;
@@ -21,6 +22,7 @@ public class Interaction : MonoBehaviour
     {
         camera = Camera.main;
         dialogueManager = PlayerManager.Instance.Player.dialogueManager;
+        playerInput = PlayerManager.Instance.Player.playerInput;
     }
 
     // Update is called once per frame
@@ -69,9 +71,11 @@ public class Interaction : MonoBehaviour
         }
         if (context.phase == InputActionPhase.Started && dialogueManager.gameObject.activeSelf)
         {
+            DisableActions();
+            Debug.Log("Dialogue interaction triggered");
             if (dialogueManager.isDialogue)
             {
-                if (dialogueManager.isTyping) //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~``수정하자
+                if (dialogueManager.isTyping) 
                 {
                     dialogueManager.isTyping = false; // 타이핑 중지
                     dialogueManager.dialogueText.text = dialogueManager.fullText; // 현재 대사 전체 표시
@@ -82,8 +86,9 @@ public class Interaction : MonoBehaviour
                     dialogueManager.gameObject.SetActive(false);
                     dialogueManager.isLastLine = false;
                     dialogueManager.isDialogue = false;
-                    dialogueManager.npcCameara.gameObject.SetActive(false); // NPC 대화용 카메라 비활성화
+                    dialogueManager.npcCamera.gameObject.SetActive(false); // NPC 대화용 카메라 비활성화
                     dialogueManager.npcAnimator.SetInteger("actionValue", 0); // NPC 애니메이터 대화 상태 해제
+                    EnableActions();
                     return;
                 }
                 dialogueManager.ShowNextLine();
@@ -91,6 +96,24 @@ public class Interaction : MonoBehaviour
             }
             dialogueManager.ShowDialogue(dialogueManager.currentBranch, dialogueManager.currentIndex);
             dialogueManager.isDialogue = true;
+        }
+    }
+    public void DisableActions()
+    {
+        foreach (var action in playerInput.actions)
+        {
+            if (action.name == "Interaction")
+                continue; // Interact액션은 제외
+            action.Disable();
+        }
+    }
+    public void EnableActions()
+    {
+        foreach (var action in playerInput.actions)
+        {
+            if (action.name == "Interaction")
+                continue; // Interact액션은 제외
+            action.Enable();
         }
     }
 }

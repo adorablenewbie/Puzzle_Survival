@@ -1,9 +1,11 @@
-using System.Collections.Generic;  
-using UnityEngine;                
-using TMPro;                       
-using UnityEngine.UI;
 using System.Collections;
+using System.Collections.Generic;  
+using TMPro;
+using Unity.VisualScripting;
+using UnityEngine;                
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class DialogueManager : MonoBehaviour
 {
@@ -17,7 +19,10 @@ public class DialogueManager : MonoBehaviour
 
     public EventSystem eventSystem; // 이벤트 시스템 (선택지 버튼 클릭 시 사용)
 
-    public Camera npcCameara; // NPC 대화용 카메라
+    public Camera npcCamera; // NPC 대화용 카메라
+    public Vector3 npcCameraOriginPosition; // NPC 대화용 카메라 원래 위치
+    public Vector3 npcCameraZoomPosition; // NPC 대화용 카메라 확대 위치
+    private bool isZoom = false; // 카메라 확대 여부
 
     public bool isDialogue = false;        // 현재 대화 중인지 여부
     public bool isLastLine = false;         // 현재 대화의 마지막 라인인지 여부
@@ -31,13 +36,23 @@ public class DialogueManager : MonoBehaviour
     private List<DialogueLine> currentLines = new List<DialogueLine>();
     private int currentLineIndex = 0;
 
+    private Interaction interaction;
     public Animator npcAnimator; // NPC 애니메이터 (필요시 사용)
+
 
     void Start()
     {
         gameObject.SetActive(false); // 초기에는 대화 UI 비활성화
-    }
+        interaction = PlayerManager.Instance.Player.GetComponent<Interaction>();
 
+    }
+    void Update()
+    {
+        if (isZoom)
+        {
+            ZoomNpcCamera(); // 카메라 확대 중이면 확대 함수 호출
+        }
+    }
     public void LoadCSV()
     {
         if (csvFile == currCsv) return; // 이미 로드된 CSV 파일이면 중복 로드 방지
@@ -127,12 +142,22 @@ public class DialogueManager : MonoBehaviour
             fullText = line.text;
             dialogueText.fontSize = line.fontSize;
             dialogueText.color = line.fontColor;
+            if (line.zoom)
+            {
+                isZoom = true; // 카메라 확대 활성화
+            }
+            else
+            {
+                isZoom = false; // 카메라 확대 비활성화
+                npcCamera.transform.localPosition = npcCameraOriginPosition; // 원래 위치로 복원
+            }
             if (line.shake)
             {
                 StartCoroutine(ScreenShake()); // 화면 진동 효과
             }
             npcAnimator.SetInteger("actionValue", line.animation); // 애니메이션 상태 설정
             typingCoroutine = StartCoroutine(ShowTypingEffect(line.typingSpeed)); // 타이핑 효과로 대사 출력
+            
 
             // 선택지가 있다면 버튼 생성
             foreach (Transform child in choiceContainer)
@@ -156,7 +181,10 @@ public class DialogueManager : MonoBehaviour
         }
         if (currentLineIndex == currentLines.Count)
         {
-            if (currentLines[currentLineIndex - 1].actions == null) isLastLine = true;
+            if (currentLines[currentLineIndex - 1].actions == null)
+            {
+                isLastLine = true;
+            }
             if (currentLines[currentLines.Count - 1].indextransition == 1)
             {
                 currentIndex++; // 인덱스 전환이 필요하면 다음 인덱스로 이동
@@ -173,8 +201,9 @@ public class DialogueManager : MonoBehaviour
             gameObject.SetActive(false);
             isLastLine = false;
             isDialogue = false;
-            npcCameara.gameObject.SetActive(false); // NPC 대화용 카메라 비활성화
+            npcCamera.gameObject.SetActive(false); // NPC 대화용 카메라 비활성화
             npcAnimator.SetInteger("actionValue", 0); // 애니메이션 초기화
+            interaction.EnableActions(); // 플레이어 상호작용 활성화
             return;
         }
         currentBranch = nextBranch;  // 다음 분기로 변경
@@ -184,7 +213,7 @@ public class DialogueManager : MonoBehaviour
 
     IEnumerator ScreenShake()
     {
-        Vector3 originalPosition = npcCameara.transform.position; // 원래 위치 저장
+        Vector3 originalPosition = npcCamera.transform.position; // 원래 위치 저장
         float shakeDuration = 0.5f; // 진동 지속 시간
         float shakeMagnitude = 0.1f; // 진동 강도
         float elapsed = 0f;
@@ -192,11 +221,11 @@ public class DialogueManager : MonoBehaviour
         {
             float x = Random.Range(-1f, 1f) * shakeMagnitude;
             float y = Random.Range(-1f, 1f) * shakeMagnitude;
-            npcCameara.transform.position = new Vector3(originalPosition.x + x, originalPosition.y + y, originalPosition.z);
+            npcCamera.transform.position = new Vector3(originalPosition.x + x, originalPosition.y + y, originalPosition.z);
             elapsed += Time.deltaTime;
             yield return null; // 다음 프레임까지 대기
         }
-        npcCameara.transform.position = originalPosition; // 원래 위치로 복원
+        npcCamera.transform.position = originalPosition; // 원래 위치로 복원
 
     }
 
@@ -216,5 +245,11 @@ public class DialogueManager : MonoBehaviour
     {
         yield return new WaitForSeconds(0.5f); // 딜레이 시간 대기
         btn.interactable = true; // 버튼 활성화
+    }
+    void ZoomNpcCamera()
+    {
+        Vector3 currentPos = npcCamera.transform.localPosition;
+        Vector3 targetPos = npcCameraZoomPosition;
+        npcCamera.transform.localPosition = Vector3.Lerp(currentPos, npcCameraZoomPosition, 5 * Time.deltaTime);
     }
 }
