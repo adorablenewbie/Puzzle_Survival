@@ -102,5 +102,5 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
-  green: {fileID: 2100000, guid: 64213ab577aa37a4abca239678740546, type: 2}
-  red: {fileID: 2100000, guid: ddf44bd0a6452af48ab2d21b380a1d29, type: 2}
+  green: {fileID: 2100000, guid: 0942962c00909eb4ca03b6c14da422ab, type: 2}
+  red: {fileID: 2100000, guid: 80b0617f1e5378747a63445192cca687, type: 2}
