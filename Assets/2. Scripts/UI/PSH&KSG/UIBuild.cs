@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -11,27 +12,30 @@ public class UIBuild : MonoBehaviour
     [SerializeField] private Button CampFireButton; 
 
     [SerializeField] private Build[] builds;   // 건축 - 목록
-    [SerializeField]private GameObject previewPrefab;          // 건축 - 건축 전 프리뷰 프리펩
+    [SerializeField] private GameObject previewPrefab;          // 건축 - 건축 전 프리뷰 프리펩
     [SerializeField] private GameObject installPrefab;          // 건축 - 실제로 생성될 프리펩
 
     [SerializeField] private Image buildPanel;
     [SerializeField] private Transform player;  // 플레이어의 트랜스폼
 
-    private RaycastHit hitInfo;   // 레이캐스트 히트 정보를 담을 변수
+    private RaycastHit hitInfo;                    // 레이캐스트 히트 정보를 담을 변수
     [SerializeField] private LayerMask layerMask;  // 
     [SerializeField] private float range;
+
+    [Header("Snap Settings")]
+    [SerializeField] private float snapRadius = 5f;
+    [SerializeField] private float snapEnter = 0.5f;
+    [SerializeField] private float snapExit = 1f;
+    [SerializeField] private LayerMask snapLayer;
+    private bool isSnapped = false;
+    private int currentSnapIndex = 0;
+    private Transform currentSnapPoint;
 
     // 마우스 휠로 회전 조정
     [SerializeField] private float rotateSpeed = 10f;
     private float currentRotationY = 0;
 
-    // 스냅 기능
-    [SerializeField] private float snapRadius = 2f;
-    [SerializeField] private LayerMask snapMaske;
-
     public ItemSlot[] itemslots;
-
-
 
     public event Action PreviewStart;
     public event Action PreviewEnd;
@@ -55,7 +59,7 @@ public class UIBuild : MonoBehaviour
         if (isPreviewActive)
         {
             PreviewPositionUpdate();
-            PreviewRotationInput();
+            
         }
 
         if (Input.GetMouseButtonDown(0))
@@ -69,15 +73,6 @@ public class UIBuild : MonoBehaviour
         }
     }
 
-    private void PreviewRotationInput()
-    {
-        float scroll = Input.mouseScrollDelta.y;
-        if(MathF.Abs(scroll) > 0.01f)
-        {
-            currentRotationY += scroll * rotateSpeed;
-            previewPrefab.transform.rotation = Quaternion.Euler(0, currentRotationY, 0);
-        }
-    }
 
     public void OpenBuildList()
     {
@@ -92,65 +87,128 @@ public class UIBuild : MonoBehaviour
     private void PreviewPositionUpdate()
     {
         Vector3 targetPos = Vector3.zero;
-        //Quaternion targetRot = Quaternion.identity;
+        Quaternion targetRot = Quaternion.identity;
 
         if (Physics.Raycast(player.position, player.forward, out hitInfo, range, layerMask))
         {
             if (hitInfo.transform != null)
             {
-                //Vector3 location = hitInfo.point;
-                //previewPrefab.transform.position = location;
+                //    Vector3 location = hitInfo.point;
+                //    previewPrefab.transform.position = location;
 
                 targetPos = hitInfo.point;
-                //targetRot = Quaternion.identity;
+                targetRot = Quaternion.Euler(0, currentRotationY, 0);
             }
-        }
 
-        Collider[] colliders = Physics.OverlapSphere(previewPrefab.transform.position, snapRadius, snapMaske);
+            Transform nearestSnap = FindNearestSnapPoint(targetPos, out float snapDist);
 
-        Transform nearestSnap = null;
-        float minDist = float.MaxValue;
-
-        foreach (Collider col in colliders)
-        {
-            BuildSnapPoints buildSnap = col.GetComponent<BuildSnapPoints>();
-            if (buildSnap == null) continue;
-
-            foreach (Transform snapPoint in buildSnap.snapPoints)
+            if(!isSnapped)
             {
-                float dist = Vector3.Distance(previewPrefab.transform.position, snapPoint.position);
-
-                if(dist < minDist)
+                if(nearestSnap != null && snapDist <= snapEnter)
                 {
-                    minDist = dist;
-                    nearestSnap = snapPoint;
+                    isSnapped = true;
+                    currentSnapPoint = nearestSnap;
                 }
             }
-        }
-
-        if(nearestSnap != null)
-        {
-            BuildSnapPoints prevSnapPoint = previewPrefab.GetComponent<BuildSnapPoints>();
-
-            if(prevSnapPoint != null && prevSnapPoint.snapPoints.Length >0)
+            else
             {
-                Transform previewSnap = prevSnapPoint.snapPoints[0];
-
-                Vector3 posOffset = previewPrefab.transform.position - previewSnap.position;
-                previewPrefab.transform.position = nearestSnap.position + posOffset;
-
-                Quaternion rotOffset = Quaternion.Inverse(previewSnap.rotation) * previewPrefab.transform.rotation;
-                previewPrefab.transform.rotation = nearestSnap.rotation * rotOffset;
-
+                if(currentSnapPoint == null)
+                {
+                    isSnapped = false;
+                }
+                else
+                {
+                    float curDist = Vector3.Distance(targetPos, currentSnapPoint.position);
+                    if(curDist >= snapExit)
+                    {
+                        isSnapped = false;
+                        currentSnapPoint = null;
+                    }
+                }
             }
 
-            //previewPrefab.transform.position = nearestSnap.position;
-            //previewPrefab.transform.rotation = nearestSnap.rotation;
+            if(isSnapped && currentSnapPoint != null)
+            {
+                BuildSnapPoints snaps = previewPrefab.GetComponent<BuildSnapPoints>();
+                if(snaps != null && snaps.snapPoints.Length > 0)
+                {
+                    Transform bestLocalSnap = null;
+                    float minDist = Mathf.Infinity;
+
+                    for(int i = 0; i < snaps.snapPoints.Length; i++)
+                    {
+                        float d = Vector3.Distance(currentSnapPoint.position, snaps.snapPoints[i].position);
+                        if(d < minDist)
+                        {
+                            minDist = d;
+                            bestLocalSnap = snaps.snapPoints[i];
+                        }
+                    }
+
+                    if(bestLocalSnap != null)
+                    {
+                        Vector3 offset = previewPrefab.transform.position - bestLocalSnap.position;
+                        previewPrefab.transform.position = currentSnapPoint.position + offset;
+                    }
+                }
+                PreviewRotationInput();
+
+                //previewPrefab.transform.SetPositionAndRotation(currentSnapPoint.position, currentSnapPoint.rotation);
+                previewPrefab.transform.RotateAround(currentSnapPoint.position, Vector3.up, currentRotationY);
+            }
+            else
+            {
+                previewPrefab.transform.SetPositionAndRotation(targetPos, targetRot);
+                PreviewRotationInput();
+            }
+
         }
         else
         {
-            previewPrefab.transform.position = targetPos;
-            //previewPrefab.transform.rotation = targetRot;
+            previewPrefab.transform.SetPositionAndRotation(targetPos, targetRot);
+            PreviewRotationInput();
+
+            isSnapped = false;
+            currentSnapPoint = null;
+        }
+
+
+
+    }
+
+    private Transform FindNearestSnapPoint(Vector3 pos, out float snapDist)
+    {
+        snapDist = float.MaxValue;
+        Transform nearest = null;
+
+        // 주변 건축물 찾기
+        Collider[] cols = Physics.OverlapSphere(pos, snapRadius, snapLayer);
+        for (int i = 0; i < cols.Length; i++)
+        {
+            // 해당 오브젝트 아래 모든 BuildSnapPoint 수집
+            BuildSnapPoints[] snaps = cols[i].GetComponentsInChildren<BuildSnapPoints>(true);
+            if (snaps == null || snaps.Length == 0) continue;
+
+            foreach (BuildSnapPoints sp in snaps)
+            {
+                float d = Vector3.Distance(pos, sp.transform.position);
+                if (d < snapDist)
+                {
+                    snapDist = d;
+                    nearest = sp.transform;
+                }
+            }
+        }
+        return nearest;
+    }
+
+    private void PreviewRotationInput()
+    {
+        float scroll = Input.mouseScrollDelta.y;
+        if (MathF.Abs(scroll) > 0.01f)
+        {
+            currentRotationY += scroll * rotateSpeed;
+            previewPrefab.transform.rotation = Quaternion.Euler(0, currentRotationY, 0);
         }
     }
 
@@ -179,7 +237,8 @@ public class UIBuild : MonoBehaviour
     {
         if (isPreviewActive && previewPrefab.GetComponent<PreviewObject>().IsBuildable())
         {
-            Instantiate(installPrefab, hitInfo.point, previewPrefab.transform.rotation);
+            //Instantiate(installPrefab, hitInfo.point, previewPrefab.transform.rotation);
+            Instantiate(installPrefab, previewPrefab.transform.position, previewPrefab.transform.rotation);
             Destroy(previewPrefab);
             isPreviewActive = false;
             previewPrefab = null;
