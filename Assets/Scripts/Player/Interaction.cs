@@ -15,6 +15,7 @@ public class Interaction : MonoBehaviour
 
     public TextMeshProUGUI promptText;
     private Camera camera;
+    public GameObject npcObject;
 
     private DialogueManager dialogueManager;
 
@@ -72,7 +73,6 @@ public class Interaction : MonoBehaviour
         if (context.phase == InputActionPhase.Started && dialogueManager.gameObject.activeSelf)
         {
             DisableActions();
-            Debug.Log("Dialogue interaction triggered");
             if (dialogueManager.isDialogue)
             {
                 if (dialogueManager.isTyping) 
@@ -83,18 +83,25 @@ public class Interaction : MonoBehaviour
                 }
                 if (dialogueManager.isLastLine)
                 {
+                    Debug.Log("대화 종료");
+                    //dialogueManager.dialogueData = null; // 대화 데이터 초기화
                     dialogueManager.gameObject.SetActive(false);
                     dialogueManager.isLastLine = false;
                     dialogueManager.isDialogue = false;
                     dialogueManager.npcCamera.gameObject.SetActive(false); // NPC 대화용 카메라 비활성화
                     dialogueManager.npcAnimator.SetInteger("actionValue", 0); // NPC 애니메이터 대화 상태 해제
+                    dialogueManager.csvFile = null; // CSV 파일 초기화
+                    dialogueManager.currentBranch = 1; // 현재 브랜치 초기화
+                    dialogueManager.currentIndex = 1; // 현재 인덱스 초기화
+                    dialogueManager.dialogueText.text = "";
+                    dialogueManager.nameText.text = "";
                     EnableActions();
                     return;
                 }
                 dialogueManager.ShowNextLine();
                 return;
             }
-            dialogueManager.ShowDialogue(dialogueManager.currentBranch, dialogueManager.currentIndex);
+            dialogueManager.ShowDialogue();
             dialogueManager.isDialogue = true;
         }
     }
