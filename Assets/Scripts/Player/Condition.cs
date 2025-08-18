@@ -39,7 +39,6 @@ public class Condition : MonoBehaviour
     }
     public void SetConditionInvincible()
     {
-
         isConditionInvincible = true;
     }
     public void EndConditionInvincible()
