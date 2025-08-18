@@ -29,7 +29,7 @@ public class DialogueManager : MonoBehaviour
     public bool isTyping = false; // 현재 타이핑 중인지 여부
     public Coroutine typingCoroutine; // 타이핑 코루틴 참조 (중단 시 사용)
 
-    private List<DialogueLine> dialogueData = new List<DialogueLine>(); // CSV에서 읽은 전체 대화 데이터 저장
+    public List<DialogueLine> dialogueData = new List<DialogueLine>(); // CSV에서 읽은 전체 대화 데이터 저장
     public int currentBranch = 1;     // 현재 분기 번호
     public int currentIndex = 1;      // 현재 인덱스 번호 (한 대화 묶음 내 순서)
     private bool isEqualBranchIndex = false; // 현재 분기와 인덱스가 같은지 여부
@@ -39,11 +39,16 @@ public class DialogueManager : MonoBehaviour
     private Interaction interaction;
     public Animator npcAnimator; // NPC 애니메이터 (필요시 사용)
 
+    public Dictionary<ENPC, (int branch, int index)> npcDialogueStates = new Dictionary<ENPC, (int, int)>();
+    public ENPC npcDialogueStateKey;
+
+    public NPC npc; // NPC 참조 (필요시 사용)
 
     void Start()
     {
         gameObject.SetActive(false); // 초기에는 대화 UI 비활성화
         interaction = PlayerManager.Instance.Player.GetComponent<Interaction>();
+        PlayerManager.Instance.Player.dialogueManager = this; // DialogueManager를 PlayerManager에 설정
 
     }
     void Update()
@@ -60,6 +65,7 @@ public class DialogueManager : MonoBehaviour
 
         string[] lines = csvFile.text.Split('\n'); // CSV 파일을 줄 단위로 분리
 
+        dialogueData.Clear();
         for (int i = 1; i < lines.Length; i++) // 첫 줄은 헤더라서 i=1부터 시작
         {
             if (string.IsNullOrWhiteSpace(lines[i])) continue; // 빈 줄은 건너뜀
@@ -68,14 +74,14 @@ public class DialogueManager : MonoBehaviour
 
             // 폰트 크기 처리 (없으면 50)
             int fontSize = 50;
-            if (cols.Length > 15 && !string.IsNullOrWhiteSpace(cols[15]))
-                int.TryParse(cols[15], out fontSize);
+            if (cols.Length > 18 && !string.IsNullOrWhiteSpace(cols[18]))
+                int.TryParse(cols[18], out fontSize);
 
             // 폰트 색상 처리 (없으면 흰색 255/255/255/255)
             Color fontColor = new Color32(255, 255, 255, 255);
-            if (cols.Length > 16 && !string.IsNullOrWhiteSpace(cols[16]))
+            if (cols.Length > 19 && !string.IsNullOrWhiteSpace(cols[19]))
             {
-                string[] rgba = cols[16].Split('/');
+                string[] rgba = cols[19].Split('/');
                 if (rgba.Length == 4)
                 {
                     byte r = byte.Parse(rgba[0]);
@@ -99,14 +105,19 @@ public class DialogueManager : MonoBehaviour
                 quest = SafeParseInt(cols.Length > 8 ? cols[8] : "0"),                 // 퀘스트 ID (1: 있음)
                 questNextBranches = string.IsNullOrWhiteSpace(cols[9]) ? null : System.Array.ConvertAll(cols[9].Split('/'), int.Parse), // 퀘스트 완료 후 다음 분기
                 questIndex = SafeParseInt(cols.Length > 10 ? cols[10] : "0"),          // 퀘스트 완료 후 이동 가능 인덱스
-                shake = cols[11] == "1",                                        // 화면 진동 여부
-                animation = SafeParseInt(cols[12]),                                    // 애니메이션 실행 여부
-                zoom = cols[13] == "1",                                         // 카메라 확대 여부
-                typingSpeed = float.Parse(cols[14]),                            // 타이핑 속도
+                rewardRandom = SafeParseInt(cols.Length > 11 ? cols[11] : "0"),
+                rewardCategories = (cols.Length > 12 && !string.IsNullOrWhiteSpace(cols[12]))
+              ? System.Array.ConvertAll(cols[12].Split('/'), x => SafeParseInt(x)) : null,
+                rewardCounts = (cols.Length > 13 && !string.IsNullOrWhiteSpace(cols[13]))
+              ? System.Array.ConvertAll(cols[13].Split('/'), x => SafeParseInt(x)) : null,
+                shake = cols[14] == "1",                                        // 화면 진동 여부
+                animation = SafeParseInt(cols[15]),                                    // 애니메이션 실행 여부
+                zoom = cols[16] == "1",                                         // 카메라 확대 여부
+                typingSpeed = float.Parse(cols[17]),                            // 타이핑 속도
                 fontSize = fontSize,                                           // 폰트 크기
-                fontColor = fontColor                                          // 폰트 색상
+                fontColor = fontColor,                                          // 폰트 색상
+                sceneName = cols.Length > 20 ? cols[20] : "" // 씬 이름 (추가된 컬럼)
             };
-
             dialogueData.Add(line); // 완성된 DialogueLine을 리스트에 추가
         }
     }
@@ -118,8 +129,23 @@ public class DialogueManager : MonoBehaviour
         return defaultValue;
     }
 
-    public void ShowDialogue(int branch, int index)
+    public void ShowDialogue()
     {
+        if(npcDialogueStates.ContainsKey(npcDialogueStateKey))
+        {
+            // NPC의 대화 상태가 이미 존재하면 해당 상태로 초기화
+            currentBranch = npcDialogueStates[npcDialogueStateKey].branch;
+            currentIndex = npcDialogueStates[npcDialogueStateKey].index;
+        }
+        else
+        {
+            // NPC의 대화 상태가 없으면 기본값으로 초기화
+            npcDialogueStates[npcDialogueStateKey] = (1, 1);
+            currentBranch = 1;
+            currentIndex = 1;
+        }
+        int branch = npcDialogueStates[npcDialogueStateKey].branch; // NPC의 현재 분기
+        int index = npcDialogueStates[npcDialogueStateKey].index; // NPC의 현재 인덱스
         // 현재 분기와 인덱스에 해당하는 모든 대사 라인 찾기
         currentLines = dialogueData.FindAll(d => d.branch == branch && d.index == index);
         currentLineIndex = 0;
@@ -157,7 +183,10 @@ public class DialogueManager : MonoBehaviour
             }
             npcAnimator.SetInteger("actionValue", line.animation); // 애니메이션 상태 설정
             typingCoroutine = StartCoroutine(ShowTypingEffect(line.typingSpeed)); // 타이핑 효과로 대사 출력
-            
+            if(line.rewardCategories!=null)
+            {
+                GiveRewards(line, npc); // 보상 지급
+            }
 
             // 선택지가 있다면 버튼 생성
             foreach (Transform child in choiceContainer)
@@ -190,6 +219,7 @@ public class DialogueManager : MonoBehaviour
                 currentIndex++; // 인덱스 전환이 필요하면 다음 인덱스로 이동
             }
         }
+        UpdateNpcState(); // NPC 상태 업데이트
         // 모든 대사 출력 후 추가 처리 필요시 여기에 작성
     }
 
@@ -198,17 +228,13 @@ public class DialogueManager : MonoBehaviour
         if (currentBranch == nextBranch && currentIndex == nextIndex)
         {
             // 현재 분기와 인덱스가 같으면 대화 종료 즉, 더 생각한다는 선택지
-            gameObject.SetActive(false);
-            isLastLine = false;
-            isDialogue = false;
-            npcCamera.gameObject.SetActive(false); // NPC 대화용 카메라 비활성화
-            npcAnimator.SetInteger("actionValue", 0); // 애니메이션 초기화
-            interaction.EnableActions(); // 플레이어 상호작용 활성화
+            ResetDialogueUI();
             return;
         }
         currentBranch = nextBranch;  // 다음 분기로 변경
         currentIndex = nextIndex;            // 새로운 분기 시작 시 인덱스 초기화
-        ShowDialogue(currentBranch, currentIndex); // 새로운 분기 대사 출력
+        UpdateNpcState();
+        ShowDialogue(); // 새로운 분기 대사 출력
     }
 
     IEnumerator ScreenShake()
@@ -251,5 +277,78 @@ public class DialogueManager : MonoBehaviour
         Vector3 currentPos = npcCamera.transform.localPosition;
         Vector3 targetPos = npcCameraZoomPosition;
         npcCamera.transform.localPosition = Vector3.Lerp(currentPos, npcCameraZoomPosition, 5 * Time.deltaTime);
+    }
+    public void ResetDialogueUI()
+    {
+        gameObject.SetActive(false);
+        isLastLine = false;
+        isDialogue = false;
+        npcCamera.gameObject.SetActive(false);
+        npcAnimator.SetInteger("actionValue", 0);
+        interaction.EnableActions();
+        currentLines.Clear();
+        currentLineIndex = 0;
+        csvFile = null;
+        currentBranch = 1;
+        currentIndex = 1;
+        dialogueText.text = "";
+        nameText.text = "";
+        foreach (Transform child in choiceContainer)
+        {
+            Destroy(child.gameObject);
+        }
+        if (typingCoroutine != null)
+        {
+            StopCoroutine(typingCoroutine); // 타이핑 코루틴 중지
+            typingCoroutine = null;
+        }
+        isTyping = false;
+    }
+    private void UpdateNpcState()
+    {
+        npcDialogueStates[npcDialogueStateKey] = (currentBranch, currentIndex);
+    }
+    // 보상 지급 함수
+    public void GiveRewards(DialogueLine line, NPC npc)
+    {
+        if (line.rewardCategories == null || line.rewardCounts == null) return;
+
+        List<int> selectedCategories = new List<int>();
+
+        if (line.rewardRandom == 0)
+        {
+            // 모든 카테고리 선택
+            selectedCategories.AddRange(line.rewardCategories);
+        }
+        else
+        {
+            // 랜덤으로 rewardRandom개 선택
+            List<int> pool = new List<int>(line.rewardCategories);
+            for (int i = 0; i < line.rewardRandom && pool.Count > 0; i++)
+            {
+                int idx = Random.Range(0, pool.Count);
+                selectedCategories.Add(pool[idx]);
+                pool.RemoveAt(idx);
+            }
+        }
+
+        // 실제 보상 지급
+        for (int i = 0; i < line.rewardCategories.Length; i++)
+        {
+            int category = line.rewardCategories[i];
+            int count = line.rewardCounts[i];
+
+            if (selectedCategories.Contains(category))
+            {
+                if (category >= 0 && category < npc.npcRewards.Length)
+                {
+                    GameObject rewardPrefab = npc.npcRewards[category];
+                    for (int j = 0; j < count; j++)
+                    {
+                        GameObject.Instantiate(rewardPrefab, npc.transform.position + Vector3.up, Quaternion.identity);
+                    }
+                }
+            }
+        }
     }
 }

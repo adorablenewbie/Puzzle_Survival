@@ -24,15 +24,14 @@ public class Resource : MonoBehaviour
     {
         //gameObject.SetActive(false);
     }
-    //private void Update()
-    //{
-    //    PositionChecki();
-    //    if(transform.position.y <= -5f)
-    //    {
-    //        Destroy(gameObject);
-    //        OnDepleted?.Invoke(this);
-    //    }
-    //}
+    private void Update()
+    {
+        if (transform.position.y <= -5f)
+        {
+            Destroy(gameObject);
+            OnDepleted?.Invoke(this);
+        }
+    }
 
     //방법을 다시 고민 해 봐야 할 듯
     //private void PositionChecki()
@@ -53,9 +52,9 @@ public class Resource : MonoBehaviour
     //            rb.MovePosition(pos);
     //            raycastHit = false;
     //        }
-            
+
     //    }
-       
+
     //}
     public void Gather(Vector3 hitPoint, Vector3 hitNormal)
     {
