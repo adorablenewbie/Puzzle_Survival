@@ -31,4 +31,21 @@ public class UIProduction : MonoBehaviour
     {
         gameObject.SetActive(false);
     }
+
+    public void OnProductionSoupButton()
+    {
+
+    }
+    public void OnProductionPotionButton()
+    {
+
+    }
+    public void OnProductionAxeButton()
+    {
+
+    }
+    public void OnProductionSwordButton()
+    {
+
+    }
 }
