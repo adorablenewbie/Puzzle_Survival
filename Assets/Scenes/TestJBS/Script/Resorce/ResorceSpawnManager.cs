@@ -1,40 +1,44 @@
+
+// 리스트가 있다, (배열)
+// 리스트의 길이를 50을 해놓고
+// 생성을 하고 리스트에 에드
+// 리스트의 길이 -> 지금 들어가 있는 오브젝트의 개수 -> 지금 생성되어 있는 오브젝트의 개수
+// 50개 까지만 생성을 하고 -> Add 해준다.
+// 
+
+// 플레이어가 오브젝트를 채집하면 디스트로이 하고 리스트에서 리무브
+// 현재 길이 49 -> 50개가 되어야 한다. 리스트 카운트가 50이 안되면 
+// 디스트로이를 하고 길이를 확인하고 애드
+// 델리게이트러 디스트로이가 될 때 매니저에 있는 카운트를 낮춰주는 매서드를
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class ResorceSpawnManager : MonoBehaviour
 {
     [Header("Respawn Settings")]
-    public List<GameObject> HarvestablePrefab;
+    public List<GameObject> harvestablePrefab;
     public float respawnDelay; // 리스폰 딜레이 시간.
-    public Vector3 spawnAreaMin;
-    public Vector3 spawnAreaMax;
+    // 스폰 포인트를 지정할 수 있는 리스트
+    public List<GameObject> spawnPoint;
 
 
     //private string[] tagCheck { get; set; } = { "Ground", "Rock", "Stone" };
 
     [Header("아이템 넣을께")]
-    public int curItemCount;
     public int maxItemCount;
     public int minItemCount = 5;
 
-    // 리스트가 있다, (배열)
-    // 리스트의 길이를 50을 해놓고
-    // 생성을 하고 리스트에 에드
-    // 리스트의 길이 -> 지금 들어가 있는 오브젝트의 개수 -> 지금 생성되어 있는 오브젝트의 개수
-    // 50개 까지만 생성을 하고 -> Add 해준다.
-    // 
+    private readonly HashSet<Resource> alive = new();
 
-    // 플레이어가 오브젝트를 채집하면 디스트로이 하고 리스트에서 리무브
-    // 현재 길이 49 -> 50개가 되어야 한다. 리스트 카운트가 50이 안되면 
-    // 디스트로이를 하고 길이를 확인하고 애드
-    // 델리게이트러 디스트로이가 될 때 매니저에 있는 카운트를 낮춰주는 매서드를
-    //
 
     private void Start()
     {
         StartCoroutine(RespawnCoroutine());
+        SpawnOne();
+        
     }
 
     private void Update()
@@ -42,14 +46,9 @@ public class ResorceSpawnManager : MonoBehaviour
         // Debuging 용
         if (Input.GetKeyDown(KeyCode.R))
         {
-            RequestRespawn(respawnDelay);
+            StartCoroutine(RespawnCoroutine());
+            Debug.Log(alive.Count);
         }
-    }
-
-    // 디버깅용
-    public void RequestRespawn(float delay)
-    {
-        StartCoroutine(RespawnCoroutine());
     }
 
     private IEnumerator RespawnCoroutine()
@@ -58,34 +57,70 @@ public class ResorceSpawnManager : MonoBehaviour
         {
             yield return new WaitForSeconds(respawnDelay);
 
-            if(curItemCount < maxItemCount)
+            if(alive.Count < maxItemCount)
             {
-                SpawnRandomPrefab();
-                curItemCount++;
+               SpawnOne();
             }
         }
 
     }
-    // 랜덤으로 위치를 잡아주는 함수
-    private Vector3 GetRandomSpawnPosition()
+    // 오브젝트를 하나 생성하는 함수
+    private void SpawnOne()
     {
-        float x = UnityEngine.Random.Range(spawnAreaMin.x, spawnAreaMax.x);
-        float z = UnityEngine.Random.Range(spawnAreaMin.z, spawnAreaMax.z);
-        return new Vector3(x,0f, z);
+        if (harvestablePrefab.Count == 0) 
+            return;
+
+        int randomIndex = UnityEngine.Random.Range(0, harvestablePrefab.Count);
+        var prefrab = harvestablePrefab[randomIndex];
+
+        Vector3 pos = GetRandomSpawnPosition();
+        var go = Instantiate(prefrab, pos, Quaternion.identity);
+        
+        Resource resource = go.GetComponent<Resource>();
+        if(resource != null)
+        {
+            alive.Add(resource);
+            resource.OnDepleted += HandleResourceDepleted;
+        }
+
     }
 
-    // 리스트에 담은 프리펩을 랜덤으로 생성하는 함수~
-    public void SpawnRandomPrefab()
+    // 랜덤으로 리스트에 있는 오브젝트의 기준으로 위치를 잡아주는 함수
+    private Vector3 GetRandomSpawnPosition()
     {
-        if (HarvestablePrefab == null || HarvestablePrefab.Count == 0)
+        int random = UnityEngine.Random.Range(0, spawnPoint.Count);
+        Collider spawnPosition = spawnPoint[random].GetComponent<Collider>();
+
+        if (spawnPosition == null)
         {
-            Debug.Log("아이템 프리펩을 매니저 에다 넣어야지 뭐해");
-            return;
+            Debug.Log("야 없어");
+            return Vector3.zero;
         }
-        int randomIndex = UnityEngine.Random.Range(0, HarvestablePrefab.Count);
-        GameObject prefabToSpawn = Instantiate (HarvestablePrefab[randomIndex], GetRandomSpawnPosition(), Quaternion.identity);
 
+        Bounds bounds = spawnPosition.bounds;
+        float x = UnityEngine.Random.Range(bounds.min.x, bounds.max.x);
+        float z = UnityEngine.Random.Range(bounds.min.z, bounds.max.z);
+        return new Vector3(x, 1f, z);
+    }
 
+    private void HandleResourceDepleted(Resource resource)
+    {
+        if(resource == null) return;
+        alive.Remove(resource);
+        resource.OnDepleted -= HandleResourceDepleted;
+
+        StartCoroutine(RespawnAfterDelay());
+    }
+
+    private IEnumerator RespawnAfterDelay()
+    {
+        yield return new WaitForSeconds(respawnDelay);
+
+        int need =  maxItemCount - alive.Count;
+        for (int i = 0; i < need; i++)
+        {
+            SpawnOne();
+        }
     }
 
     //private void OnCollisionEnter(Collision collision)

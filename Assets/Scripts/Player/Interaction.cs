@@ -71,10 +71,16 @@ public class Interaction : MonoBehaviour
         {
             if (dialogueManager.isDialogue)
             {
-                if (dialogueManager.isChoice)
+                if (dialogueManager.isTyping) //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~``수정하자
                 {
-                    // 선택지 대화 중이라면 선택지 버튼을 클릭한 것으로 간주
-                    
+                    if (dialogueManager.typingCoroutine != null)
+                    {
+                        StopCoroutine(dialogueManager.typingCoroutine);
+                        dialogueManager.typingCoroutine = null;
+                    }
+                    dialogueManager.isTyping = false;
+                    dialogueManager.dialogueText.text = dialogueManager.fullText; // 현재 대사 전체 표시
+                    return;
                 }
                 if (dialogueManager.isLastLine)
                 {
@@ -82,6 +88,7 @@ public class Interaction : MonoBehaviour
                     dialogueManager.isLastLine = false;
                     dialogueManager.isDialogue = false;
                     dialogueManager.npcCameara.gameObject.SetActive(false); // NPC 대화용 카메라 비활성화
+                    dialogueManager.npcAnimator.SetInteger("actionValue", 0); // NPC 애니메이터 대화 상태 해제
                     return;
                 }
                 dialogueManager.ShowNextLine();

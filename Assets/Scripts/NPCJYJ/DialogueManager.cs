@@ -3,27 +3,35 @@ using UnityEngine;
 using TMPro;                       
 using UnityEngine.UI;
 using System.Collections;
+using UnityEngine.EventSystems;
 
 public class DialogueManager : MonoBehaviour
 {
     public TextAsset csvFile;          // Unity에 연결할 CSV 파일
-    public TextAsset currCsv;
+    private TextAsset currCsv;
     public TMP_Text dialogueText;      // 대사 출력할 UI 텍스트
+    public string fullText;          // 전체 대사 텍스트 (타이핑 효과용)
     public TMP_Text nameText;          // NPC 이름 출력할 UI 텍스트
     public Transform choiceContainer;  // 선택지 버튼들을 담을 부모 오브젝트
     public Button choiceButtonPrefab;  // 선택지 버튼 프리팹
+
+    public EventSystem eventSystem; // 이벤트 시스템 (선택지 버튼 클릭 시 사용)
 
     public Camera npcCameara; // NPC 대화용 카메라
 
     public bool isDialogue = false;        // 현재 대화 중인지 여부
     public bool isLastLine = false;         // 현재 대화의 마지막 라인인지 여부
-    public bool isChoice = false;          // 현재 선택지 대화인지 여부
+    public bool isTyping = false; // 현재 타이핑 중인지 여부
+    public Coroutine typingCoroutine; // 타이핑 코루틴 참조 (중단 시 사용)
 
     private List<DialogueLine> dialogueData = new List<DialogueLine>(); // CSV에서 읽은 전체 대화 데이터 저장
     public int currentBranch = 1;     // 현재 분기 번호
     public int currentIndex = 1;      // 현재 인덱스 번호 (한 대화 묶음 내 순서)
+    private bool isEqualBranchIndex = false; // 현재 분기와 인덱스가 같은지 여부
     private List<DialogueLine> currentLines = new List<DialogueLine>();
     private int currentLineIndex = 0;
+
+    public Animator npcAnimator; // NPC 애니메이터 (필요시 사용)
 
     void Start()
     {
@@ -77,7 +85,7 @@ public class DialogueManager : MonoBehaviour
                 questNextBranches = string.IsNullOrWhiteSpace(cols[9]) ? null : System.Array.ConvertAll(cols[9].Split('/'), int.Parse), // 퀘스트 완료 후 다음 분기
                 questIndex = SafeParseInt(cols.Length > 10 ? cols[10] : "0"),          // 퀘스트 완료 후 이동 가능 인덱스
                 shake = cols[11] == "1",                                        // 화면 진동 여부
-                animation = cols[12] == "1",                                    // 애니메이션 실행 여부
+                animation = SafeParseInt(cols[12]),                                    // 애니메이션 실행 여부
                 zoom = cols[13] == "1",                                         // 카메라 확대 여부
                 typingSpeed = float.Parse(cols[14]),                            // 타이핑 속도
                 fontSize = fontSize,                                           // 폰트 크기
@@ -116,9 +124,15 @@ public class DialogueManager : MonoBehaviour
         {
             DialogueLine line = currentLines[currentLineIndex];
             nameText.text = line.npcName;
-            dialogueText.text = line.text;
+            fullText = line.text;
             dialogueText.fontSize = line.fontSize;
             dialogueText.color = line.fontColor;
+            if(line.shake)
+            {
+                StartCoroutine(ScreenShake()); // 화면 진동 효과
+            }
+            npcAnimator.SetInteger("actionValue", line.animation); // 애니메이션 상태 설정
+            typingCoroutine = StartCoroutine(ShowText(line.typingSpeed)); // 타이핑 효과로 대사 출력
 
             // 선택지가 있다면 버튼 생성
             foreach (Transform child in choiceContainer)
@@ -127,21 +141,22 @@ public class DialogueManager : MonoBehaviour
             }
             if (line.actions != null && line.actions.Length > 0)
             {
-                isChoice = true; // 선택지 대화임을 표시
                 for (int i = 0; i < line.actions.Length; i++)
                 {
                     int nextBranch = line.nextBranches[i];
+                    int nextIndex = line.nextIndex[i];
                     Button btn = Instantiate(choiceButtonPrefab, choiceContainer);
+                    if (i == 0) eventSystem.SetSelectedGameObject(btn.gameObject); // 첫 번째 버튼 선택
+                    btn.interactable = true; // 버튼 활성화
                     btn.GetComponentInChildren<TMP_Text>().text = line.actions[i];
-                    btn.onClick.AddListener(() => OnChoiceSelected(nextBranch));
+                    btn.onClick.AddListener(() => OnChoiceSelected(nextBranch, nextIndex));
                 }
             }
-            Debug.Log($"Showing dialogue: Branch {line.branch}, Index {line.index}, Text: {line.text}");
             currentLineIndex++;
         }
         if (currentLineIndex == currentLines.Count)
         {
-            isLastLine = true;
+            if(currentLines[currentLineIndex-1].actions == null) isLastLine = true;
             if (currentLines[currentLines.Count-1].indextransition == 1)
             {
                 currentIndex++; // 인덱스 전환이 필요하면 다음 인덱스로 이동
@@ -150,10 +165,50 @@ public class DialogueManager : MonoBehaviour
         // 모든 대사 출력 후 추가 처리 필요시 여기에 작성
     }
 
-    public void OnChoiceSelected(int nextBranch)
+    public void OnChoiceSelected(int nextBranch, int nextIndex)
     {
+        if (currentBranch == nextBranch && currentIndex == nextIndex) 
+        {
+            // 현재 분기와 인덱스가 같으면 대화 종료 즉, 더 생각한다는 선택지
+            gameObject.SetActive(false);
+            isLastLine = false;
+            isDialogue = false;
+            npcCameara.gameObject.SetActive(false); // NPC 대화용 카메라 비활성화
+            npcAnimator.SetInteger("actionValue", 0); // 애니메이션 초기화
+            return;
+        }
         currentBranch = nextBranch;  // 다음 분기로 변경
-        currentIndex = 1;            // 새로운 분기 시작 시 인덱스 초기화
+        currentIndex = nextIndex;            // 새로운 분기 시작 시 인덱스 초기화
         ShowDialogue(currentBranch, currentIndex); // 새로운 분기 대사 출력
+    }
+
+    IEnumerator ScreenShake()
+    {
+        Vector3 originalPosition = npcCameara.transform.position; // 원래 위치 저장
+        float shakeDuration = 0.5f; // 진동 지속 시간
+        float shakeMagnitude = 0.1f; // 진동 강도
+        float elapsed = 0f;
+        while (elapsed < shakeDuration)
+        {
+            float x = Random.Range(-1f, 1f) * shakeMagnitude;
+            float y = Random.Range(-1f, 1f) * shakeMagnitude;
+            npcCameara.transform.position = new Vector3(originalPosition.x + x, originalPosition.y + y, originalPosition.z);
+            elapsed += Time.deltaTime;
+            yield return null; // 다음 프레임까지 대기
+        }
+        npcCameara.transform.position = originalPosition; // 원래 위치로 복원
+
+    }
+
+    IEnumerator ShowText(float typingSpeed)
+    {
+        isTyping = true; // 타이핑 시작
+        dialogueText.text = ""; // 처음엔 빈 문자열
+        foreach (char c in fullText)
+        {
+            dialogueText.text += c;  // 한 글자씩 추가
+            yield return new WaitForSeconds(0.02f/typingSpeed); // 출력 속도 조절
+        }
+        isTyping = false; // 타이핑 완료
     }
 }

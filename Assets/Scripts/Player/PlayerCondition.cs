@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using System;
 
@@ -56,7 +54,7 @@ public class PlayerCondition : MonoBehaviour, IDamagable
 
     public void Die()
     {
-        Debug.Log("ав╬З╢ы.");
+        //Debug.Log("ав╬З╢ы.");
     }
     public void TakePhysicalDamage(int damageAmount)
     {

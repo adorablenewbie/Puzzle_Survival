@@ -15,7 +15,7 @@ public class DialogueLine
     public int[] questNextBranches; // 퀘스트 완료 후 다음 분기 이동
     public int questIndex;      // 퀘스트 완료 후 이동 가능 인덱스
     public bool shake;         // 화면 진동
-    public bool animation;     // 애니메이션 실행 여부
+    public int animation;     // 애니메이션 
     public bool zoom;          // 카메라 확대
     public float typingSpeed;  // 타이핑 속도
     public int fontSize;       // 폰트 크기
