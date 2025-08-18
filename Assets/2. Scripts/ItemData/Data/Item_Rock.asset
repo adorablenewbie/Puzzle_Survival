@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   displayName: "\uB3CC"
   description: "\uC601\uC591\uB9CC\uC810 \uB3CC\uC774\uB2E4. \uB3CC"
-  type: 0
+  type: 2
   icon: {fileID: 21300000, guid: 84923fb900edf5b41b616678932efd67, type: 3}
   dropPrefab: {fileID: 5123580909229770709, guid: 714b8f50c4a9a8748ab170b54493f39a, type: 3}
   canStack: 1

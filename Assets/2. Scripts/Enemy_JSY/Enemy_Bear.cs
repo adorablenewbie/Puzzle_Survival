@@ -6,16 +6,24 @@ public enum AIState
 {
     Idle, 
     Wandering, // 돌아다니는 상태
-    Attacking  // 공격상태 
+    Attacking,  // 공격 상태 
+    Fear, // 두려움 상태 
+    Dead
 }
 
 public class Enemy_Bear : MonoBehaviour, IDamagable
 {
+    [Header("초기화 변수들")]
+    private Animator animator;
+    public float sphereColliderSize;
+
     [Header("몬스터 스탯")]
     public int health;
     public float walkSpeed;
     public float runSpeed;
     public ItemData[] dropOnDeath;
+    private bool isDead = false;
+    private bool isFireDetected = false;
 
     [Header("AI 네비게이션에 필요한 정보들")]
     private NavMeshAgent agent;
@@ -37,7 +45,6 @@ public class Enemy_Bear : MonoBehaviour, IDamagable
     public float fieldOfView = 120f; // 시야 각도 
 
     [Header("참조 변수들")]
-    private Animator animator;
     private SkinnedMeshRenderer[] meshRenderers;
     private PlayerManager playerManager;
     private Player player;
@@ -60,21 +67,48 @@ public class Enemy_Bear : MonoBehaviour, IDamagable
 
     private void Update()
     {
-        // 플레이어와의 거리를 계속 체크 => 거리에 따라 몬스터의 상태가 바뀌므로 
-        playerDistance = Vector3.Distance(transform.position, player.transform.position);
+        //float minDistance = 0f;
+        //Vector3 firePosition = Vector3.zero;
 
-        // Idle 상태가 아니면 움직이는 애니메이션 적용 
-        animator.SetBool(Constant.AnimationParameter.Moving, aiState != AIState.Idle);
+        //// 불이 있는지 체크 
+        //Collider[] colls = Physics.OverlapSphere(transform.position, sphereColliderSize, 1 << 13);
+        //if(colls != null)
+        //{
+        //    isFireDetected = true;
+        //    for(int i = 0; i < colls.Length; i++)
+        //    {
+        //        float playerToDistance = Mathf.Abs(Vector3.Distance(colls[i].transform.position, transform.position));
+        //        if(playerToDistance < minDistance)
+        //        {
+        //            minDistance = playerToDistance;
+        //            firePosition = colls[i].transform.position;
+        //        }
+        //    }
 
-        switch (aiState)
+        //    Vector3 dir = transform.position;
+        //    dir.z *= -1;
+        //    dir.z += 5;
+        //    agent.SetDestination(dir);
+        //}
+
+        if (!isFireDetected)
         {
-            case AIState.Idle:
-            case AIState.Wandering:
-                PassiveUpdate();
-                break;
-            case AIState.Attacking:
-                AttackingUpdate();
-                break;
+            // 플레이어와의 거리를 계속 체크 => 거리에 따라 몬스터의 상태가 바뀌므로 
+            playerDistance = Vector3.Distance(transform.position, player.transform.position);
+
+            // Idle 상태가 아니면 움직이는 애니메이션 적용 
+            animator.SetBool(Constant.AnimationParameter.Moving, aiState != AIState.Idle);
+
+            switch (aiState)
+            {
+                case AIState.Idle:
+                case AIState.Wandering:
+                    PassiveUpdate();
+                    break;
+                case AIState.Attacking:
+                    AttackingUpdate();
+                    break;
+            }
         }
     }
 
@@ -152,6 +186,9 @@ public class Enemy_Bear : MonoBehaviour, IDamagable
         NavMesh.SamplePosition(transform.position + (Random.onUnitSphere * Random.Range(minWanderDistance, maxWanderDistance)), out hit, maxWanderDistance, NavMesh.AllAreas);
 
         // hit에 최단거리 경로가 저장됨
+
+        // 감지한 오브젝트가 불이면 
+        
 
         int i = 0; 
         // 감지거리(detectDistance)보다 더 안쪽으로 최단거리 경로가 잡혔으면 
@@ -260,13 +297,28 @@ public class Enemy_Bear : MonoBehaviour, IDamagable
 
     private void Die()
     {
+        SetState(AIState.Dead);
+
+        agent.isStopped = true;
+        //agent.enabled = false;
+        //agent.SetDestination(transform.position);
+
+        // 죽는 애니메이션 
+        if (!isDead)
+        {
+            Debug.Log("죽는 애니메이션 실행");
+            animator.SetBool(Constant.AnimationParameter.Dead, true);
+            isDead = true;
+        }
+
+        // 아이템 드랍 
         for(int i = 0; i < dropOnDeath.Length; i++)
         {
             // 몬스터 위치에서 2정도 위로 아이템을 드랍 
             Instantiate(dropOnDeath[i].dropPrefab, transform.position + Vector3.up * 2, Quaternion.identity);
         }
 
-        Destroy(this.gameObject);
+        Destroy(this.gameObject, 3.0f);
     }
 
     private IEnumerator DamageFlash()
