@@ -5,6 +5,10 @@ using UnityEngine;
 public class UIProduction : MonoBehaviour
 {
     public ItemSlot[] itemslots;
+    public GameObject ProductionSoupButton;
+    public GameObject ProductionPotionButton;
+    public GameObject ProductionAxeButton;
+    public GameObject ProductionSwordButton;
 
     // Start is called before the first frame update
     void Start()
