@@ -12,6 +12,7 @@ public enum ConsumableType
 {
     Hunger,
     Health,
+    Thirst,
 }
 public enum HarvestableType
 {
