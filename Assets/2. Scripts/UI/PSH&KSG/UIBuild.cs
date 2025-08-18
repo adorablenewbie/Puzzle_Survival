@@ -50,7 +50,7 @@ public class UIBuild : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(isPreviewActive);
+        //Debug.Log(isPreviewActive);
 
         if (isPreviewActive)
         {
