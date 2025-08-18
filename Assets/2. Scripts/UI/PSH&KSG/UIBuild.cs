@@ -11,8 +11,8 @@ public class UIBuild : MonoBehaviour
     [SerializeField] private Button CampFireButton; 
 
     [SerializeField] private Build[] builds;   // 건축 - 목록
-    private GameObject previewPrefab;          // 건축 - 건축 전 프리뷰 프리펩
-    private GameObject installPrefab;          // 건축 - 실제로 생성될 프리펩
+    [SerializeField]private GameObject previewPrefab;          // 건축 - 건축 전 프리뷰 프리펩
+    [SerializeField] private GameObject installPrefab;          // 건축 - 실제로 생성될 프리펩
 
     [SerializeField] private Image buildPanel;
     [SerializeField] private Transform player;  // 플레이어의 트랜스폼
@@ -40,7 +40,7 @@ public class UIBuild : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(isPreviewActive);
+        //Debug.Log(isPreviewActive);
 
         if (isPreviewActive)
         {
