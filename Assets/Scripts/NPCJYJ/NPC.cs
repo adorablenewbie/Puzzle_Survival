@@ -9,7 +9,11 @@ public class NPC : MonoBehaviour, IInteractable
     public string npcName; // NPC 이름
     public string npcDescription; // NPC 설명
     public Camera npcCamera; // NPC 대화용 카메라
+    public Vector3 npcCameraOriginPosition; // NPC 대화용 카메라 위치
+    public Vector3 npcCameraZoomPosition; // NPC 대화용 카메라 확대 위치
     public Animator npcAnimator; // NPC 애니메이터 (필요시 사용)
+    public GameObject[] npcRewards; // NPC 보상 오브젝트 (필요시 사용)
+
 
     private DialogueManager dialogueManager; // DialogueManager 참조
 
@@ -27,12 +31,16 @@ public class NPC : MonoBehaviour, IInteractable
 
     public void OnInteract()
     {
+        
         dialogueManager.gameObject.SetActive(true); // 대화 UI 활성화
         dialogueManager.csvFile = csvDialogueFile; // DialogueManager에 CSV 파일 설정Z
         dialogueManager.LoadCSV(); // CSV 파일 로드
         npcCamera.gameObject.SetActive(true); // NPC 대화용 카메라 활성화
-        dialogueManager.npcCameara = npcCamera; // NPC 대화용 카메라 설정
+        dialogueManager.npcCamera = npcCamera; // NPC 대화용 카메라 설정
         dialogueManager.npcAnimator = npcAnimator; // NPC 애니메이터 설정
+        dialogueManager.npcCameraOriginPosition = npcCameraOriginPosition; // NPC 카메라 원래 위치 설정
+        dialogueManager.npcCameraZoomPosition = npcCameraZoomPosition; // NPC 카메라 확대 위치 설정
+
     }
 
 }
