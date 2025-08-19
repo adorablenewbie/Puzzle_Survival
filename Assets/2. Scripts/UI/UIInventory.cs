@@ -256,10 +256,10 @@ public class UIInventory : MonoBehaviour
         UpdateUI();
     }
 
-    public bool HasItem(ItemData item, int quantity)
+    /*public bool HasItem(ItemData item, int quantity)
     {
         return false;
-    }
+    }*/
 
     public void OnEquipButton()
     {
@@ -292,4 +292,40 @@ public class UIInventory : MonoBehaviour
     {
         UnEquip(selectedItemIndex);
     }
+
+    public int GetItemCount(ItemData item)
+    {
+        int sum = 0;
+        foreach (var s in slots)
+            if (s.item == item) sum += s.quantity;
+        return sum;
+    }
+
+    public bool RemoveItems(ItemData item, int count)
+    {
+        int need = count;
+        for (int i = 0; i < slots.Length && need > 0; i++)
+        {
+            var s = slots[i];
+            if (s.item != item) continue;
+
+            int take = Mathf.Min(s.quantity, need);
+            s.quantity -= take;
+            need -= take;
+
+            if (s.quantity <= 0)
+            {
+                s.item = null;
+                s.equipped = false;
+            }
+        }
+        UpdateUI();
+        return need == 0;
+    }
+
+    public bool HasItem(ItemData item, int quantity)
+    {
+        return GetItemCount(item) >= quantity;
+    }
+
 }

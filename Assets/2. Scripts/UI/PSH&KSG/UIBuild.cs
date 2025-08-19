@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -11,20 +12,26 @@ public class UIBuild : MonoBehaviour
     [SerializeField] private Button CampFireButton; 
 
     [SerializeField] private Build[] builds;   // 건축 - 목록
-    [SerializeField]private GameObject previewPrefab;          // 건축 - 건축 전 프리뷰 프리펩
+    [SerializeField] private GameObject previewPrefab;          // 건축 - 건축 전 프리뷰 프리펩
     [SerializeField] private GameObject installPrefab;          // 건축 - 실제로 생성될 프리펩
 
     [SerializeField] private Image buildPanel;
     [SerializeField] private Transform player;  // 플레이어의 트랜스폼
 
-    private RaycastHit hitInfo;   // 레이캐스트 히트 정보를 담을 변수
+    private RaycastHit hitInfo;                    // 레이캐스트 히트 정보를 담을 변수
     [SerializeField] private LayerMask layerMask;  // 
     [SerializeField] private float range;
+    private int curItemSlotIdx;
 
-    public ItemSlot[] itemslots;
+    // 마우스 휠로 회전 조정
+    [SerializeField] private float rotateSpeed = 10f;
+    private float currentRotationY = 0;
+
+    public UIInventory inventory;
 
     public event Action PreviewStart;
     public event Action PreviewEnd;
+    public event Action WaringEvent;
 
     private void Awake()
     {
@@ -35,6 +42,7 @@ public class UIBuild : MonoBehaviour
     void Start()
     {
         buildPanel.gameObject.SetActive(false);
+        if(inventory == null) inventory = FindObjectOfType<UIInventory>();
     }
 
     // Update is called once per frame
@@ -45,6 +53,7 @@ public class UIBuild : MonoBehaviour
         if (isPreviewActive)
         {
             PreviewPositionUpdate();
+            PreviewRotationInput();
         }
 
         if (Input.GetMouseButtonDown(0))
@@ -57,6 +66,7 @@ public class UIBuild : MonoBehaviour
             Cancel();
         }
     }
+
 
     public void OpenBuildList()
     {
@@ -80,8 +90,26 @@ public class UIBuild : MonoBehaviour
         }
     }
 
+
+    private void PreviewRotationInput()
+    {
+        float scroll = Input.mouseScrollDelta.y;
+        if (MathF.Abs(scroll) > 0.01f)
+        {
+            currentRotationY += scroll * rotateSpeed;
+            previewPrefab.transform.rotation = Quaternion.Euler(0, currentRotationY, 0);
+        }
+    }
+
+
     public void StartPreview(int slotNumber)
     {
+        if (!CheckHasItem(builds[slotNumber], inventory.slots))
+        {
+            WaringEvent?.Invoke();
+            curItemSlotIdx = slotNumber;
+            return;
+        }
         previewPrefab = Instantiate(builds[slotNumber].previewPrefab, player.position + player.forward, Quaternion.identity);
         installPrefab = builds[slotNumber].installPrefab;
         isPreviewActive = true;
@@ -104,7 +132,9 @@ public class UIBuild : MonoBehaviour
     {
         if (isPreviewActive && previewPrefab.GetComponent<PreviewObject>().IsBuildable())
         {
-            Instantiate(installPrefab, hitInfo.point, Quaternion.identity);
+            UseItemBuild(builds[curItemSlotIdx], inventory.slots);
+            //Instantiate(installPrefab, hitInfo.point, previewPrefab.transform.rotation);
+            Instantiate(installPrefab, previewPrefab.transform.position, previewPrefab.transform.rotation);
             Destroy(previewPrefab);
             isPreviewActive = false;
             previewPrefab = null;
@@ -112,7 +142,45 @@ public class UIBuild : MonoBehaviour
             PreviewEnd?.Invoke();
             CloseBuildList();
         }
+    }
 
+    private bool CheckHasItem(Build data, ItemSlot[] inventorySlots)
+    {
+        bool isEnough = false;
+
+        foreach(BuildRequirement require in data.requirements)
+        {
+            ItemSlot slot = FindItemSlot(inventorySlots, require.item);
+            if (slot == null || slot.quantity < require.amount)
+                isEnough = false;
+            else
+                isEnough = true;
+        }
+
+        return isEnough;
+    }
+
+    private ItemSlot FindItemSlot(ItemSlot[] inventory, ItemData targetItem)
+    {
+        for (int i = 0; i < inventory.Length; i++)
+        {
+            if (inventory[i] != null && inventory[i].item == targetItem)
+            {
+                return inventory[i];
+            }
+        }
+        return null;
+    }
+
+    private void UseItemBuild(Build data, ItemSlot[] inventorySlots)
+    {
+        foreach (BuildRequirement require in data.requirements)
+        {
+            ItemSlot slot = FindItemSlot(inventorySlots, require.item);
+            slot.quantity -= require.amount;
+            inventory.UpdateUI();
+            Debug.Log(slot.quantity);
+        }
     }
 
 }

@@ -7,7 +7,21 @@ public interface IDamagable
     void TakePhysicalDamage(int damageAmount);
 }
 
-public class PlayerCondition : MonoBehaviour, IDamagable
+public interface IPlayerCondition
+{
+    event Action onTakeDamage;
+    event Action onDie;
+
+    void Die();
+    void Eat(global::System.Single amount);
+    void Heal(global::System.Single amount);
+    IEnumerator HealBuff(global::System.Single amount, global::System.Single duration);
+    void juapWater(global::System.Single amount);
+    void TakePhysicalDamage(global::System.Int32 damageAmount);
+    global::System.Boolean UseStamina(global::System.Single amount);
+}
+
+public class PlayerCondition : MonoBehaviour, IDamagable, IPlayerCondition
 {
     public UICondition uiCondition;
 
@@ -50,7 +64,7 @@ public class PlayerCondition : MonoBehaviour, IDamagable
     public void Eat(float amount)
     {
         hunger.Add(amount);
-        thirst.Add(amount /2f);
+        thirst.Add(amount / 2f);
     }
     public void juapWater(float amount)
     {
@@ -72,7 +86,7 @@ public class PlayerCondition : MonoBehaviour, IDamagable
         color.a += Time.deltaTime;
         uiCondition.diePanelImage.color = color;
         Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true; 
+        Cursor.visible = true;
         playerController.canLook = false;
         playerController.moveSpeed = 0f;
         playerController.jumpPower = 0f;
@@ -81,7 +95,7 @@ public class PlayerCondition : MonoBehaviour, IDamagable
     }
     private IEnumerator DieDelate(float delay)
     {
-        Debug.Log("Á×¾î Á¦¹ß Á×¾î¼­ °¡¸¸È÷ ÀÖ¾î");
+        Debug.Log("ï¿½×¾ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½×¾î¼­ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¾ï¿½");
         Die();
         yield return new WaitForSeconds(delay);
         SceneFlowManager.Instance.SceneChange(SceneFlowManager.SceneType.MainScene);
@@ -94,4 +108,15 @@ public class PlayerCondition : MonoBehaviour, IDamagable
         onTakeDamage?.Invoke();
     }
 
+
+    public IEnumerator HealBuff(float amount, float duration)
+    {
+        float elapsedTime = 0f;
+        while (elapsedTime < duration)
+        {
+            Heal(amount / duration * Time.deltaTime);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+    }
 }

@@ -2,6 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum ENPC
+{
+    Amy,
+    Knight
+}
+
 public class NPC : MonoBehaviour, IInteractable
 {
     [Header("NPC 대화 CSV")]
@@ -13,6 +19,8 @@ public class NPC : MonoBehaviour, IInteractable
     public Vector3 npcCameraZoomPosition; // NPC 대화용 카메라 확대 위치
     public Animator npcAnimator; // NPC 애니메이터 (필요시 사용)
     public GameObject[] npcRewards; // NPC 보상 오브젝트 (필요시 사용)
+    public ENPC npcKey;
+
 
 
     private DialogueManager dialogueManager; // DialogueManager 참조
@@ -31,7 +39,6 @@ public class NPC : MonoBehaviour, IInteractable
 
     public void OnInteract()
     {
-        
         dialogueManager.gameObject.SetActive(true); // 대화 UI 활성화
         dialogueManager.csvFile = csvDialogueFile; // DialogueManager에 CSV 파일 설정Z
         dialogueManager.LoadCSV(); // CSV 파일 로드
@@ -40,7 +47,8 @@ public class NPC : MonoBehaviour, IInteractable
         dialogueManager.npcAnimator = npcAnimator; // NPC 애니메이터 설정
         dialogueManager.npcCameraOriginPosition = npcCameraOriginPosition; // NPC 카메라 원래 위치 설정
         dialogueManager.npcCameraZoomPosition = npcCameraZoomPosition; // NPC 카메라 확대 위치 설정
-
+        dialogueManager.npcDialogueStateKey = npcKey; // NPC 대화 상태 키 설정
+        dialogueManager.npc = this; // NPC 설정                                                           그냥 npc.~~~ 로 다 리팩터링 해버리자
     }
 
 }

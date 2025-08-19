@@ -7,7 +7,8 @@ public enum BuffType
     SpeedUp,
     JumpUp,
     DoubleJump,
-    Invincible
+    Invincible,
+    Heal
 }
 public enum DebuffType
 {

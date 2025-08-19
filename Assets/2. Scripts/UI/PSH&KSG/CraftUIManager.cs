@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
+using UnityEditor.VersionControl;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -27,11 +29,17 @@ public class CraftUIManager : MonoBehaviour
     [SerializeField] private UICraft craft;
     [SerializeField] private UIBuild build;
     [SerializeField] private UIProduction production;
+    [SerializeField] private TextMeshProUGUI notEnoughText;
+
+    Coroutine coroutine;
+    private float duration = 1.0f;
 
     private bool isCraftActive = false;
 
     private void Awake()
     {
+        notEnoughText.gameObject.SetActive(false);
+
         // 버튼 이벤트 구독하기
         craft.OnBuildClick += build.OpenBuildList;
         craft.OnBuildClick += production.CloseProductionList;
@@ -41,6 +49,9 @@ public class CraftUIManager : MonoBehaviour
         build.PreviewStart += PreviewBuildHandle;
         build.PreviewStart += craft.CloseUI;
         build.PreviewEnd += CloseCraftUI;
+
+        build.WaringEvent += ShowWarning;
+        production.WarnigEvent += ShowWarning;
     }
 
     public void CraftUIControl(InputAction.CallbackContext context) // 키 입력을 통해 CraftUI 열고 닫기
@@ -63,11 +74,33 @@ public class CraftUIManager : MonoBehaviour
     {
         isCraftActive = false;
         craft.CloseUI();
+        build.CloseBuildList();
+        production.CloseProductionList();
         Cursor.lockState = CursorLockMode.Locked;
     }
 
     private void PreviewBuildHandle()
     {
         Cursor.lockState = CursorLockMode.None;
+    }
+
+    private void ShowWarning()
+    {
+        if (coroutine != null)
+        {
+            StopCoroutine(coroutine);
+        }
+
+        coroutine = StartCoroutine(ShowWarningRoutine(duration));
+    }
+
+    private IEnumerator ShowWarningRoutine(float duration)
+    {
+        notEnoughText.gameObject.SetActive(true);
+
+        yield return new WaitForSeconds(duration);
+
+        notEnoughText.gameObject.SetActive(false);
+        coroutine = null;
     }
 }
