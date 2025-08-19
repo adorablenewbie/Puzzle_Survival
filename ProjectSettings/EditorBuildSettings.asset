@@ -4,5 +4,11 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/1. Scenes/TestJYJ/MainScene.unity
+    guid: 8c1c57ad776230241b1cc62f40488822
+  - enabled: 1
+    path: Assets/1. Scenes/TestJYJ/PuzzleScene.unity
+    guid: 0ea646126833c5243a2c73dd0a409077
   m_configObjects: {}

@@ -11,6 +11,7 @@ public class DialogueLine
     public string[] actions;
     public int[] nextBranches;
     public int[] nextIndex;
+    public int branchTransition;
     public int indextransition;
     public int quest;
     public int[] questNextBranches;

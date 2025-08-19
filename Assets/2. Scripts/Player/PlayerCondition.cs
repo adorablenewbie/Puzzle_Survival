@@ -1,13 +1,29 @@
-using UnityEngine;
+using DG.Tweening;
 using System;
 using System.Collections;
+using UnityEngine;
+using UnityEngine.UI;
 
 public interface IDamagable
 {
     void TakePhysicalDamage(int damageAmount);
 }
 
-public class PlayerCondition : MonoBehaviour, IDamagable
+public interface IPlayerCondition
+{
+    event Action onTakeDamage;
+    event Action onDie;
+
+    void Die();
+    void Eat(global::System.Single amount);
+    void Heal(global::System.Single amount);
+    IEnumerator HealBuff(global::System.Single amount, global::System.Single duration);
+    void juapWater(global::System.Single amount);
+    void TakePhysicalDamage(global::System.Int32 damageAmount);
+    global::System.Boolean UseStamina(global::System.Single amount);
+}
+
+public class PlayerCondition : MonoBehaviour, IDamagable, IPlayerCondition
 {
     public UICondition uiCondition;
 
@@ -15,9 +31,17 @@ public class PlayerCondition : MonoBehaviour, IDamagable
     Condition hunger { get { return uiCondition.hunger; } }
     Condition stamina { get { return uiCondition.stamina; } }
     Condition thirst { get { return uiCondition.thirst; } }
+    
 
     public float noHungerHealthDecay;
     public event Action onTakeDamage;
+    public PlayerController playerController;
+    public SceneFlowManager sceneFlowManager;
+
+    private float lastShakeTime = -99f;
+
+    public event Action onDie;
+
 
     private void Update()
     {
@@ -27,12 +51,13 @@ public class PlayerCondition : MonoBehaviour, IDamagable
 
         if (hunger.curValue <= 0f)
         {
-            health.Subtract(noHungerHealthDecay * Time.deltaTime);
+            Damage(noHungerHealthDecay * Time.deltaTime);
         }
+
 
         if (health.curValue <= 0f)
         {
-            Die();
+            StartCoroutine(DieSceneChange(3f));
         }
     }
 
@@ -40,11 +65,22 @@ public class PlayerCondition : MonoBehaviour, IDamagable
     {
         health.Add(amount);
     }
+    public void Damage(float amount)
+    {
+        health.Subtract(amount);
+        DamageEffect();
+    }
 
     public void Eat(float amount)
     {
         hunger.Add(amount);
+        thirst.Add(amount / 2f);
     }
+    public void juapWater(float amount)
+    {
+        thirst.Add(amount);
+    }
+
     public bool UseStamina(float amount)
     {
         if (stamina.curValue - amount < 0)
@@ -55,15 +91,44 @@ public class PlayerCondition : MonoBehaviour, IDamagable
         return true;
     }
 
+    public void DamageEffect()
+    {
+
+        if (Time.time - lastShakeTime >= 1f)
+        {
+            lastShakeTime = Time.time;
+            Camera.main.transform.DOShakePosition(0.3f, 0.15f, 10, 90, false, true);
+            uiCondition.damageImage.DOFade(0.2f,0.3f).SetLoops(2, LoopType.Yoyo);
+        }
+    }
+
     public void Die()
     {
-        //Debug.Log("ав╬З╢ы.");
+        Color color = uiCondition.diePanelImage.color;
+        color.a += Time.deltaTime;
+        uiCondition.diePanelImage.color = color;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        playerController.canLook = false;
+        playerController.moveSpeed = 0f;
+        playerController.jumpPower = 0f;
+        Debug.Log("Player has died.");
     }
+    private IEnumerator DieSceneChange(float delay)
+    {
+        Debug.Log("О©╫в╬О©╫ О©╫О©╫О©╫О©╫ О©╫в╬Н╪╜ О©╫О©╫О©╫О©╫О©╫О©╫ О©╫ж╬О©╫");
+        Die();
+        yield return new WaitForSeconds(delay);
+        SceneFlowManager.Instance.SceneChange(SceneFlowManager.SceneType.MainScene);
+    }
+
+
     public void TakePhysicalDamage(int damageAmount)
     {
         health.Subtract(damageAmount);
         onTakeDamage?.Invoke();
     }
+
 
     public IEnumerator HealBuff(float amount, float duration)
     {

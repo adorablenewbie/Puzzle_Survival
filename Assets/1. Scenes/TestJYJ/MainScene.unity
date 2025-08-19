@@ -2845,6 +2845,10 @@ MonoBehaviour:
   npcCameraOriginPosition: {x: 0, y: 1.3, z: 1.4}
   npcCameraZoomPosition: {x: 0, y: 1.3, z: 0.7}
   npcAnimator: {fileID: 1831371253}
+  npcRewards:
+  - {fileID: 768682519190770808, guid: 84e6bd08389e7d74eac84bea335ce045, type: 3}
+  - {fileID: 5123580909229770709, guid: 714b8f50c4a9a8748ab170b54493f39a, type: 3}
+  npcKey: 0
 --- !u!65 &213130389
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4561,9 +4565,9 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 2043022269}
   - {fileID: 1643820334}
   - {fileID: 106659348}
+  - {fileID: 2043022269}
   m_Father: {fileID: 1744902800}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
@@ -5349,6 +5353,50 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 380845633}
   m_CullTransparentMesh: 1
+--- !u!1 &385662392
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 385662394}
+  - component: {fileID: 385662393}
+  m_Layer: 0
+  m_Name: NPCLoadScene
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &385662393
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 385662392}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67af68c7bc05b7a4fbe3113a92d8144a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &385662394
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 385662392}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &400274234
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6652,7 +6700,6 @@ GameObject:
   - component: {fileID: 558821002}
   - component: {fileID: 558821001}
   - component: {fileID: 558821000}
-  - component: {fileID: 558820999}
   - component: {fileID: 558821006}
   - component: {fileID: 558821005}
   - component: {fileID: 558821007}
@@ -6683,18 +6730,6 @@ Transform:
   - {fileID: 1441071123}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &558820999
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 558820997}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8d83513566369f548974829cbb9a335a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &558821000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6981,6 +7016,7 @@ MonoBehaviour:
     m_Bits: 64
   curInteractGameObject: {fileID: 0}
   promptText: {fileID: 1289982920}
+  npcObject: {fileID: 0}
 --- !u!114 &558821008
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9971,6 +10007,7 @@ MonoBehaviour:
   health: {fileID: 2058513917}
   hunger: {fileID: 1951908421}
   stamina: {fileID: 193931478}
+  thirst: {fileID: 193931478}
 --- !u!114 &909751828
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10452,6 +10489,50 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4024617225401250, guid: c53e680fdc8fae04d91b4ce9e548d2df, type: 3}
   m_PrefabInstance: {fileID: 937572645}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &938158507
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 938158508}
+  - component: {fileID: 938158509}
+  m_Layer: 0
+  m_Name: PlayerManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &938158508
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 938158507}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 59.9629, y: -4.0237427, z: 74.660286}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &938158509
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 938158507}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d83513566369f548974829cbb9a335a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &953253993
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -17872,9 +17953,13 @@ MonoBehaviour:
   isDialogue: 0
   isLastLine: 0
   isTyping: 0
+  dialogueData: []
   currentBranch: 1
   currentIndex: 1
   npcAnimator: {fileID: 0}
+  npcDialogueStateKey: 0
+  npc: {fileID: 0}
+  npcLoadScene: {fileID: 0}
 --- !u!1001 &1749285109
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -21938,3 +22023,5 @@ SceneRoots:
   - {fileID: 133913232}
   - {fileID: 523497053}
   - {fileID: 213130387}
+  - {fileID: 385662394}
+  - {fileID: 938158508}

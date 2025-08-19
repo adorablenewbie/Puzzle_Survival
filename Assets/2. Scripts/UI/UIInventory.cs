@@ -212,6 +212,8 @@ public class UIInventory : MonoBehaviour
                         condition.Heal(selectedItem.item.consumables[i].value); break;
                     case ConsumableType.Hunger:
                         condition.Eat(selectedItem.item.consumables[i].value); break;
+                    case ConsumableType.Thirst:
+                        condition.juapWater(selectedItem.item.consumables[i].value); break;
                 }
             }
             if (selectedItem.item.itemBuff.Length > 0)

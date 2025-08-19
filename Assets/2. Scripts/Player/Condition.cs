@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
+using System.Threading;
 
 public class Condition : MonoBehaviour
 {
@@ -11,6 +13,8 @@ public class Condition : MonoBehaviour
     public float passiveValue;
     public bool isConditionInvincible;
     public Image uiBar;
+
+
 
     private void Start()
     {
@@ -45,6 +49,8 @@ public class Condition : MonoBehaviour
     {
         isConditionInvincible = false;
     }
+    
+    
     public IEnumerator SetConditionInvincibleCoroutine(float duration)
     {
         SetConditionInvincible();
