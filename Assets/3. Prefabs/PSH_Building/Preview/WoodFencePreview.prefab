@@ -75,7 +75,6 @@ GameObject:
   - component: {fileID: 1025681519535179534}
   - component: {fileID: 8735996197453701664}
   - component: {fileID: -6879069368624428067}
-  - component: {fileID: 8975120417783634555}
   m_Layer: 9
   m_Name: WoodFencePreview
   m_TagString: Untagged
@@ -192,23 +191,6 @@ MonoBehaviour:
     m_Bits: 8
   green: {fileID: 2100000, guid: 0942962c00909eb4ca03b6c14da422ab, type: 2}
   red: {fileID: 2100000, guid: 80b0617f1e5378747a63445192cca687, type: 2}
---- !u!114 &8975120417783634555
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1025681519537117646}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 959b0f316a5d029448391239fcf7ee47, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  snapPoints:
-  - {fileID: 9041617419789838358}
-  - {fileID: 2520729507694116656}
-  - {fileID: 8593180640843349660}
-  - {fileID: 1796994890318758441}
 --- !u!1 &4213826433218576696
 GameObject:
   m_ObjectHideFlags: 0

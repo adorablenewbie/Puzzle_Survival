@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 1025681519534048718}
   - component: {fileID: 1025681519535179534}
   - component: {fileID: 8735996197453701664}
-  - component: {fileID: -7629273143547182611}
   m_Layer: 12
   m_Name: WoodFence
   m_TagString: Untagged
@@ -110,23 +109,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2.1999998, y: 1, z: 0.19999999}
   m_Center: {x: -0.000000059604645, y: 0.5, z: 0}
---- !u!114 &-7629273143547182611
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1025681519537117646}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 959b0f316a5d029448391239fcf7ee47, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  snapPoints:
-  - {fileID: 4891268634959433297}
-  - {fileID: 667058605161853849}
-  - {fileID: 6850815495712578277}
-  - {fileID: 5922751429715786989}
 --- !u!1 &2871071121086953299
 GameObject:
   m_ObjectHideFlags: 0

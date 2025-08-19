@@ -22,23 +22,17 @@ public class UIBuild : MonoBehaviour
     [SerializeField] private LayerMask layerMask;  // 
     [SerializeField] private float range;
 
-    [Header("Snap Settings")]
-    [SerializeField] private float snapRadius = 5f;
-    [SerializeField] private float snapEnter = 0.5f;
-    [SerializeField] private float snapExit = 1f;
-    [SerializeField] private LayerMask snapLayer;
-    private bool isSnapped = false;
-    private int currentSnapIndex = 0;
-    private Transform currentSnapPoint;
-
     // 마우스 휠로 회전 조정
     [SerializeField] private float rotateSpeed = 10f;
     private float currentRotationY = 0;
 
-    public ItemSlot[] itemslots;
-
+    public UIInventory inventory;
+    [SerializeField] private ItemData woodItem;
+    [SerializeField] private ItemData grassItem;
+    [SerializeField] private ItemData rockItem;
     public event Action PreviewStart;
     public event Action PreviewEnd;
+    public event Action WaringEvent;
 
     private void Awake()
     {
@@ -49,6 +43,7 @@ public class UIBuild : MonoBehaviour
     void Start()
     {
         buildPanel.gameObject.SetActive(false);
+        if(inventory == null) inventory = FindObjectOfType<UIInventory>();
     }
 
     // Update is called once per frame
@@ -59,7 +54,7 @@ public class UIBuild : MonoBehaviour
         if (isPreviewActive)
         {
             PreviewPositionUpdate();
-            
+            PreviewRotationInput();
         }
 
         if (Input.GetMouseButtonDown(0))
@@ -86,121 +81,16 @@ public class UIBuild : MonoBehaviour
 
     private void PreviewPositionUpdate()
     {
-        Vector3 targetPos = Vector3.zero;
-        Quaternion targetRot = Quaternion.identity;
-
         if (Physics.Raycast(player.position, player.forward, out hitInfo, range, layerMask))
         {
             if (hitInfo.transform != null)
             {
-                //    Vector3 location = hitInfo.point;
-                //    previewPrefab.transform.position = location;
-
-                targetPos = hitInfo.point;
-                targetRot = Quaternion.Euler(0, currentRotationY, 0);
+                Vector3 location = hitInfo.point;
+                previewPrefab.transform.position = location;
             }
-
-            Transform nearestSnap = FindNearestSnapPoint(targetPos, out float snapDist);
-
-            if(!isSnapped)
-            {
-                if(nearestSnap != null && snapDist <= snapEnter)
-                {
-                    isSnapped = true;
-                    currentSnapPoint = nearestSnap;
-                }
-            }
-            else
-            {
-                if(currentSnapPoint == null)
-                {
-                    isSnapped = false;
-                }
-                else
-                {
-                    float curDist = Vector3.Distance(targetPos, currentSnapPoint.position);
-                    if(curDist >= snapExit)
-                    {
-                        isSnapped = false;
-                        currentSnapPoint = null;
-                    }
-                }
-            }
-
-            if(isSnapped && currentSnapPoint != null)
-            {
-                BuildSnapPoints snaps = previewPrefab.GetComponent<BuildSnapPoints>();
-                if(snaps != null && snaps.snapPoints.Length > 0)
-                {
-                    Transform bestLocalSnap = null;
-                    float minDist = Mathf.Infinity;
-
-                    for(int i = 0; i < snaps.snapPoints.Length; i++)
-                    {
-                        float d = Vector3.Distance(currentSnapPoint.position, snaps.snapPoints[i].position);
-                        if(d < minDist)
-                        {
-                            minDist = d;
-                            bestLocalSnap = snaps.snapPoints[i];
-                        }
-                    }
-
-                    if(bestLocalSnap != null)
-                    {
-                        Vector3 offset = previewPrefab.transform.position - bestLocalSnap.position;
-                        previewPrefab.transform.position = currentSnapPoint.position + offset;
-                    }
-                }
-                PreviewRotationInput();
-
-                //previewPrefab.transform.SetPositionAndRotation(currentSnapPoint.position, currentSnapPoint.rotation);
-                previewPrefab.transform.RotateAround(currentSnapPoint.position, Vector3.up, currentRotationY);
-            }
-            else
-            {
-                previewPrefab.transform.SetPositionAndRotation(targetPos, targetRot);
-                PreviewRotationInput();
-            }
-
         }
-        else
-        {
-            previewPrefab.transform.SetPositionAndRotation(targetPos, targetRot);
-            PreviewRotationInput();
-
-            isSnapped = false;
-            currentSnapPoint = null;
-        }
-
-
-
     }
 
-    private Transform FindNearestSnapPoint(Vector3 pos, out float snapDist)
-    {
-        snapDist = float.MaxValue;
-        Transform nearest = null;
-
-        // 주변 건축물 찾기
-        Collider[] cols = Physics.OverlapSphere(pos, snapRadius, snapLayer);
-        for (int i = 0; i < cols.Length; i++)
-        {
-            // 해당 오브젝트 아래 모든 BuildSnapPoint 수집
-            BuildSnapPoints[] snaps = cols[i].GetComponentsInChildren<BuildSnapPoints>(true);
-            if (snaps == null || snaps.Length == 0) continue;
-
-            foreach (BuildSnapPoints sp in snaps)
-            {
-                float d = Vector3.Distance(pos, sp.transform.position);
-                if (d < snapDist)
-                {
-                    snapDist = d;
-                    nearest = sp.transform;
-                }
-            }
-        }
-        return nearest;
-    }
 
     private void PreviewRotationInput()
     {
@@ -215,6 +105,12 @@ public class UIBuild : MonoBehaviour
 
     public void StartPreview(int slotNumber)
     {
+        if (!CheckHasItem(builds[slotNumber], inventory.slots))
+        {
+            Debug.Log(CheckHasItem(builds[slotNumber], inventory.slots));
+            WaringEvent?.Invoke();
+            return;
+        }
         previewPrefab = Instantiate(builds[slotNumber].previewPrefab, player.position + player.forward, Quaternion.identity);
         installPrefab = builds[slotNumber].installPrefab;
         isPreviewActive = true;
@@ -246,7 +142,38 @@ public class UIBuild : MonoBehaviour
             PreviewEnd?.Invoke();
             CloseBuildList();
         }
-
     }
+
+    private bool CheckHasItem(Build data, ItemSlot[] inventorySlots)
+    {
+        foreach(BuildRequirement require in data.requirements)
+        {
+            ItemSlot slot = FindItemSlot(inventorySlots, require.item);
+            if (slot == null || slot.quantity < require.amount)
+                return false;
+        }
+
+        foreach(BuildRequirement require in data.requirements)
+        {
+            ItemSlot slot = FindItemSlot(inventorySlots,require.item);
+            slot.quantity -= require.amount;
+        }
+
+
+        return true;
+    }
+
+    private ItemSlot FindItemSlot(ItemSlot[] inventory, ItemData targetItem)
+    {
+        for (int i = 0; i < inventory.Length; i++)
+        {
+            if (inventory[i] != null && inventory[i].item == targetItem)
+            {
+                return inventory[i];
+            }
+        }
+        return null;
+    }
+
 
 }
