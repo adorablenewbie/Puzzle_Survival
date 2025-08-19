@@ -51,6 +51,7 @@ public class CraftUIManager : MonoBehaviour
         build.PreviewEnd += CloseCraftUI;
 
         build.WaringEvent += ShowWarning;
+        production.WarnigEvent += ShowWarning;
     }
 
     public void CraftUIControl(InputAction.CallbackContext context) // 키 입력을 통해 CraftUI 열고 닫기

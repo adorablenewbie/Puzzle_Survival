@@ -23,6 +23,8 @@ public class UIProduction : MonoBehaviour
     public ItemData grassItem;
     public ItemData rockItem;
 
+    public event Action WarnigEvent;
+
     void Start()
     {
         gameObject.SetActive(false);
@@ -46,6 +48,7 @@ public class UIProduction : MonoBehaviour
         {
             if (r.item == null || uiInventory.GetItemCount(r.item) < r.count)
             {
+                WarnigEvent?.Invoke();
                 Debug.LogWarning("재료 보유 체크 제작 세팅 누락");
                 return false;
             }
