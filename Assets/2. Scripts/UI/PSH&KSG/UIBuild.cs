@@ -21,15 +21,14 @@ public class UIBuild : MonoBehaviour
     private RaycastHit hitInfo;                    // 레이캐스트 히트 정보를 담을 변수
     [SerializeField] private LayerMask layerMask;  // 
     [SerializeField] private float range;
+    private int curItemSlotIdx;
 
     // 마우스 휠로 회전 조정
     [SerializeField] private float rotateSpeed = 10f;
     private float currentRotationY = 0;
 
     public UIInventory inventory;
-    [SerializeField] private ItemData woodItem;
-    [SerializeField] private ItemData grassItem;
-    [SerializeField] private ItemData rockItem;
+
     public event Action PreviewStart;
     public event Action PreviewEnd;
     public event Action WaringEvent;
@@ -107,8 +106,8 @@ public class UIBuild : MonoBehaviour
     {
         if (!CheckHasItem(builds[slotNumber], inventory.slots))
         {
-            Debug.Log(CheckHasItem(builds[slotNumber], inventory.slots));
             WaringEvent?.Invoke();
+            curItemSlotIdx = slotNumber;
             return;
         }
         previewPrefab = Instantiate(builds[slotNumber].previewPrefab, player.position + player.forward, Quaternion.identity);
@@ -133,6 +132,7 @@ public class UIBuild : MonoBehaviour
     {
         if (isPreviewActive && previewPrefab.GetComponent<PreviewObject>().IsBuildable())
         {
+            UseItemBuild(builds[curItemSlotIdx], inventory.slots);
             //Instantiate(installPrefab, hitInfo.point, previewPrefab.transform.rotation);
             Instantiate(installPrefab, previewPrefab.transform.position, previewPrefab.transform.rotation);
             Destroy(previewPrefab);
@@ -146,21 +146,18 @@ public class UIBuild : MonoBehaviour
 
     private bool CheckHasItem(Build data, ItemSlot[] inventorySlots)
     {
+        bool isEnough = false;
+
         foreach(BuildRequirement require in data.requirements)
         {
             ItemSlot slot = FindItemSlot(inventorySlots, require.item);
             if (slot == null || slot.quantity < require.amount)
-                return false;
+                isEnough = false;
+            else
+                isEnough = true;
         }
 
-        foreach(BuildRequirement require in data.requirements)
-        {
-            ItemSlot slot = FindItemSlot(inventorySlots,require.item);
-            slot.quantity -= require.amount;
-        }
-
-
-        return true;
+        return isEnough;
     }
 
     private ItemSlot FindItemSlot(ItemSlot[] inventory, ItemData targetItem)
@@ -175,5 +172,15 @@ public class UIBuild : MonoBehaviour
         return null;
     }
 
+    private void UseItemBuild(Build data, ItemSlot[] inventorySlots)
+    {
+        foreach (BuildRequirement require in data.requirements)
+        {
+            ItemSlot slot = FindItemSlot(inventorySlots, require.item);
+            slot.quantity -= require.amount;
+            inventory.UpdateUI();
+            Debug.Log(slot.quantity);
+        }
+    }
 
 }
