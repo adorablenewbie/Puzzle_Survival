@@ -73,6 +73,8 @@ public class CraftUIManager : MonoBehaviour
     {
         isCraftActive = false;
         craft.CloseUI();
+        build.CloseBuildList();
+        production.CloseProductionList();
         Cursor.lockState = CursorLockMode.Locked;
     }
 
