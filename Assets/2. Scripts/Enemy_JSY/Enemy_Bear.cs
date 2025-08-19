@@ -2,138 +2,26 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
-public enum AIState
+public class Enemy_Bear : EnemyController, IDamagable
 {
-    Idle, 
-    Wandering, // 돌아다니는 상태
-    Attacking,  // 공격 상태 
-    Fear, // 두려움 상태 
-    Dead
-}
-
-public class Enemy_Bear : MonoBehaviour, IDamagable
-{
-    [Header("초기화 변수들")]
-    private Animator animator;
-    public float sphereColliderSize;
-
-    [Header("몬스터 스탯")]
-    public int health;
-    public float walkSpeed;
-    public float runSpeed;
-    public ItemData[] dropOnDeath;
-    private bool isDead = false;
-    private bool isFireDetected = false;
-
-    [Header("AI 네비게이션에 필요한 정보들")]
-    private NavMeshAgent agent;
-    public float detectDistance; // 목표 지점까지 최소 거리 
-    private AIState aiState; // 몬스터 상태 정보 
-
-    [Header("추적에 필요한 정보들")]
-    public float minWanderDistance;
-    public float maxWanderDistance;
-    public float minWanderWaitTime; // 새로운 목표지점을 찍을 때 기다리는 시간 (최소)
-    public float maxWanderWaitTime; // 새로운 목표지점을 찍을 때 기다리는 시간 (최대)
-
-    [Header("공격 정보들")]
-    public int damage; 
-    public float attackRate; // 공격간 텀주는 시간 
-    private float lastAttackTime; // 마지막으로 공격한 시간
-    public float attackDistance; // 공격 가능한 거리 
-    private float playerDistance; // 플레이어와의 거리 
-    public float fieldOfView = 120f; // 시야 각도 
-
-    [Header("참조 변수들")]
-    private SkinnedMeshRenderer[] meshRenderers;
-    private PlayerManager playerManager;
-    private Player player;
-
-    private void Awake()
-    {
-        agent = GetComponent<NavMeshAgent>();
-        animator = GetComponent<Animator>();
-        meshRenderers = GetComponentsInChildren<SkinnedMeshRenderer>(); // 자식들 것들을 다 가져오기. => 색깔을 바꾸는 용도
-    }
-
-    private void Start()
-    {
-        // 처음 시작하면 목표지점을 찍고 이동할 수 있도록 Wandering(돌아다니는 상태)으로 설정 
-        SetState(AIState.Wandering);
-
-        playerManager = PlayerManager.Instance;
-        player = playerManager.Player;
-    }
-
     private void Update()
     {
-        //float minDistance = 0f;
-        //Vector3 firePosition = Vector3.zero;
+        // 플레이어와의 거리를 계속 체크 => 거리에 따라 몬스터의 상태가 바뀌므로 
+        playerDistance = Vector3.Distance(transform.position, player.transform.position);
 
-        //// 불이 있는지 체크 
-        //Collider[] colls = Physics.OverlapSphere(transform.position, sphereColliderSize, 1 << 13);
-        //if(colls != null)
-        //{
-        //    isFireDetected = true;
-        //    for(int i = 0; i < colls.Length; i++)
-        //    {
-        //        float playerToDistance = Mathf.Abs(Vector3.Distance(colls[i].transform.position, transform.position));
-        //        if(playerToDistance < minDistance)
-        //        {
-        //            minDistance = playerToDistance;
-        //            firePosition = colls[i].transform.position;
-        //        }
-        //    }
-
-        //    Vector3 dir = transform.position;
-        //    dir.z *= -1;
-        //    dir.z += 5;
-        //    agent.SetDestination(dir);
-        //}
-
-        if (!isFireDetected)
-        {
-            // 플레이어와의 거리를 계속 체크 => 거리에 따라 몬스터의 상태가 바뀌므로 
-            playerDistance = Vector3.Distance(transform.position, player.transform.position);
-
-            // Idle 상태가 아니면 움직이는 애니메이션 적용 
-            animator.SetBool(Constant.AnimationParameter.Moving, aiState != AIState.Idle);
-
-            switch (aiState)
-            {
-                case AIState.Idle:
-                case AIState.Wandering:
-                    PassiveUpdate();
-                    break;
-                case AIState.Attacking:
-                    AttackingUpdate();
-                    break;
-            }
-        }
-    }
-
-    public void SetState(AIState state)
-    {
-        aiState = state;
+        // Idle 상태가 아니면 움직이는 애니메이션 적용 
+        animator.SetBool(Constant.AnimationParameter.Moving, aiState != AIState.Idle);
 
         switch (aiState)
         {
             case AIState.Idle:
-                agent.speed = walkSpeed;
-                agent.isStopped = true;
+            case AIState.Wandering:
+                PassiveUpdate();
                 break;
             case AIState.Attacking:
-                agent.speed = walkSpeed;
-                agent.isStopped = false;
-                break;
-            case AIState.Wandering:
-                agent.speed = runSpeed;
-                agent.isStopped = false;
+                AttackingUpdate();
                 break;
         }
-
-        // walkSpeed를 기준으로 애니메이션 속도를 설정 
-        animator.speed = agent.speed / walkSpeed;
     }
 
     // 상태가 Attacking이 아닐 때 계속 호출되는 메서드 
@@ -269,17 +157,6 @@ public class Enemy_Bear : MonoBehaviour, IDamagable
 
         // 시야 각도에 들어오면 true를 아니면 false를 반환 
         return angle < fieldOfView * 0.5f;
-    }
-
-    private void OnDrawGizmosSelected()
-    {
-        // detectDistance
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, detectDistance);
-
-        // attackDistance
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, attackDistance);
     }
 
     public void TakePhysicalDamage(int damageAmount)

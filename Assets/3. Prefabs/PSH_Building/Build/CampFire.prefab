@@ -4791,7 +4791,6 @@ ParticleSystemRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: 0e82a89a9331d7c4bb16ef322caffd53, type: 2}
-  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4917,6 +4916,7 @@ GameObject:
   - component: {fileID: 501295248943452728}
   - component: {fileID: 501295248944255512}
   - component: {fileID: 501295248945221848}
+  - component: {fileID: 7618822695421101881}
   m_Layer: 6
   m_Name: CampFire
   m_TagString: Untagged
@@ -4990,3 +4990,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!208 &7618822695421101881
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 501295248943222296}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 0.28, y: 0.23300001, z: 0.305}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0.07, y: 0.22600001, z: 0.017}
+  m_TimeToStationary: 0.5
