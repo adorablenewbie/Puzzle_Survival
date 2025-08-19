@@ -9,6 +9,7 @@ public class UICondition : MonoBehaviour
     public Condition hunger;
     public Condition stamina;
     public Condition thirst;
+    public Image damageImage;
     public Image diePanelImage;
     private void Start()
     {

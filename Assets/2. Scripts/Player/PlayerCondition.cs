@@ -1,6 +1,8 @@
-using UnityEngine;
+using DG.Tweening;
 using System;
 using System.Collections;
+using UnityEngine;
+using UnityEngine.UI;
 
 public interface IDamagable
 {
@@ -29,12 +31,14 @@ public class PlayerCondition : MonoBehaviour, IDamagable, IPlayerCondition
     Condition hunger { get { return uiCondition.hunger; } }
     Condition stamina { get { return uiCondition.stamina; } }
     Condition thirst { get { return uiCondition.thirst; } }
+    
 
     public float noHungerHealthDecay;
     public event Action onTakeDamage;
     public PlayerController playerController;
     public SceneFlowManager sceneFlowManager;
 
+    private float lastShakeTime = -99f;
 
     public event Action onDie;
 
@@ -47,18 +51,24 @@ public class PlayerCondition : MonoBehaviour, IDamagable, IPlayerCondition
 
         if (hunger.curValue <= 0f)
         {
-            health.Subtract(noHungerHealthDecay * Time.deltaTime);
+            Damage(noHungerHealthDecay * Time.deltaTime);
         }
+
 
         if (health.curValue <= 0f)
         {
-            StartCoroutine(DieDelate(3f));
+            StartCoroutine(DieSceneChange(3f));
         }
     }
 
     public void Heal(float amount)
     {
         health.Add(amount);
+    }
+    public void Damage(float amount)
+    {
+        health.Subtract(amount);
+        DamageEffect();
     }
 
     public void Eat(float amount)
@@ -70,6 +80,7 @@ public class PlayerCondition : MonoBehaviour, IDamagable, IPlayerCondition
     {
         thirst.Add(amount);
     }
+
     public bool UseStamina(float amount)
     {
         if (stamina.curValue - amount < 0)
@@ -78,6 +89,17 @@ public class PlayerCondition : MonoBehaviour, IDamagable, IPlayerCondition
         }
         stamina.Subtract(amount);
         return true;
+    }
+
+    public void DamageEffect()
+    {
+
+        if (Time.time - lastShakeTime >= 1f)
+        {
+            lastShakeTime = Time.time;
+            Camera.main.transform.DOShakePosition(0.3f, 0.15f, 10, 90, false, true);
+            uiCondition.damageImage.DOFade(0.2f,0.3f).SetLoops(2, LoopType.Yoyo);
+        }
     }
 
     public void Die()
@@ -91,9 +113,8 @@ public class PlayerCondition : MonoBehaviour, IDamagable, IPlayerCondition
         playerController.moveSpeed = 0f;
         playerController.jumpPower = 0f;
         Debug.Log("Player has died.");
-
     }
-    private IEnumerator DieDelate(float delay)
+    private IEnumerator DieSceneChange(float delay)
     {
         Debug.Log("�׾� ���� �׾ ������ �־�");
         Die();
