@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   displayName: "\uBE44\uC57D"
   description: "\uC815\uCCB4\uBD88\uBA85\uC758 \uBE44\uC57D"
-  type: 0
+  type: 2
   icon: {fileID: 21300000, guid: 36b4feede3a96e843b10463f141249c7, type: 3}
   dropPrefab: {fileID: 4737435969860250152, guid: 2cfbc65e451095744932451876b432cf, type: 3}
   canStack: 0
@@ -24,4 +24,13 @@ MonoBehaviour:
     value: -20
   resourceAmount: 0
   equipPrefab: {fileID: 0}
-  itemBuff: []
+  itemBuff:
+  - buffData: {fileID: 11400000, guid: 9ffa79c5ecd35a64caf763150b05858e, type: 2}
+    isPermanent: 0
+    duration: 10
+  - buffData: {fileID: 11400000, guid: 9ac0d0f73ef855f448c72fad84fc3a2c, type: 2}
+    isPermanent: 0
+    duration: 10
+  - buffData: {fileID: 11400000, guid: 79be71e964ef27c499142c69076a09dc, type: 2}
+    isPermanent: 0
+    duration: 10

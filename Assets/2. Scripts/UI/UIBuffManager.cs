@@ -12,7 +12,7 @@ public class UIBuffManager : MonoBehaviour
     private Coroutine jumpUpCoroutine;
     private Coroutine doubleJumpCoroutine;
     private Coroutine invincibleCoroutine;
-
+    private Coroutine healCoroutine;
     void Start()
     {
         controller = PlayerManager.Instance.Player.controller;
@@ -71,6 +71,10 @@ public class UIBuffManager : MonoBehaviour
         else if (buffData.effects[0].type == BuffType.Invincible)
         {
             invincibleCoroutine = StartCoroutine(condition.uiCondition.health.SetConditionInvincibleCoroutine(inputDuration));
+        }
+        else if (buffData.effects[0].type == BuffType.Heal)
+        {
+            healCoroutine = StartCoroutine(condition.HealBuff(buffData.effects[0].value, inputDuration));
         }
         MakeTempBuffUI(buffData.buffUI, inputDuration);
     }
@@ -140,6 +144,15 @@ public class UIBuffManager : MonoBehaviour
                 invincibleCoroutine = null;
                 condition.uiCondition.health.EndConditionInvincible();
             }
+        }
+        else if (buffData.effects[0].type ==  BuffType.Heal)
+        {
+            if (healCoroutine != null)
+            {
+                StopCoroutine(healCoroutine);
+                healCoroutine = null;
+            }
+
         }
 
         RemoveBuffUI(buffData.buffUI.name);

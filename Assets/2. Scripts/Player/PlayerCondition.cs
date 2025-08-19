@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using System.Collections;
 
 public interface IDamagable
 {
@@ -62,5 +63,16 @@ public class PlayerCondition : MonoBehaviour, IDamagable
     {
         health.Subtract(damageAmount);
         onTakeDamage?.Invoke();
+    }
+
+    public IEnumerator HealBuff(float amount, float duration)
+    {
+        float elapsedTime = 0f;
+        while (elapsedTime < duration)
+        {
+            Heal(amount / duration * Time.deltaTime);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
     }
 }
