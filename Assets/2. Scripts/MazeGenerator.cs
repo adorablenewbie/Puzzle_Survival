@@ -122,9 +122,9 @@ public class MazeGenerator : MonoBehaviour
 
         // 바닥
         Vector3 floorPos = new Vector3(
-            (cols * cellSize) / 2f - cellSize / 2f,
+            (cols * cellSize) / 2f - cellSize / 2f-5,
             -0.5f,
-            (rows * cellSize) / 2f - cellSize / 2f
+            (rows * cellSize) / 2f - cellSize / 2f-5
         );
         GameObject floor = Instantiate(floorPrefab, floorPos, Quaternion.identity, transform);
         floor.transform.localScale = new Vector3(cols * cellSize, 1, rows * cellSize);
@@ -137,7 +137,7 @@ public class MazeGenerator : MonoBehaviour
                 // grid 값이 1이거나, 테두리일 경우 벽 생성
                 if (maze[y, x] == 1 || x == 0 || x == cols - 1 || y == 0 || y == rows - 1)
                 {
-                    Vector3 pos = new Vector3(x * cellSize, 0, y * cellSize);
+                    Vector3 pos = new Vector3(x * cellSize-5, 0, y * cellSize-5);
                     GameObject wall = Instantiate(wallPrefab, pos, Quaternion.identity, transform);
                     wall.transform.localScale = new Vector3(cellSize, wall.transform.localScale.y, cellSize);
                     walls.Add(wall);
@@ -149,12 +149,12 @@ public class MazeGenerator : MonoBehaviour
     void ClearStartArea()
     {
         Vector3 startPos = transform.position;
-        ClearWallsInArea(startPos, 10);
+        ClearWallsInArea(startPos, 9);
     }
 
     void ClearExitArea()
     {
-        ClearWallsInArea(exitPosition, 10);
+        ClearWallsInArea(exitPosition, 9);
     }
 
     void ClearWallsInArea(Vector3 center, float size)
