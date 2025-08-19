@@ -133,6 +133,7 @@ public class PlayerController : MonoBehaviour
         transform.eulerAngles += new Vector3(0, mouseDelta.x * lookSensitivity, 0);
     }
 
+ 
     //private void RotateToCamera() //씨네머신 때문에 생긴거~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //{
     //    // 전진 입력일 때만 회전 적용, 나중에 조금 손 보자

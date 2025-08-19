@@ -11,11 +11,12 @@ public class PlayerManager : MonoBehaviour
         {
             if (_instance == null)
             {
+                Debug.Log("¾îµð¾ß");
                 _instance = new GameObject("PlayerManager").AddComponent<PlayerManager>();
             }
             return _instance;
         }
-        
+
     }
 
     public Player Player

@@ -1,6 +1,5 @@
 using UnityEngine;
 using System;
-using Unity.VisualScripting;
 using System.Collections;
 
 public interface IDamagable
@@ -19,6 +18,11 @@ public class PlayerCondition : MonoBehaviour, IDamagable
 
     public float noHungerHealthDecay;
     public event Action onTakeDamage;
+    public PlayerController playerController;
+    public SceneFlowManager sceneFlowManager;
+
+
+    public event Action onDie;
 
 
     private void Update()
@@ -34,7 +38,7 @@ public class PlayerCondition : MonoBehaviour, IDamagable
 
         if (health.curValue <= 0f)
         {
-            Die();
+            StartCoroutine(DieDelate(3f));
         }
     }
 
@@ -67,8 +71,23 @@ public class PlayerCondition : MonoBehaviour, IDamagable
         Color color = uiCondition.diePanelImage.color;
         color.a += Time.deltaTime;
         uiCondition.diePanelImage.color = color;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true; 
+        playerController.canLook = false;
+        playerController.moveSpeed = 0f;
+        playerController.jumpPower = 0f;
         Debug.Log("Player has died.");
+
     }
+    private IEnumerator DieDelate(float delay)
+    {
+        Debug.Log("죽어 제발 죽어서 가만히 있어");
+        Die();
+        yield return new WaitForSeconds(delay);
+        SceneFlowManager.Instance.SceneChange(SceneFlowManager.SceneType.MainScene);
+    }
+
+
     public void TakePhysicalDamage(int damageAmount)
     {
         health.Subtract(damageAmount);

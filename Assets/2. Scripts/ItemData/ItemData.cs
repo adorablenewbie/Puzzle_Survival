@@ -20,7 +20,6 @@ public enum HarvestableType
     Stone,
     Grass
 }
-
 [System.Serializable]
 public class ItemDataConsumable
 {
