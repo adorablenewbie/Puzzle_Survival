@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 1024319088}
-  m_IndirectSpecularColor: {r: 0.7302004, g: 0.68035823, b: 0.6966422, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1778,7 +1778,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   time: 0
-  fullDayLength: 30
+  fullDayLength: 120
   startTime: 0.5
   noon: {x: 90, y: 0, z: 0}
   colorChangeSpeed: 0.5
@@ -1846,6 +1846,9 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  sunriseTime: 0.4375
+  noonTime: 0.5
+  sunsetTime: 0.5875
   moon: {fileID: 1653400220}
   moonColor:
     serializedVersion: 2
@@ -1919,6 +1922,8 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  moonriseTime: 0
+  moonsetTime: 1
   lightingIntensityMultiplier:
     serializedVersion: 2
     m_Curve:
@@ -2003,6 +2008,8 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  nightAmbientColor: {r: 0, g: 0, b: 0, a: 0}
+  dayAmbientColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!4 &136794044 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4956255927207046, guid: c04be9f92ebf58b46b2204ac3aaa8785, type: 3}
