@@ -18,7 +18,7 @@ public class EnemyManager : MonoBehaviour
 
     private int maxBearCnt;
 
-    public float interval = 2.0f;
+    public float interval = 0.1f;
 
     private Coroutine loop;
 
@@ -27,34 +27,28 @@ public class EnemyManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        maxBearCnt = bears.Count;
-        
+        dayNightCycle.OnDay += HandleDay;
+        dayNightCycle.OnNight += HandleNight;
     }
 
-    // Update is called once per frame
-    void Update()
-    {  
-        Debug.Log(dayNightCycle.isNight);
-        Debug.Log(dayNightCycle.isDay);
-
-        if(dayNightCycle.isNight)
-        {
-            BearAllRemove();
-            NightStart();
-        }
-
-        if(dayNightCycle.isDay)
-        {
-            DayStart();
-            ZombieAllRemove();
-        }
+    private void HandleDay()
+    {
+        DayStart();
+        ZombieAllRemove();
     }
+
+    private void HandleNight()
+    {
+        BearAllRemove();
+        NightStart();
+    }
+
 
     public void DayStart()
     {
-        foreach(Transform spawn in bearSpawns)
+        for(int i = 0; i < bearSpawns.Length; i++)
         {
-            Enemy_Bear bear = Instantiate(bearPrefab, spawn);
+            Enemy_Bear bear = Instantiate(bearPrefab, bearSpawns[i]);
             bears.Add(bear);
             bear.OnDie += RespawnBear;
         } 
@@ -62,8 +56,6 @@ public class EnemyManager : MonoBehaviour
 
     public void NightStart()
     {
-        dayNightCycle.isNight = false;
-        Debug.Log("dfasdfasd");
         if (loop == null) loop = StartCoroutine(ZombieSpawnLoop());
     } 
 
@@ -101,7 +93,6 @@ public class EnemyManager : MonoBehaviour
 
     private void ZombieAllRemove()
     {
-        dayNightCycle.isDay = false;
         foreach(Enemy_Zombie zombie in zombies)
         {
             Destroy(zombie.gameObject);
