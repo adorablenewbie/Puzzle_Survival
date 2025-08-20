@@ -59,7 +59,7 @@ public class DialogueManager : MonoBehaviour
         PlayerManager.Instance.Player.dialogueManager = this; // DialogueManager를 PlayerManager에 설정
         playerController = PlayerManager.Instance.Player.controller;
         // 게임 시작 시 JSON 로드
-        LoadNpcStates();
+        npcDialogueStates = NPCDialogueDataManager.Instance.LoadNpcStates();
 
     }
     void Update()
@@ -85,14 +85,14 @@ public class DialogueManager : MonoBehaviour
 
             // 폰트 크기 처리 (없으면 50)
             int fontSize = 50;
-            if (cols.Length > 19 && !string.IsNullOrWhiteSpace(cols[19]))
-                int.TryParse(cols[19], out fontSize);
+            if (cols.Length > 18 && !string.IsNullOrWhiteSpace(cols[18]))
+                int.TryParse(cols[18], out fontSize);
 
             // 폰트 색상 처리 (없으면 흰색 255/255/255/255)
             Color fontColor = new Color32(255, 255, 255, 255);
-            if (cols.Length > 20 && !string.IsNullOrWhiteSpace(cols[20]))
+            if (cols.Length > 19 && !string.IsNullOrWhiteSpace(cols[19]))
             {
-                string[] rgba = cols[20].Split('/');
+                string[] rgba = cols[19].Split('/');
                 if (rgba.Length == 4)
                 {
                     byte r = byte.Parse(rgba[0]);
@@ -114,21 +114,20 @@ public class DialogueManager : MonoBehaviour
                 nextIndex = string.IsNullOrWhiteSpace(cols[6]) ? null : System.Array.ConvertAll(cols[6].Split('/'), int.Parse), // 선택지별 다음 인덱스
                 branchTransition = SafeParseInt(cols.Length > 7 ? cols[7] : "0"), // 분기 전환
                 indextransition = SafeParseInt(cols.Length > 8 ? cols[8] : "0"),       // 인덱스 전환
-                quest = SafeParseInt(cols.Length > 9 ? cols[9] : "0"),                 // 퀘스트 ID (1: 있음)
-                questNextBranches = string.IsNullOrWhiteSpace(cols[10]) ? null : System.Array.ConvertAll(cols[10].Split('/'), int.Parse), // 퀘스트 완료 후 다음 분기
-                questIndex = SafeParseInt(cols.Length > 11 ? cols[11] : "0"),          // 퀘스트 완료 후 이동 가능 인덱스
-                rewardRandom = SafeParseInt(cols.Length > 12 ? cols[12] : "0"),
-                rewardCategories = (cols.Length > 13 && !string.IsNullOrWhiteSpace(cols[13]))
+                questID = cols.Length > 9 ? cols[9] : "",                          // 퀘스트 ID (없으면 빈 문자열)
+                questState = SafeParseInt(cols.Length > 10 ? cols[10] : ""),       // 퀘스트 상태 (0: 시작, 1: 완료, 2: 실패)
+                rewardRandom = SafeParseInt(cols.Length > 11 ? cols[11] : "0"),
+                rewardCategories = (cols.Length > 12 && !string.IsNullOrWhiteSpace(cols[12]))
+              ? System.Array.ConvertAll(cols[12].Split('/'), x => SafeParseInt(x)) : null,
+                rewardCounts = (cols.Length > 13 && !string.IsNullOrWhiteSpace(cols[13]))
               ? System.Array.ConvertAll(cols[13].Split('/'), x => SafeParseInt(x)) : null,
-                rewardCounts = (cols.Length > 14 && !string.IsNullOrWhiteSpace(cols[14]))
-              ? System.Array.ConvertAll(cols[14].Split('/'), x => SafeParseInt(x)) : null,
-                shake = cols[15] == "1",                                        // 화면 진동 여부
-                animation = SafeParseInt(cols[16]),                                    // 애니메이션 실행 여부
-                zoom = cols[17] == "1",                                         // 카메라 확대 여부
-                typingSpeed = float.Parse(cols[18]),                            // 타이핑 속도
+                shake = cols[14] == "1",                                        // 화면 진동 여부
+                animation = SafeParseInt(cols[15]),                                    // 애니메이션 실행 여부
+                zoom = cols[16] == "1",                                         // 카메라 확대 여부
+                typingSpeed = float.Parse(cols[17]),                            // 타이핑 속도
                 fontSize = fontSize,                                           // 폰트 크기
                 fontColor = fontColor,                                          // 폰트 색상
-                sceneName = cols.Length > 21 ? cols[21] : "" // 씬 이름 (추가된 컬럼)
+                sceneName = cols.Length > 20 ? cols[20] : "" // 씬 이름 (추가된 컬럼)
             };
             dialogueData.Add(line); // 완성된 DialogueLine을 리스트에 추가
         }
@@ -225,6 +224,10 @@ public class DialogueManager : MonoBehaviour
                     btn.onClick.AddListener(() => OnChoiceSelected(nextBranch, nextIndex));
                 }
             }
+
+            HandleQuest(line); // 퀘스트 처리
+            QuestManager.Instance.UpdateQuestProgressNPC(npcDialogueStateKey, line.branch, line.index); // 퀘스트 완료 체크
+
             currentLineIndex++;
         }
         if (currentLineIndex == currentLines.Count)
@@ -331,7 +334,7 @@ public class DialogueManager : MonoBehaviour
     private void UpdateNpcState()
     {
         npcDialogueStates[npcDialogueStateKey] = (currentBranch, currentIndex);
-        SaveNpcStates(); // 상태 업데이트 시 저장
+        NPCDialogueDataManager.Instance.SaveNpcStates(npcDialogueStates); // 상태 업데이트 시 저장
     }
     // 보상 지급 함수
     public void GiveRewards(DialogueLine line, NPC npc)
@@ -384,51 +387,29 @@ public class DialogueManager : MonoBehaviour
             npcLoadScene.LoadScene(sceneName); // NPC 로드 씬 스크립트로 씬 로드
         }
     }
-    [System.Serializable]
-    public class NpcState
-    {
-        public ENPC npc;
-        public int branch;
-        public int index;
-    }
 
-    [System.Serializable]
-    public class NpcStateWrapper
+    private void HandleQuest(DialogueLine line)
     {
-        public List<NpcState> states = new List<NpcState>();
-    }
+        if (string.IsNullOrEmpty(line.questID)) return;
 
-    private string SavePath => Path.Combine(Application.persistentDataPath, "npcStates.json");
-
-    public void SaveNpcStates()
-    {
-        NpcStateWrapper wrapper = new NpcStateWrapper();
-        foreach (var kvp in npcDialogueStates)
+        QuestData quest = Resources.Load<QuestData>("QuestData/" + "Quest" +line.questID);
+        if (quest == null)
         {
-            wrapper.states.Add(new NpcState
-            {
-                npc = kvp.Key,
-                branch = kvp.Value.branch,
-                index = kvp.Value.index
-            });
+            Debug.LogWarning($"퀘스트 데이터가 없습니다: Quest{line.questID}");
+            return;
         }
 
-        string json = JsonUtility.ToJson(wrapper, true);
-        File.WriteAllText(SavePath, json);
-    }
-
-    public void LoadNpcStates()
-    {
-        if (!File.Exists(SavePath)) return;
-
-        string json = File.ReadAllText(SavePath);
-        NpcStateWrapper wrapper = JsonUtility.FromJson<NpcStateWrapper>(json);
-
-        npcDialogueStates.Clear();
-        foreach (var state in wrapper.states)
+        switch (line.questState)
         {
-            npcDialogueStates[state.npc] = (state.branch, state.index);
+            case 0:
+                QuestManager.Instance.AcceptQuest(quest);
+                break;
+            case 1:
+                QuestManager.Instance.CompleteQuest(quest);
+                break;
+            case 2:
+                QuestManager.Instance.FailQuest(quest);
+                break;
         }
     }
-
 }

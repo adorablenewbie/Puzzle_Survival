@@ -6,7 +6,6 @@ using UnityEngine;
 public class MazeTeleport : MonoBehaviour
 {
     public GameObject mazeObject;
-    private MazeGenerator mazeGenerator; // MazeGenerator 참조
 
     private NPC npc; // NPC 참조
     private ENPC npcKey; // NPC 키
@@ -16,14 +15,12 @@ public class MazeTeleport : MonoBehaviour
     public int branch;
     public int index;
 
+    public Vector3[] posList; // 미로 위치 목록
+
     private bool isReady = false; // 초기화 완료 여부
 
     private void Start()
     {
-        if (mazeGenerator == null)
-        {
-            mazeGenerator = mazeObject.GetComponent<MazeGenerator>();
-        }
         if (npc == null)
         {
             npc = GetComponent<NPC>();
@@ -55,12 +52,9 @@ public class MazeTeleport : MonoBehaviour
     }
     public void TeleportToMaze()
     {
-        if (mazeGenerator != null)
-        {
-            // MazeGenerator의 exitPosition으로 플레이어를 이동
-            gameObject.transform.position = mazeGenerator.exitPosition;
-            gameObject.transform.rotation = Quaternion.identity; // 회전 초기화
-        }
+        int randomIndex = Random.Range(0, posList.Length); // 위치 목록에서 랜덤 인덱스 선택
+        gameObject.transform.position = posList[randomIndex]; // 랜덤 위치로 이동
+        gameObject.transform.rotation = Quaternion.identity; // 회전 초기화
     }
 
 }
