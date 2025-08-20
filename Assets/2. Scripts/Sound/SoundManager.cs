@@ -31,17 +31,14 @@ public class SoundManager : MonoBehaviour
     {
         BgmSound.Stop();
     }
-
     public void BgmSoundMute()
     {
         BgmSound.mute = !BgmSound.mute;
     }
-
     public void EffectEnd()
     {
         EffectSound.Stop();
     }
-
     public void EffectSoundMute()
     {
         EffectSound.mute = !EffectSound.mute;
@@ -49,23 +46,30 @@ public class SoundManager : MonoBehaviour
 
     public void DayTimeBGM()
     {
-        BgmSound.PlayOneShot(Day);
+        BgmSound.clip = Day;
+        BgmSound.Play();
     }
 
     public void NightTimeBGM()
     {
-        BgmSound.PlayOneShot(Night);
+        BgmSound.clip = Night;
+        BgmSound.Play();
+    }
+    public void MazeBGM()
+    {
+        BgmSound.clip = BgmClips[0];
+        BgmSound.Play();
     }
 
-    public void ZombieAttack()
+    public void ShootingSound()
     {
         EffectSound.PlayOneShot(EffectClips[0]);
     }
-
     public void PlayerWalkingSound()
     {
         EffectSound.PlayOneShot(EffectClips[1]);
     }
+
 }
 
 

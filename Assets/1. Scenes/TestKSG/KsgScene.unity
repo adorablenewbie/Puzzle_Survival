@@ -1145,9 +1145,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BgmSound: {fileID: 68528236}
   EffectSound: {fileID: 68528235}
-  BgmClips: []
-  EffectClips: []
-  Day: {fileID: 0}
+  BgmClips:
+  - {fileID: 8300000, guid: c312687cc4c5ca940b1c9c736a5d4d46, type: 3}
+  EffectClips:
+  - {fileID: 8300000, guid: 2203773368e4340d98c114f55c2dd7fd, type: 3}
+  Day: {fileID: 8300000, guid: bb59483c1abec4f41881b66f9c8a09d5, type: 3}
   Night: {fileID: 8300000, guid: ffc95b83c9f8344ebb6214eb5b0b3087, type: 3}
 --- !u!82 &68528235
 AudioSource:
@@ -9718,6 +9720,7 @@ MonoBehaviour:
   hunger: {fileID: 1951908421}
   stamina: {fileID: 193931478}
   thirst: {fileID: 1560346675}
+  diePanel: {fileID: 0}
   damageImage: {fileID: 0}
   diePanelImage: {fileID: 0}
 --- !u!114 &909751828
