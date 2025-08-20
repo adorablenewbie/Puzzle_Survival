@@ -1,5 +1,7 @@
 using System.Collections;
-using System.Collections.Generic;  
+using System.Collections.Generic;
+using System.IO;
+using System.Net;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;                
@@ -44,11 +46,20 @@ public class DialogueManager : MonoBehaviour
 
     public NPC npc; // NPC 참조 (필요시 사용)
 
+    public NPCLoadScene npcLoadScene; // NPC 로드 씬 스크립트 참조 (필요시 사용)
+    private string sceneName;
+    private bool isSceneLoaded = false; // 씬 로드 여부
+
+    private PlayerController playerController;
+
     void Start()
     {
         gameObject.SetActive(false); // 초기에는 대화 UI 비활성화
         interaction = PlayerManager.Instance.Player.GetComponent<Interaction>();
         PlayerManager.Instance.Player.dialogueManager = this; // DialogueManager를 PlayerManager에 설정
+        playerController = PlayerManager.Instance.Player.controller;
+        // 게임 시작 시 JSON 로드
+        LoadNpcStates();
 
     }
     void Update()
@@ -74,14 +85,14 @@ public class DialogueManager : MonoBehaviour
 
             // 폰트 크기 처리 (없으면 50)
             int fontSize = 50;
-            if (cols.Length > 18 && !string.IsNullOrWhiteSpace(cols[18]))
-                int.TryParse(cols[18], out fontSize);
+            if (cols.Length > 19 && !string.IsNullOrWhiteSpace(cols[19]))
+                int.TryParse(cols[19], out fontSize);
 
             // 폰트 색상 처리 (없으면 흰색 255/255/255/255)
             Color fontColor = new Color32(255, 255, 255, 255);
-            if (cols.Length > 19 && !string.IsNullOrWhiteSpace(cols[19]))
+            if (cols.Length > 20 && !string.IsNullOrWhiteSpace(cols[20]))
             {
-                string[] rgba = cols[19].Split('/');
+                string[] rgba = cols[20].Split('/');
                 if (rgba.Length == 4)
                 {
                     byte r = byte.Parse(rgba[0]);
@@ -101,22 +112,23 @@ public class DialogueManager : MonoBehaviour
                 actions = string.IsNullOrWhiteSpace(cols[4]) ? null : cols[4].Split('/'), // 선택지 (없으면 null)
                 nextBranches = string.IsNullOrWhiteSpace(cols[5]) ? null : System.Array.ConvertAll(cols[5].Split('/'), int.Parse), // 선택지별 다음 분기
                 nextIndex = string.IsNullOrWhiteSpace(cols[6]) ? null : System.Array.ConvertAll(cols[6].Split('/'), int.Parse), // 선택지별 다음 인덱스
-                indextransition = SafeParseInt(cols.Length > 7 ? cols[7] : "0"),       // 인덱스 전환 (1: 다음 대사)
-                quest = SafeParseInt(cols.Length > 8 ? cols[8] : "0"),                 // 퀘스트 ID (1: 있음)
-                questNextBranches = string.IsNullOrWhiteSpace(cols[9]) ? null : System.Array.ConvertAll(cols[9].Split('/'), int.Parse), // 퀘스트 완료 후 다음 분기
-                questIndex = SafeParseInt(cols.Length > 10 ? cols[10] : "0"),          // 퀘스트 완료 후 이동 가능 인덱스
-                rewardRandom = SafeParseInt(cols.Length > 11 ? cols[11] : "0"),
-                rewardCategories = (cols.Length > 12 && !string.IsNullOrWhiteSpace(cols[12]))
-              ? System.Array.ConvertAll(cols[12].Split('/'), x => SafeParseInt(x)) : null,
-                rewardCounts = (cols.Length > 13 && !string.IsNullOrWhiteSpace(cols[13]))
+                branchTransition = SafeParseInt(cols.Length > 7 ? cols[7] : "0"), // 분기 전환
+                indextransition = SafeParseInt(cols.Length > 8 ? cols[8] : "0"),       // 인덱스 전환
+                quest = SafeParseInt(cols.Length > 9 ? cols[9] : "0"),                 // 퀘스트 ID (1: 있음)
+                questNextBranches = string.IsNullOrWhiteSpace(cols[10]) ? null : System.Array.ConvertAll(cols[10].Split('/'), int.Parse), // 퀘스트 완료 후 다음 분기
+                questIndex = SafeParseInt(cols.Length > 11 ? cols[11] : "0"),          // 퀘스트 완료 후 이동 가능 인덱스
+                rewardRandom = SafeParseInt(cols.Length > 12 ? cols[12] : "0"),
+                rewardCategories = (cols.Length > 13 && !string.IsNullOrWhiteSpace(cols[13]))
               ? System.Array.ConvertAll(cols[13].Split('/'), x => SafeParseInt(x)) : null,
-                shake = cols[14] == "1",                                        // 화면 진동 여부
-                animation = SafeParseInt(cols[15]),                                    // 애니메이션 실행 여부
-                zoom = cols[16] == "1",                                         // 카메라 확대 여부
-                typingSpeed = float.Parse(cols[17]),                            // 타이핑 속도
+                rewardCounts = (cols.Length > 14 && !string.IsNullOrWhiteSpace(cols[14]))
+              ? System.Array.ConvertAll(cols[14].Split('/'), x => SafeParseInt(x)) : null,
+                shake = cols[15] == "1",                                        // 화면 진동 여부
+                animation = SafeParseInt(cols[16]),                                    // 애니메이션 실행 여부
+                zoom = cols[17] == "1",                                         // 카메라 확대 여부
+                typingSpeed = float.Parse(cols[18]),                            // 타이핑 속도
                 fontSize = fontSize,                                           // 폰트 크기
                 fontColor = fontColor,                                          // 폰트 색상
-                sceneName = cols.Length > 20 ? cols[20] : "" // 씬 이름 (추가된 컬럼)
+                sceneName = cols.Length > 21 ? cols[21] : "" // 씬 이름 (추가된 컬럼)
             };
             dialogueData.Add(line); // 완성된 DialogueLine을 리스트에 추가
         }
@@ -187,6 +199,12 @@ public class DialogueManager : MonoBehaviour
             {
                 GiveRewards(line, npc); // 보상 지급
             }
+            sceneName = line.sceneName.Trim(); // 씬 이름 저장
+            if (npcLoadScene != null && sceneName != "")
+            {
+                isSceneLoaded = true; // 씬 로드 상태 설정
+            }
+            
 
             // 선택지가 있다면 버튼 생성
             foreach (Transform child in choiceContainer)
@@ -195,6 +213,7 @@ public class DialogueManager : MonoBehaviour
             }
             if (line.actions != null && line.actions.Length > 0)
             {
+                playerController.ToggleCursor();
                 for (int i = 0; i < line.actions.Length; i++)
                 {
                     int nextBranch = line.nextBranches[i];
@@ -214,9 +233,13 @@ public class DialogueManager : MonoBehaviour
             {
                 isLastLine = true;
             }
-            if (currentLines[currentLines.Count - 1].indextransition == 1)
+            if (currentLines[currentLines.Count - 1].branchTransition != 0)
             {
-                currentIndex++; // 인덱스 전환이 필요하면 다음 인덱스로 이동
+                currentBranch = currentLines[currentLines.Count - 1].branchTransition; // 분기 전환
+            }
+            if (currentLines[currentLines.Count - 1].indextransition != 0)
+            {
+                currentIndex = currentLines[currentLines.Count - 1].indextransition; // 인덱스 전환
             }
         }
         UpdateNpcState(); // NPC 상태 업데이트
@@ -225,6 +248,7 @@ public class DialogueManager : MonoBehaviour
 
     public void OnChoiceSelected(int nextBranch, int nextIndex)
     {
+        playerController.ToggleCursor(); // 커서 토글
         if (currentBranch == nextBranch && currentIndex == nextIndex)
         {
             // 현재 분기와 인덱스가 같으면 대화 종료 즉, 더 생각한다는 선택지
@@ -307,6 +331,7 @@ public class DialogueManager : MonoBehaviour
     private void UpdateNpcState()
     {
         npcDialogueStates[npcDialogueStateKey] = (currentBranch, currentIndex);
+        SaveNpcStates(); // 상태 업데이트 시 저장
     }
     // 보상 지급 함수
     public void GiveRewards(DialogueLine line, NPC npc)
@@ -351,4 +376,59 @@ public class DialogueManager : MonoBehaviour
             }
         }
     }
+    private void OnDisable()
+    {
+        if (isSceneLoaded) 
+        {
+            isSceneLoaded = false; // 대화 UI가 비활성화되면 씬 로드 상태 초기화
+            npcLoadScene.LoadScene(sceneName); // NPC 로드 씬 스크립트로 씬 로드
+        }
+    }
+    [System.Serializable]
+    public class NpcState
+    {
+        public ENPC npc;
+        public int branch;
+        public int index;
+    }
+
+    [System.Serializable]
+    public class NpcStateWrapper
+    {
+        public List<NpcState> states = new List<NpcState>();
+    }
+
+    private string SavePath => Path.Combine(Application.persistentDataPath, "npcStates.json");
+
+    public void SaveNpcStates()
+    {
+        NpcStateWrapper wrapper = new NpcStateWrapper();
+        foreach (var kvp in npcDialogueStates)
+        {
+            wrapper.states.Add(new NpcState
+            {
+                npc = kvp.Key,
+                branch = kvp.Value.branch,
+                index = kvp.Value.index
+            });
+        }
+
+        string json = JsonUtility.ToJson(wrapper, true);
+        File.WriteAllText(SavePath, json);
+    }
+
+    public void LoadNpcStates()
+    {
+        if (!File.Exists(SavePath)) return;
+
+        string json = File.ReadAllText(SavePath);
+        NpcStateWrapper wrapper = JsonUtility.FromJson<NpcStateWrapper>(json);
+
+        npcDialogueStates.Clear();
+        foreach (var state in wrapper.states)
+        {
+            npcDialogueStates[state.npc] = (state.branch, state.index);
+        }
+    }
+
 }
