@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,6 +11,9 @@ public class DayNightCycle : MonoBehaviour
     public float startTime = 0.4f; // 시작 시간 
     private float timeRate;
     public Vector3 noon; // Vector 90 0 0 
+    public bool isNight;
+    public bool isDay;
+
 
     [Header("Sun")]
     public Light sun;
@@ -25,6 +29,10 @@ public class DayNightCycle : MonoBehaviour
     public AnimationCurve lightingIntensityMultiplier; // 간접광(씬 전체에 퍼지는 빛)
     public AnimationCurve reflectionIntensityMultiplier; // 반사광 
 
+    public event Action OnNight;
+    public event Action OnDay;
+
+
     void Start()
     {
         timeRate = 1.0f / fullDayLength; // ex. fullDayLength가 30이면 하루를 30초로 설정 
@@ -34,6 +42,15 @@ public class DayNightCycle : MonoBehaviour
     void Update()
     {
         time = (time + timeRate * Time.deltaTime) % 1.0f; // 시간 흘러가게 하기 
+
+        if (time == 0.75)
+        {
+            isNight = true;
+        }
+        if(time == 0.25)
+        {
+            isDay = true;
+        }
 
         UpdateLighting(sun, sunColor, sunIntensity);
         UpdateLighting(moon, moonColor, moonIntensity);
@@ -68,4 +85,5 @@ public class DayNightCycle : MonoBehaviour
             go.SetActive(true);
         }
     }
+
 }

@@ -9,21 +9,50 @@ public class EnemyManager : MonoBehaviour
 
     [SerializeField] private Transform[] spawnPoint;
 
+    private float curTime;
+
     List<Enemy_Zombie> zombies = new List<Enemy_Zombie>();
 
     public float interval = 2.0f;
 
     private Coroutine loop;
 
+    [SerializeField]DayNightCycle dayNightCycle;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        dayNightCycle.OnNight += NightStart;
+        dayNightCycle.OnDay += AllRemove;
     }
 
     // Update is called once per frame
     void Update()
     {
+        curTime = dayNightCycle.time;
+
+        if(dayNightCycle.isNight)
+        {
+            NightStart();
+            
+        }
+
+        if(dayNightCycle.isDay)
+        {
+            AllRemove();
+            
+        }
+
+
+        if (curTime >= 0.75 && curTime < 0.76)
+        {
+            NightStart();
+        }
+        else if (curTime >= 0.25 && curTime < 0.26)
+        {
+            AllRemove();
+        }
+
         if (Input.GetKeyDown(KeyCode.I)) NightStart();
 
         if(Input.GetKeyDown(KeyCode.K))
@@ -34,6 +63,8 @@ public class EnemyManager : MonoBehaviour
 
     public void NightStart()
     {
+        dayNightCycle.isNight = false;
+        Debug.Log("dfasdfasd");
         if (loop == null) loop = StartCoroutine(SpawnLoop());
     }
 
@@ -63,12 +94,17 @@ public class EnemyManager : MonoBehaviour
 
     private void AllRemove()
     {
+        dayNightCycle.isDay = false;
         foreach(Enemy_Zombie zombie in zombies)
         {
             Destroy(zombie.gameObject);
         }
         zombies.Clear();
-        StopCoroutine(loop);
+        if(loop != null)
+        {
+            StopCoroutine(loop);
+        }
+
         loop = null;
     }
 }
