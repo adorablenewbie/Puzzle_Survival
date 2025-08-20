@@ -11,6 +11,8 @@ public class DayNightCycle : MonoBehaviour
     public float startTime = 0.4f; // 시작 시간 
     private float timeRate;
     public Vector3 noon; // Vector 90 0 0 
+    public float colorChangeSpeed = 0.5f;
+
     private bool isNight;
     private bool isDay;
     private bool wasNight;
@@ -42,6 +44,9 @@ public class DayNightCycle : MonoBehaviour
     void Update()
     {
         time = (time + timeRate * Time.deltaTime) % 1.0f; // 시간 흘러가게 하기 
+
+        // Ambient Color 변경 
+        ChangeAmbientColor();
 
         bool nowNight = (time >= 0.75f || time < 0.25f);
         bool nowDay = (time >= 0.25 && time < 0.75f);
@@ -96,21 +101,6 @@ public class DayNightCycle : MonoBehaviour
         {
             go.SetActive(true);
         }
-    }
-
-    private void CheckDayNight()
-    {
-        if (time == 0.75)
-        {
-            isNight = true;
-        }
-        if (time == 0.25)
-        {
-            isDay = true;
-        }
-
-        // Ambient Color 변경 
-        ChangeAmbientColor();
     }
 
     private void ChangeAmbientColor()
