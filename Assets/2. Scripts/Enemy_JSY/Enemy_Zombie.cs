@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class Enemy_Zombie : MonoBehaviour
+public class Enemy_Zombie : MonoBehaviour, IDamagable
 {
 
     [Header("∏ÛΩ∫≈Õ Ω∫≈»")]

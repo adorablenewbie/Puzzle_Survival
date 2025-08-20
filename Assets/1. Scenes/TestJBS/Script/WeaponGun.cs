@@ -21,12 +21,8 @@ public class WeaponGun : MonoBehaviour
 
     public Vector3 fineSightOriginpos;
 
-    public Animator anim;
-
     public ParticleSystem muzzleFlash;
 
-
-    public AudioClip fire_Sound; 
 
 
 
