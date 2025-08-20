@@ -21221,7 +21221,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fdc48ff26cf01074c801746615e496ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  zombiePrefab: {fileID: 8129847379916203328, guid: d5ba27b9b6b15324d8c9b5c7a7e04e33, type: 3}
+  zombiePrefab: {fileID: 8129847379916203328, guid: 2bd52251590fd954084fd26ee9f0e1b1, type: 3}
   bearPrefab: {fileID: 6587260430560853154, guid: db10fad2e8fb38143b25c61bb3c4c614, type: 3}
   zombieSpawns:
   - {fileID: 838369006}
