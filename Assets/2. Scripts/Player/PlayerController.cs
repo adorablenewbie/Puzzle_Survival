@@ -27,6 +27,7 @@ public class PlayerController : MonoBehaviour
 
     public bool canLook = true;
     public Action inventory;
+    public Action quest;
 
     private Rigidbody rigidbody;
     private bool canDoubleJump = false;
@@ -189,6 +190,15 @@ public class PlayerController : MonoBehaviour
         bool toggle = Cursor.lockState == CursorLockMode.Locked;
         Cursor.lockState = toggle ? CursorLockMode.None : CursorLockMode.Locked;
         canLook = !toggle;
+    }
+
+    public void OnQuesttButton(InputAction.CallbackContext callbackContext)
+    {
+        if (callbackContext.phase == InputActionPhase.Started)
+        {
+            quest?.Invoke();
+            ToggleCursor();
+        }
     }
 
     public void SpeedUp(float value)
