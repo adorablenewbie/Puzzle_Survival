@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
@@ -43,6 +44,7 @@ public class Enemy_Bear : MonoBehaviour, IDamagable
     private PlayerManager playerManager;
     private Player player;
 
+    public event Action OnDie;
     private void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -112,7 +114,7 @@ public class Enemy_Bear : MonoBehaviour, IDamagable
             SetState(AIState.Idle); // Wandering이면서, 목표지점에 도착했으면 계속 Idle 상태가 됨. 
 
             // minWanerWaitTime ~maxWanderWaitTime초 뒤에 다음 목표지점을 설정 
-            Invoke("WanderToNewLocation", Random.Range(minWanderDistance, maxWanderDistance));
+            Invoke("WanderToNewLocation", UnityEngine.Random.Range(minWanderDistance, maxWanderDistance));
         }
 
         // 플레이어가 감지거리 안에 있으면 
@@ -150,7 +152,7 @@ public class Enemy_Bear : MonoBehaviour, IDamagable
         // 현재 위치에서 반지름이 1인 가상의 구의 무작위 한 점에 랜덤 값을 곱한 값을 더한 위치에서 
         // maxWanderDistance 거리까지 가장 가까운 NavMesh 영역 위 좌표를 찾아서 hit에 반환한다. 
         // 영역 제한은 없다. (NavMesh.AllAreas)
-        NavMesh.SamplePosition(transform.position + (Random.onUnitSphere * Random.Range(minWanderDistance, maxWanderDistance)), out hit, maxWanderDistance, NavMesh.AllAreas);
+        NavMesh.SamplePosition(transform.position + (UnityEngine.Random.onUnitSphere * UnityEngine.Random.Range(minWanderDistance, maxWanderDistance)), out hit, maxWanderDistance, NavMesh.AllAreas);
 
         // hit에 최단거리 경로가 저장됨
 
@@ -159,7 +161,7 @@ public class Enemy_Bear : MonoBehaviour, IDamagable
         while(Vector3.Distance(transform.position, hit.position) < detectDistance)
         {
             // 최단거리를 재탐색 
-            NavMesh.SamplePosition(transform.position + (Random.onUnitSphere * Random.Range(minWanderDistance, maxWanderDistance)), out hit, maxWanderDistance, NavMesh.AllAreas);
+            NavMesh.SamplePosition(transform.position + (UnityEngine.Random.onUnitSphere * UnityEngine.Random.Range(minWanderDistance, maxWanderDistance)), out hit, maxWanderDistance, NavMesh.AllAreas);
 
             // 감지거리(detectDistance) 밖으로 최단거리가 잡힐 때까지 30번 시도 
             i++;
@@ -268,6 +270,7 @@ public class Enemy_Bear : MonoBehaviour, IDamagable
         }
 
         Destroy(this.gameObject);
+        OnDie?.Invoke();
     }
 
     private IEnumerator DamageFlash()
