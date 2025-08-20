@@ -50,7 +50,7 @@ MonoBehaviour:
   attackDistance: 1
   doesGatherResources: 0
   doesDealDamage: 1
-  damage: 10
+  damage: 20
   useStamina: 15
   itemData: {fileID: 11400000, guid: 604b5f0562e621143a0728b2c3411c85, type: 2}
 --- !u!95 &-1450726264371680715

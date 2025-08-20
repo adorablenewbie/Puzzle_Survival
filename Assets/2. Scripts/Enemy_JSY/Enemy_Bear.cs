@@ -18,6 +18,7 @@ public class Enemy_Bear : MonoBehaviour, IDamagable
     public float walkSpeed;
     public float runSpeed;
     public ItemData[] dropOnDeath;
+    public bool isDead;
 
     [Header("AI 네비게이션에 필요한 정보들")]
     private NavMeshAgent agent;
@@ -263,13 +264,20 @@ public class Enemy_Bear : MonoBehaviour, IDamagable
 
     private void Die()
     {
+        if (!isDead)
+        {
+            animator.SetBool(Constant.AnimationParameter.Death, true);
+            agent.isStopped = true;
+            isDead = true;
+        }
+
         for(int i = 0; i < dropOnDeath.Length; i++)
         {
             // 몬스터 위치에서 2정도 위로 아이템을 드랍 
             Instantiate(dropOnDeath[i].dropPrefab, transform.position + Vector3.up * 2, Quaternion.identity);
         }
 
-        Destroy(this.gameObject);
+        Destroy(this.gameObject, 3.0f);
         OnDie?.Invoke();
     }
 

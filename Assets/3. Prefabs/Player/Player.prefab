@@ -99,7 +99,7 @@ Camera:
   field of view: 60
   orthographic: 0
   orthographic size: 5
-  m_Depth: 0
+  m_Depth: 1
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 256
@@ -325,7 +325,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 767
+    m_Bits: 2815
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -359,7 +359,6 @@ GameObject:
   - component: {fileID: 4628006302978355617}
   - component: {fileID: 2380645552350591784}
   - component: {fileID: 5519117546727620128}
-  - component: {fileID: 2427944388065809579}
   - component: {fileID: 5995450176196679763}
   - component: {fileID: 3137839055813340073}
   - component: {fileID: 9200688321551164897}
@@ -620,18 +619,6 @@ MonoBehaviour:
   cameraTransform: {fileID: 0}
   canLook: 1
   onDoubleJump: 0
---- !u!114 &2427944388065809579
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5818612673203318411}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8d83513566369f548974829cbb9a335a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!23 &5995450176196679763
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -701,6 +688,7 @@ MonoBehaviour:
     m_Bits: 64
   curInteractGameObject: {fileID: 0}
   promptText: {fileID: 0}
+  npcObject: {fileID: 0}
 --- !u!114 &172650629773301651
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -714,7 +702,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uiCondition: {fileID: 0}
+  coldStaminaDecay: 5
   noHungerHealthDecay: 5
+  playerController: {fileID: 0}
+  sceneFlowManager: {fileID: 0}
+  dayNightCycle: {fileID: 0}
+  currentTime: 0
 --- !u!114 &4972866489563235733
 MonoBehaviour:
   m_ObjectHideFlags: 0
