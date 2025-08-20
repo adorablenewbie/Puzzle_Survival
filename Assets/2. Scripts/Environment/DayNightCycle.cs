@@ -11,8 +11,10 @@ public class DayNightCycle : MonoBehaviour
     public float startTime = 0.4f; // 시작 시간 
     private float timeRate;
     public Vector3 noon; // Vector 90 0 0 
-    public bool isNight;
-    public bool isDay;
+    private bool isNight;
+    private bool isDay;
+    private bool wasNight;
+    private bool wasDay;
 
 
     [Header("Sun")]
@@ -43,14 +45,26 @@ public class DayNightCycle : MonoBehaviour
     {
         time = (time + timeRate * Time.deltaTime) % 1.0f; // 시간 흘러가게 하기 
 
-        if (time == 0.75)
+        bool nowNight = (time >= 0.75f || time < 0.25f);
+        bool nowDay = (time >= 0.25 && time < 0.75f);
+
+        if(nowNight && !wasNight)
         {
             isNight = true;
+            isDay = false;
+            OnNight?.Invoke();
         }
-        if(time == 0.25)
+
+        if (nowDay && !wasDay)
         {
             isDay = true;
+            isNight = false;
+            OnDay?.Invoke();
         }
+
+
+        wasNight = nowNight;
+        wasDay = nowDay;
 
         UpdateLighting(sun, sunColor, sunIntensity);
         UpdateLighting(moon, moonColor, moonIntensity);
