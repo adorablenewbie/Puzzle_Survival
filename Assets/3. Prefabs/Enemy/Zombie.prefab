@@ -705,7 +705,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3278201796421019323}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -9.79, y: 0, z: -8.36}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -758,7 +758,7 @@ MonoBehaviour:
   maxWanderWaitTime: 4
   damage: 10
   attackRate: 2
-  attackDistance: 3
+  attackDistance: 1.5
   fieldOfView: 120
 --- !u!195 &6675393605598412226
 NavMeshAgent:

@@ -19,12 +19,8 @@ public class CraftUIManager : MonoBehaviour
     건축 리스트에서 만들기 버튼
     -> 프리뷰 상태 true 로 진입 -> craft, build모두 끈다.
     -> 취소시에 다시 craft, build모두 킨다.
-    -> 
-     
-     
+    ->      
      */
-
-
 
     [SerializeField] private UICraft craft;
     [SerializeField] private UIBuild build;

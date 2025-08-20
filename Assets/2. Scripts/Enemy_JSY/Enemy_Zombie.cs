@@ -114,7 +114,6 @@ public class Enemy_Zombie : MonoBehaviour
 
     private void AttackingUpdate()
     {
-        // 플레이어가 공격범위 안에 있고, 시야각에 있다면
         if (playerDistance < attackDistance)
         {
             agent.isStopped = true; // 잠깐 멈추고 => 멈추고 공격 애니메이션을 실행하기 위함
@@ -129,32 +128,31 @@ public class Enemy_Zombie : MonoBehaviour
                 animator.SetTrigger(Constant.AnimationParameter.Attack);
             }
         }
-        else
-        {
-            // 플레이어가 감지거리 안에 있으면 
-            if (playerDistance < detectDistance)
-            {
-                // 플레이어를 추적해야 함.
-                agent.isStopped = false;
-                NavMeshPath path = new NavMeshPath(); // 경로 정보를 담아줄 NavMeshPath
+        //else
+        //{
+        //    // 플레이어가 감지거리 안에 있으면 
+        //    if (playerDistance < detectDistance)
+        //    {
+        //        // 플레이어를 추적해야 함.
+        //        agent.isStopped = false;
 
-                // 플레이어 위치까지 경로를 계산한다. 갈 수 있는 곳이면 true를 그렇지 않으면 false를 반환 
+        //        // 플레이어 위치까지 경로를 계산한다. 갈 수 있는 곳이면 true를 그렇지 않으면 false를 반환 
 
-                // 갈 수 없는 곳이면 추적을 멈추고 다음 경로를 탐색해야 함. 
-                agent.SetDestination(player.transform.position); // 그래서 일단은 현재 위치로 목적지를 잡고 
-                agent.isStopped = false; // 잠깐 멈췄다가 
-                SetState(AIState.Chasing); // 돌아다니는 상태로 전환해서 다음 경로를 탐색할 수 있게 한다. 
-            }
+        //        // 갈 수 없는 곳이면 추적을 멈추고 다음 경로를 탐색해야 함. 
+        //        agent.SetDestination(player.transform.position); // 그래서 일단은 현재 위치로 목적지를 잡고 
+        //        agent.isStopped = false; // 잠깐 멈췄다가 
+        //        SetState(AIState.Chasing); // 돌아다니는 상태로 전환해서 다음 경로를 탐색할 수 있게 한다. 
+        //    }
 
-            // 플레이어가 감지거리 밖에 있으면 (플레이어가 멀리 있으면)
-            else
-            {
-                // 추적을 멈춰야 함.
-                agent.SetDestination(player.transform.position); // 현재 위치를 목표지점으로 설정 
-                agent.isStopped = true; // 몬스터를 멈추고
-                SetState(AIState.Chasing); // 다시 돌아다니는 상태로 전환 
-            }
-        }
+        //    // 플레이어가 감지거리 밖에 있으면 (플레이어가 멀리 있으면)
+        //    else
+        //    {
+        //        // 추적을 멈춰야 함.
+        //        agent.SetDestination(player.transform.position); // 현재 위치를 목표지점으로 설정 
+        //        agent.isStopped = true; // 몬스터를 멈추고
+        //        SetState(AIState.Chasing); // 다시 돌아다니는 상태로 전환 
+        //    }
+        //}
     }
 
     private void OnDrawGizmosSelected()
