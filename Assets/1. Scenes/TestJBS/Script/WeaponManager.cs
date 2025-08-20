@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class WeaponManager : MonoBehaviour
 {
-    public Transform firePoint;
+    
 
     [SerializeField]
     private WeaponGun currentGun;
@@ -70,7 +70,6 @@ public class WeaponManager : MonoBehaviour
             }
         }
     }
-
 
     private void PlaySE(AudioClip _clip)
     {
