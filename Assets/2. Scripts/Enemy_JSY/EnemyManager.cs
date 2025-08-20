@@ -89,6 +89,16 @@ public class EnemyManager : MonoBehaviour
 
         zombies.Add(zombie);
 
+        zombie.OnDie += ZombieListUpdate;
+
+    }
+
+    public void ZombieListUpdate(Enemy_Zombie deadZombie)
+    {
+        if(zombies.Contains(deadZombie))
+        {
+            zombies.Remove(deadZombie);
+        }
     }
 
     private void ZombieAllRemove()

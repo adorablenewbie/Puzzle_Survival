@@ -1,9 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class Enemy_Zombie : MonoBehaviour
+public class Enemy_Zombie : MonoBehaviour, IDamagable
 {
 
     [Header("∏ÛΩ∫≈Õ Ω∫≈»")]
@@ -36,6 +37,8 @@ public class Enemy_Zombie : MonoBehaviour
     private SkinnedMeshRenderer[] meshRenderers;
     private PlayerManager playerManager;
     private Player player;
+
+    public event Action<Enemy_Zombie> OnDie;
 
     private void Awake()
     {
@@ -188,6 +191,7 @@ public class Enemy_Zombie : MonoBehaviour
         }
 
         Destroy(this.gameObject);
+        OnDie?.Invoke(this);
     }
 
     private IEnumerator DamageFlash()

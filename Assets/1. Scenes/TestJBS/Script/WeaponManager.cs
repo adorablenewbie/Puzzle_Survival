@@ -4,11 +4,12 @@ using UnityEngine;
 
 public class WeaponManager : MonoBehaviour
 {
+    public Transform firePoint;
+
     [SerializeField]
     private WeaponGun currentGun;
 
     private float currentFireRate;
-
 
     private AudioSource audioSource;
 
@@ -21,7 +22,8 @@ public class WeaponManager : MonoBehaviour
     {
         GunFireRateCalc();
         TryFire();
-
+        Ray ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
+        Debug.DrawRay(ray.origin, ray.direction * 100f, Color.red);
     }
     void GunFireRateCalc()
     {
@@ -46,10 +48,29 @@ public class WeaponManager : MonoBehaviour
 
     private void Shoot()
     {
-        PlaySE(currentGun.fire_Sound);
-        currentGun.muzzleFlash.Play();
-        Debug.Log("¹ß½Î Ç¿");
+        //PlaySE(currentGun.fire_Sound);
+        if (currentGun.muzzleFlash != null )
+        {
+            currentGun.muzzleFlash.Play();
+        }
+        Ray ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width /2, Screen.height /2));
+
+        if(Physics.Raycast(ray, out RaycastHit hit, currentGun.range))
+        {
+            IDamagable damagable = hit.collider.gameObject.GetComponent<IDamagable>();
+
+            if (damagable != null)
+            {
+                damagable.TakePhysicalDamage(currentGun.damage);
+
+            }//0.015 0.01 0.03
+            else
+            {
+                return;
+            }
+        }
     }
+
 
     private void PlaySE(AudioClip _clip)
     {
