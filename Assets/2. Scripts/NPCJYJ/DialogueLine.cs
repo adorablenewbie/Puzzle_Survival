@@ -13,9 +13,8 @@ public class DialogueLine
     public int[] nextIndex;
     public int branchTransition;
     public int indextransition;
-    public int quest;
-    public int[] questNextBranches;
-    public int questIndex;
+    public string questID;
+    public int questState; // 0: 시작, 1: 완료, 2: 실패
 
     // 새로운 보상 관련 컬럼
     public int rewardRandom;          // 랜덤 보상 개수
