@@ -15,7 +15,6 @@ public class Condition : MonoBehaviour
     public Image uiBar;
 
 
-
     private void Start()
     {
         curValue = startValue;
@@ -49,7 +48,6 @@ public class Condition : MonoBehaviour
     {
         isConditionInvincible = false;
     }
-    
     
     public IEnumerator SetConditionInvincibleCoroutine(float duration)
     {

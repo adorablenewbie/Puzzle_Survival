@@ -93,7 +93,6 @@ public class PlayerCondition : MonoBehaviour, IDamagable, IPlayerCondition
 
     public void DamageEffect()
     {
-
         if (Time.time - lastShakeTime >= 1f)
         {
             lastShakeTime = Time.time;
@@ -106,6 +105,7 @@ public class PlayerCondition : MonoBehaviour, IDamagable, IPlayerCondition
     {
         Color color = uiCondition.diePanelImage.color;
         color.a += Time.deltaTime;
+        uiCondition.diePanel.SetActive(true);
         uiCondition.diePanelImage.color = color;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;

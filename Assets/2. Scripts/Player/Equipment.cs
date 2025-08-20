@@ -7,6 +7,7 @@ using UnityEngine.InputSystem;
 public class Equipment : MonoBehaviour
 {
     public Equip curEquip;
+    
     public Transform equipParent;
 
     private PlayerController controller;
