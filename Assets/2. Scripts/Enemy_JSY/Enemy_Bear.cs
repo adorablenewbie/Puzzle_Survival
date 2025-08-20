@@ -44,13 +44,15 @@ public class Enemy_Bear : MonoBehaviour, IDamagable
     private SkinnedMeshRenderer[] meshRenderers;
     private PlayerManager playerManager;
     private Player player;
+    private BoxCollider col;
 
-    public event Action OnDie;
+    public event Action<Enemy_Bear> OnDie;
     private void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
         meshRenderers = GetComponentsInChildren<SkinnedMeshRenderer>(); // 자식들 것들을 다 가져오기. => 색깔을 바꾸는 용도
+        col = GetComponent<BoxCollider>();
     }
 
     private void Start()
@@ -251,24 +253,29 @@ public class Enemy_Bear : MonoBehaviour, IDamagable
 
     public void TakePhysicalDamage(int damageAmount)
     {
-        health -= damage;
+        if (health > 0)
+        {
+            health -= damage;
+            // 데미지 효과
+            StartCoroutine(DamageFlash());
+        }
+        
 
         if(health <= 0)
         {
             Die();
         }
 
-        // 데미지 효과
-        StartCoroutine(DamageFlash());
     }
 
-    private void Die()
+    public void Die()
     {
         if (!isDead)
         {
             animator.SetBool(Constant.AnimationParameter.Death, true);
             agent.isStopped = true;
             isDead = true;
+            col.enabled = false;
         }
 
         for(int i = 0; i < dropOnDeath.Length; i++)
@@ -277,8 +284,9 @@ public class Enemy_Bear : MonoBehaviour, IDamagable
             Instantiate(dropOnDeath[i].dropPrefab, transform.position + Vector3.up * 2, Quaternion.identity);
         }
 
+        OnDie?.Invoke(this);
+
         Destroy(this.gameObject, 3.0f);
-        OnDie?.Invoke();
     }
 
     private IEnumerator DamageFlash()
