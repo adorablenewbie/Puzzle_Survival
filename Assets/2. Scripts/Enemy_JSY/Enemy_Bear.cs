@@ -5,6 +5,7 @@ using UnityEngine.AI;
 public enum AIState
 {
     Idle, 
+    Chasing,
     Wandering, // 돌아다니는 상태
     Attacking  // 공격상태 
 }

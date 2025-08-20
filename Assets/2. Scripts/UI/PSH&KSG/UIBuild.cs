@@ -179,7 +179,6 @@ public class UIBuild : MonoBehaviour
             ItemSlot slot = FindItemSlot(inventorySlots, require.item);
             slot.quantity -= require.amount;
             inventory.UpdateUI();
-            Debug.Log(slot.quantity);
         }
     }
 
