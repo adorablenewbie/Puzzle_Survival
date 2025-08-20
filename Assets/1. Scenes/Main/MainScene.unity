@@ -391,6 +391,14 @@ PrefabInstance:
       propertyPath: uiCondition
       value: 
       objectReference: {fileID: 1976388283}
+    - target: {fileID: 172650629773301651, guid: 7f2fbe9b308515c4cbac349022abc6df, type: 3}
+      propertyPath: dayNightCycle
+      value: 
+      objectReference: {fileID: 131434159}
+    - target: {fileID: 172650629773301651, guid: 7f2fbe9b308515c4cbac349022abc6df, type: 3}
+      propertyPath: coldStaminaDecay
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 761980374061252927, guid: 7f2fbe9b308515c4cbac349022abc6df, type: 3}
       propertyPath: m_Depth
       value: 1
@@ -1813,6 +1821,13 @@ MonoBehaviour:
   fullDayLength: 30
   startTime: 0.5
   noon: {x: 90, y: 0, z: 0}
+  isNight: 0
+  isDay: 0
+  hasColorChanged: 0
+  colorChangeSpeed: 0.5
+  ambientNightColor: {r: 0, g: 0, b: 0, a: 1}
+  ambientDayColor: {r: 0.691, g: 0.584, b: 0.447, a: 1}
+  applyColor: {r: 0, g: 0, b: 0, a: 0}
   sun: {fileID: 1024319088}
   sunColor:
     serializedVersion: 2
@@ -20859,6 +20874,7 @@ MonoBehaviour:
   npcAnimator: {fileID: 0}
   npcDialogueStateKey: 0
   npc: {fileID: 0}
+  npcLoadScene: {fileID: 0}
 --- !u!114 &1759590281
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -24048,6 +24064,9 @@ MonoBehaviour:
   hunger: {fileID: 899326582}
   stamina: {fileID: 593907075}
   thirst: {fileID: 593907075}
+  diePanel: {fileID: 0}
+  damageImage: {fileID: 0}
+  diePanelImage: {fileID: 0}
 --- !u!114 &1976388284
 MonoBehaviour:
   m_ObjectHideFlags: 0
