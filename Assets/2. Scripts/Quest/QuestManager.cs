@@ -18,10 +18,7 @@ public class QuestManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-    }
-    public void Start()
-    {
-        // 초기 퀘스트 로드 또는 설정
+
         LoadInitialQuests();
     }
 

@@ -14,15 +14,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   questID: 0
   questName: "\uB0B4\uAE30\uC5D0\uC11C \uC774\uAE30\uAE30"
-  description: "\uC920\uB9AC\uC9F1\uC774 \uB0B4\uAE30\uC5D0\uC11C \uC84C\uB2E4\uACE0
+  description: "\uC8FC\uC5BC\uB9AC\uC9F1\uC774 \uB0B4\uAE30\uC5D0\uC11C \uC84C\uB2E4\uACE0
     \uC9D5\uC9D5\uAC70\uB9B0\uB2E4. \uC5D0\uD734 \uB3C4\uC640\uC8FC\uC790"
   requiredAmount: 0
   targetID: 
-  currentAmount: 1
+  currentAmount: 0
   targetNpc: 1
   branch: 1
   index: 2
-  status: 0
+  targetDialogue: "\uAE40\uC8FC\uC548 \uD29C\uD130\uB2D8\uC744 \uC774\uAE30\uACE0
+    \uC624\uC790."
+  status: 1
   successChanges:
   - npc: 0
     newBranch: 7
