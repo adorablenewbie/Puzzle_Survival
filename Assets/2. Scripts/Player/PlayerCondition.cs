@@ -31,8 +31,8 @@ public class PlayerCondition : MonoBehaviour, IDamagable, IPlayerCondition
     Condition hunger { get { return uiCondition.hunger; } }
     Condition stamina { get { return uiCondition.stamina; } }
     Condition thirst { get { return uiCondition.thirst; } }
-    
 
+    public float coldStaminaDecay;
     public float noHungerHealthDecay;
     public event Action onTakeDamage;
     public PlayerController playerController;
@@ -41,6 +41,10 @@ public class PlayerCondition : MonoBehaviour, IDamagable, IPlayerCondition
     private float lastShakeTime = -99f;
 
     public event Action onDie;
+
+    [Header("DayNightCycle")]
+    public DayNightCycle dayNightCycle;
+    public float currentTime;
 
 
     private void Update()
@@ -54,10 +58,20 @@ public class PlayerCondition : MonoBehaviour, IDamagable, IPlayerCondition
             Damage(noHungerHealthDecay * Time.deltaTime);
         }
 
-
         if (health.curValue <= 0f)
         {
             StartCoroutine(DieSceneChange(3f));
+        }
+
+        ApplyColdStaminaDecayAtNight();
+    }
+
+    private void ApplyColdStaminaDecayAtNight()
+    {
+        currentTime = dayNightCycle.time;
+        if (0.75f <= currentTime || currentTime <= 0.25f)
+        {
+            stamina.Subtract(coldStaminaDecay * Time.deltaTime);
         }
     }
 

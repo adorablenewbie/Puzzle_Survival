@@ -13,7 +13,11 @@ public class DayNightCycle : MonoBehaviour
     public Vector3 noon; // Vector 90 0 0 
     public bool isNight;
     public bool isDay;
-
+    public bool hasColorChanged;
+    public float colorChangeSpeed;
+    public Color ambientNightColor = Color.black;
+    public Color ambientDayColor = new Color(0.691f, 0.584f, 0.447f, 1.000f);
+    public Color applyColor;
 
     [Header("Sun")]
     public Light sun;
@@ -32,7 +36,6 @@ public class DayNightCycle : MonoBehaviour
     public event Action OnNight;
     public event Action OnDay;
 
-
     void Start()
     {
         timeRate = 1.0f / fullDayLength; // ex. fullDayLength가 30이면 하루를 30초로 설정 
@@ -43,14 +46,7 @@ public class DayNightCycle : MonoBehaviour
     {
         time = (time + timeRate * Time.deltaTime) % 1.0f; // 시간 흘러가게 하기 
 
-        if (time == 0.75)
-        {
-            isNight = true;
-        }
-        if(time == 0.25)
-        {
-            isDay = true;
-        }
+        CheckDayNight();
 
         UpdateLighting(sun, sunColor, sunIntensity);
         UpdateLighting(moon, moonColor, moonIntensity);
@@ -86,4 +82,30 @@ public class DayNightCycle : MonoBehaviour
         }
     }
 
+    private void CheckDayNight()
+    {
+        if (time == 0.75)
+        {
+            isNight = true;
+        }
+        if (time == 0.25)
+        {
+            isDay = true;
+        }
+
+        // Ambient Color 변경 
+        ChangeAmbientColor();
+    }
+
+    private void ChangeAmbientColor()
+    {
+        if (0.75f <= time || time <= 0.25f)
+        {
+            RenderSettings.ambientLight = Color.Lerp(RenderSettings.ambientLight, Color.black, Time.deltaTime * colorChangeSpeed);
+        }
+        else
+        {
+            RenderSettings.ambientLight = Color.Lerp(RenderSettings.ambientLight, new Color(0.691f, 0.584f, 0.447f, 1.000f), Time.deltaTime * colorChangeSpeed);
+        }
+    }
 }
