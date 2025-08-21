@@ -1,10 +1,23 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Audio;
+using UnityEngine.UI;
 
 public class SoundManager : MonoBehaviour
 {
     public static SoundManager Instance;
+
+    PlayerController playerController;
+
+    public AudioMixer audioMixer;
+
+    public GameObject soundUI;
+
+    public Slider BgmSlider;
+    public Slider SfxSlider;
 
     public AudioSource BgmSound;
     public AudioSource EffectSound;
@@ -25,6 +38,33 @@ public class SoundManager : MonoBehaviour
         else
         {
             Destroy(gameObject);
+        }
+    }
+    void Start()
+    {
+        playerController = PlayerManager.Instance.Player.controller;
+        DayTimeBGM();
+    }
+
+    void Update()
+    {
+        OpenSoundUI();
+    }
+
+    public void OpenSoundUI()
+    {
+        if (Input.GetKeyDown(KeyCode.O))
+        {
+            if (!soundUI.activeSelf)
+            {
+                soundUI.SetActive(true);
+                playerController.ToggleCursor();
+            }
+            else
+            {
+                playerController.ToggleCursor();
+                soundUI.SetActive(false);               
+            }
         }
     }
     public void BgmEnd()
@@ -68,6 +108,32 @@ public class SoundManager : MonoBehaviour
     public void PlayerWalkingSound()
     {
         EffectSound.PlayOneShot(EffectClips[1]);
+    }
+
+/*    public void SetBgmVolume()
+    {
+        audioMixer.SetFloat("BgmVolume", Mathf.Log10(BgmSlider.value) * 20);
+    }*/
+    public void SetBgmVolume()
+    {
+        float volume = BgmSlider.value;
+        audioMixer.SetFloat("BgmVolume", Mathf.Log10(volume) * 20);
+    }
+
+/*    public void BgmVolume()
+    {
+        OnSliderValueChanged(BgmSlider.value);
+    }
+
+    private void OnSliderValueChanged(float value)
+    {
+        throw new NotImplementedException();
+    }*/
+
+    public void SetSfxVolume()
+    {
+        float volume = SfxSlider.value;
+        audioMixer.SetFloat("SfxVolume", Mathf.Log10(volume) * 20);
     }
 
 }
