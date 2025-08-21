@@ -5,7 +5,8 @@ using UnityEngine;
 public enum ENPC
 {
     Amy,
-    Knight
+    Knight,
+    Seonghan
 }
 
 public class NPC : MonoBehaviour, IInteractable
@@ -21,8 +22,10 @@ public class NPC : MonoBehaviour, IInteractable
     public GameObject[] npcRewards; // NPC 보상 오브젝트 (필요시 사용)
     public ENPC npcKey;
 
-
-
+    [Header("NPC 상태 변화")]
+    public GameObject[] gameObjects; // NPC 상태 변화에 따른 게임 오브젝트 배열
+    public Vector3[] npcPos;
+    
     private DialogueManager dialogueManager; // DialogueManager 참조
 
     private void Start()

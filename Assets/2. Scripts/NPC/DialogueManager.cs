@@ -50,7 +50,15 @@ public class DialogueManager : MonoBehaviour
     private string sceneName;
     private bool isSceneLoaded = false; // 씬 로드 여부
 
+    public DialogueLine transLine; // 위치 변경 시 사용할 대화 라인
+
+    [HideInInspector]
+    public bool isTransPos = false; // NPC 위치 변경 여부
+
     private PlayerController playerController;
+
+    public SaveNPC saveNPC; // NPC 저장 스크립트 참조 (필요시 사용)
+    public SceneType sceneType; // 씬 타입 (메인 씬, 퍼즐 씬 등)
 
     void Start()
     {
@@ -60,7 +68,7 @@ public class DialogueManager : MonoBehaviour
         playerController = PlayerManager.Instance.Player.controller;
         // 게임 시작 시 JSON 로드
         npcDialogueStates = NPCDialogueDataManager.Instance.LoadNpcStates();
-
+        saveNPC.Load(sceneType);
     }
     void Update()
     {
@@ -127,7 +135,20 @@ public class DialogueManager : MonoBehaviour
                 typingSpeed = float.Parse(cols[17]),                            // 타이핑 속도
                 fontSize = fontSize,                                           // 폰트 크기
                 fontColor = fontColor,                                          // 폰트 색상
-                sceneName = cols.Length > 20 ? cols[20] : "" // 씬 이름 (추가된 컬럼)
+                sceneName = cols.Length > 20 ? cols[20] : "" ,// 씬 이름 (추가된 컬럼)
+                transPosObjects = (cols.Length > 21 && !string.IsNullOrWhiteSpace(cols[21]))
+              ? System.Array.ConvertAll(cols[21].Split('/'), x => SafeParseInt(x)) : null,
+                transPos = (cols.Length > 22 && !string.IsNullOrWhiteSpace(cols[22]))
+              ? System.Array.ConvertAll(cols[22].Split('/'), x => SafeParseInt(x)) : null,
+                destroyObjects = (cols.Length > 23 && !string.IsNullOrWhiteSpace(cols[23]))
+              ? System.Array.ConvertAll(cols[23].Split('/'), x => SafeParseInt(x)) : null,
+                destroy = cols[24] == "1",
+                spawnObjects = (cols.Length > 25 && !string.IsNullOrWhiteSpace(cols[25]))
+              ? System.Array.ConvertAll(cols[25].Split('/'), x => SafeParseInt(x)) : null,
+                permanentSpawn = (cols.Length > 26 && !string.IsNullOrWhiteSpace(cols[26]))
+              ? System.Array.ConvertAll(cols[26].Split('/'), x => (x == "1")) : null,
+                spawnPos = (cols.Length > 27 && !string.IsNullOrWhiteSpace(cols[27]))
+              ? System.Array.ConvertAll(cols[27].Split('/'), x => SafeParseInt(x)) : null
             };
             dialogueData.Add(line); // 완성된 DialogueLine을 리스트에 추가
         }
@@ -227,6 +248,14 @@ public class DialogueManager : MonoBehaviour
 
             HandleQuest(line); // 퀘스트 처리
             QuestManager.Instance.UpdateQuestProgressNPC(npcDialogueStateKey, line.branch, line.index); // 퀘스트 완료 체크
+            DestroyNPCObjects(line); // NPC 오브젝트 파괴 처리
+            SpawnObjects(line); // NPC 오브젝트 생성 처리
+            if (line.transPosObjects != null || line.transPos != null)
+            {
+                isTransPos = true; // 위치 변경 활성화
+                transLine = line;
+            }
+
 
             currentLineIndex++;
         }
@@ -247,6 +276,7 @@ public class DialogueManager : MonoBehaviour
         }
         UpdateNpcState(); // NPC 상태 업데이트
         // 모든 대사 출력 후 추가 처리 필요시 여기에 작성
+        
     }
 
     public void OnChoiceSelected(int nextBranch, int nextIndex)
@@ -410,6 +440,61 @@ public class DialogueManager : MonoBehaviour
             case 2:
                 QuestManager.Instance.FailQuest(quest);
                 break;
+        }
+    }
+
+    public void TransPosNPC(DialogueLine line)
+    {
+        if (line.transPosObjects == null || line.transPos == null || line.transPosObjects.Length != line.transPos.Length)
+        {
+            Debug.LogWarning("대화 라인에 위치 변경 정보가 올바르지 않습니다.");
+            return;
+        }
+        for(int i = 0; i < line.transPosObjects.Length; i++)
+        {
+            int objectIndex = line.transPosObjects[i];
+            int newPositionIndex = line.transPos[i];
+            GameObject transPosObj = npc.gameObjects[objectIndex];
+            Vector3 transPos = npc.npcPos[newPositionIndex];
+            transPosObj.transform.position = transPos;
+        }
+    }
+
+    public void DestroyNPCObjects(DialogueLine line)
+    {
+        if (line.destroyObjects == null || line.destroyObjects.Length == 0) return;
+        foreach (int index in line.destroyObjects)
+        {
+            if (index >= 0 && index < npc.gameObjects.Length)
+            {
+                Destroy(npc.gameObjects[index]);
+            }
+            else
+            {
+                Debug.LogWarning($"파괴할 오브젝트 인덱스가 범위를 벗어났습니다: {index}");
+            }
+        }
+    }
+
+    public void SpawnObjects(DialogueLine line)
+    {
+        if (line.spawnObjects == null || line.spawnPos == null || line.spawnObjects.Length != line.spawnPos.Length)
+        {
+            Debug.LogWarning("대화 라인에 생성 정보가 올바르지 않습니다.");
+            return;
+        }
+        for (int i = 0; i < line.spawnObjects.Length; i++)
+        {
+            int objectIndex = line.spawnObjects[i];
+            int spawnPositionIndex = line.spawnPos[i];
+            GameObject spawnObj = npc.gameObjects[objectIndex];
+            Vector3 spawnPos = npc.npcPos[spawnPositionIndex];
+            GameObject spawnNPC = Instantiate(spawnObj, spawnPos, Quaternion.identity);
+            Debug.Log(line.permanentSpawn[i]);
+            if (line.permanentSpawn[i])
+            {
+                saveNPC.Save(spawnNPC, sceneType); // 영구적으로 저장
+            }
         }
     }
 }
