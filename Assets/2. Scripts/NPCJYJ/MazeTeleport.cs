@@ -19,6 +19,8 @@ public class MazeTeleport : MonoBehaviour
 
     private bool isReady = false; // 초기화 완료 여부
 
+    public GameObject UIMaze;
+
     private void Start()
     {
         if (npc == null)
@@ -47,7 +49,6 @@ public class MazeTeleport : MonoBehaviour
         {
             TeleportToMaze(); // 대화가 활성화되면 미로로 이동
             GetComponent<MazeTeleport>().enabled = false; // 이동 후 스크립트 비활성화
-
         }
     }
     public void TeleportToMaze()
@@ -57,4 +58,8 @@ public class MazeTeleport : MonoBehaviour
         gameObject.transform.rotation = Quaternion.identity; // 회전 초기화
     }
 
+    private void OnDisable()
+    {
+        UIMaze.SetActive(true);
+    }
 }

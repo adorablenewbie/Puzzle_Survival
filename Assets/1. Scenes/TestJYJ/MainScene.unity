@@ -3066,6 +3066,7 @@ MonoBehaviour:
   npcRewards:
   - {fileID: 768682519190770808, guid: 84e6bd08389e7d74eac84bea335ce045, type: 3}
   - {fileID: 5123580909229770709, guid: 714b8f50c4a9a8748ab170b54493f39a, type: 3}
+  - {fileID: 1232294267713403843, guid: 107873308b2f8284c945833b861c2326, type: 3}
   npcKey: 0
 --- !u!65 &213130389
 BoxCollider:
