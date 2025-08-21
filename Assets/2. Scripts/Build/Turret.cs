@@ -13,6 +13,8 @@ public class Turret : MonoBehaviour
     [SerializeField] LayerMask enemyLayer;
     [SerializeField] ParticleSystem muzzleFlash;
     [SerializeField] int damage = 30;
+    [SerializeField] private float fireRate = 1f;
+    private float fireCooldown = 0f;
 
     private Transform target;
 
@@ -35,11 +37,16 @@ public class Turret : MonoBehaviour
             return;
         }
 
-        Debug.Log(target);
+        if(target != null)
+        {
+            if(fireCooldown <=  0f)
+            {
+                Shoot();
+                fireCooldown = 1f / fireRate;
+            }
+            fireCooldown -= Time.deltaTime;
 
-
-
-        Shoot();
+        }
 
     }
 
