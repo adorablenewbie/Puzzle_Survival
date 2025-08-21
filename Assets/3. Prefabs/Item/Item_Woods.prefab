@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6326710492713319417}
   - component: {fileID: 7784476279106309586}
   m_Layer: 6
-  m_Name: Item_Wood
+  m_Name: Item_Woods
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -46,7 +46,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 026d2f96838cf0a41b02cb038d232184, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  data: {fileID: 11400000, guid: 8ed1ccc9d0c32984dbc851e97b54614c, type: 2}
+  data: {fileID: 11400000, guid: 1077c817091735e478e1025602876dea, type: 2}
 --- !u!65 &7784476279106309586
 BoxCollider:
   m_ObjectHideFlags: 0

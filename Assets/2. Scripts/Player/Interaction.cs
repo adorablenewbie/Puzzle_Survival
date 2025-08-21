@@ -84,17 +84,21 @@ public class Interaction : MonoBehaviour
                 if (dialogueManager.isLastLine)
                 {
                     Debug.Log("대화 종료");
-                    //dialogueManager.dialogueData = null; // 대화 데이터 초기화
                     dialogueManager.gameObject.SetActive(false);
                     dialogueManager.isLastLine = false;
                     dialogueManager.isDialogue = false;
-                    dialogueManager.npcCamera.gameObject.SetActive(false); // NPC 대화용 카메라 비활성화
-                    dialogueManager.npcAnimator.SetInteger("actionValue", 0); // NPC 애니메이터 대화 상태 해제
+                    if (dialogueManager.npcCamera != null) dialogueManager.npcCamera.gameObject.SetActive(false); // NPC 대화용 카메라 비활성화
+                    if (dialogueManager.npcAnimator != null) dialogueManager.npcAnimator.SetInteger("actionValue", 0); // NPC 애니메이터 대화 상태 해제
                     dialogueManager.csvFile = null; // CSV 파일 초기화
                     dialogueManager.currentBranch = 1; // 현재 브랜치 초기화
                     dialogueManager.currentIndex = 1; // 현재 인덱스 초기화
                     dialogueManager.dialogueText.text = "";
                     dialogueManager.nameText.text = "";
+                    if (dialogueManager.isTransPos)
+                    {
+                        dialogueManager.isTransPos = false;
+                        dialogueManager.TransPosNPC(dialogueManager.transLine);
+                    }
                     EnableActions();
                     return;
                 }
