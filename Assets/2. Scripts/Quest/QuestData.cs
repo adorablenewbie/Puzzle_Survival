@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using UnityEngine;
 
 public enum QuestStatus
@@ -36,6 +37,7 @@ public class QuestData : ScriptableObject
     public ENPC targetNpc; // 퀘스트 목표 NPC
     public int branch; // 퀘스트 목표 대화 분기
     public int index; // 퀘스트 목표 대화 인덱스
+    public string targetDialogue; // 퀘스트 목표 대화 내용
 
     [Header("상태")]
     public QuestStatus status = QuestStatus.NotStarted;

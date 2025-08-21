@@ -18,10 +18,7 @@ public class QuestManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-    }
-    public void Start()
-    {
-        // 초기 퀘스트 로드 또는 설정
+
         LoadInitialQuests();
     }
 
@@ -63,6 +60,17 @@ public class QuestManager : MonoBehaviour
     public bool IsQuestCompleted(string questID)
     {
         return activeQuests.Exists(q => q.questID == questID && q.status == QuestStatus.Completed);
+    }
+
+    /// <summary>
+    /// 진행중인 퀘스트의 상태를 반환합니다.
+    /// </summary>
+    /// <param name="questID"></param>
+    /// <returns></returns>
+    public QuestStatus GetQuestStatus(string questID)
+    {
+        var quest = activeQuests.Find(q => q.questID == questID);
+        return quest != null ? quest.status : QuestStatus.NotStarted;
     }
 
     public void ApplyDialogueChanges(List<NpcDialogueChange> changes)

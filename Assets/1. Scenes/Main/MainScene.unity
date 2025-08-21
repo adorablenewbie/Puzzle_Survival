@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 1024319088}
-  m_IndirectSpecularColor: {r: 0.7302004, g: 0.68035823, b: 0.6966422, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1778,7 +1778,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   time: 0
-  fullDayLength: 30
+  fullDayLength: 120
   startTime: 0.5
   noon: {x: 90, y: 0, z: 0}
   colorChangeSpeed: 0.5
@@ -1846,6 +1846,9 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  sunriseTime: 0.4375
+  noonTime: 0.5
+  sunsetTime: 0.5875
   moon: {fileID: 1653400220}
   moonColor:
     serializedVersion: 2
@@ -1919,6 +1922,8 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  moonriseTime: 0
+  moonsetTime: 1
   lightingIntensityMultiplier:
     serializedVersion: 2
     m_Curve:
@@ -2003,6 +2008,8 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  nightAmbientColor: {r: 0, g: 0, b: 0, a: 0}
+  dayAmbientColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!4 &136794044 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4956255927207046, guid: c04be9f92ebf58b46b2204ac3aaa8785, type: 3}
@@ -21221,7 +21228,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fdc48ff26cf01074c801746615e496ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  zombiePrefab: {fileID: 8129847379916203328, guid: d5ba27b9b6b15324d8c9b5c7a7e04e33, type: 3}
+  zombiePrefab: {fileID: 8129847379916203328, guid: 2bd52251590fd954084fd26ee9f0e1b1, type: 3}
   bearPrefab: {fileID: 6587260430560853154, guid: db10fad2e8fb38143b25c61bb3c4c614, type: 3}
   zombieSpawns:
   - {fileID: 838369006}
@@ -23589,9 +23596,9 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1942443958}
   - {fileID: 160525451}
   - {fileID: 1184233704}
+  - {fileID: 1942443958}
   m_Father: {fileID: 1759590279}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
