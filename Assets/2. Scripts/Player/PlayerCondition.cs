@@ -36,7 +36,6 @@ public class PlayerCondition : MonoBehaviour, IDamagable, IPlayerCondition
     public float noHungerHealthDecay;
     public event Action onTakeDamage;
     public PlayerController playerController;
-    private SceneFlowManager sceneFlowManager;
 
     private float lastShakeTime = -99f;
 
