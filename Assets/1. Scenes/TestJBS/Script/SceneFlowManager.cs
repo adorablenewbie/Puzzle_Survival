@@ -29,6 +29,7 @@ public class SceneFlowManager : MonoBehaviour
 
     public void SceneChange(SceneType sceneType)
     {
+        Debug.Log("¾À "+ sceneType.ToString());
         SceneManager.LoadScene(sceneType.ToString());
     }
 }

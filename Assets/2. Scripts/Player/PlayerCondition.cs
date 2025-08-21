@@ -36,7 +36,7 @@ public class PlayerCondition : MonoBehaviour, IDamagable, IPlayerCondition
     public float noHungerHealthDecay;
     public event Action onTakeDamage;
     public PlayerController playerController;
-    public SceneFlowManager sceneFlowManager;
+    private SceneFlowManager sceneFlowManager;
 
     private float lastShakeTime = -99f;
 
@@ -65,9 +65,10 @@ public class PlayerCondition : MonoBehaviour, IDamagable, IPlayerCondition
 
         ApplyColdStaminaDecayAtNight();
     }
-
+  
     private void ApplyColdStaminaDecayAtNight()
     {
+        
         currentTime = dayNightCycle.time;
         if (0.75f <= currentTime || currentTime <= 0.25f)
         {
@@ -109,23 +110,28 @@ public class PlayerCondition : MonoBehaviour, IDamagable, IPlayerCondition
     {
         if (Time.time - lastShakeTime >= 1f)
         {
+            uiCondition.damageImage.gameObject.SetActive(true);
             lastShakeTime = Time.time;
             Camera.main.transform.DOShakePosition(0.3f, 0.15f, 10, 90, false, true);
-            uiCondition.damageImage.DOFade(0.2f,0.3f).SetLoops(2, LoopType.Yoyo);
+            uiCondition.damageImage
+                .DOFade(0.1f,0.1f)
+                .SetLoops(2, LoopType.Incremental)
+                .OnComplete(() => uiCondition.damageImage.gameObject.SetActive(false));
         }
     }
 
     public void Die()
     {
+        uiCondition.diePanelImage.gameObject.SetActive(true);
         Color color = uiCondition.diePanelImage.color;
         color.a += Time.deltaTime;
         uiCondition.diePanel.SetActive(true);
         uiCondition.diePanelImage.color = color;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        playerController.canLook = false;
         playerController.moveSpeed = 0f;
         playerController.jumpPower = 0f;
+        playerController.canLook = false;
         Debug.Log("Player has died.");
     }
     private IEnumerator DieSceneChange(float delay)
