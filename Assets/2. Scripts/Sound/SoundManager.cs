@@ -43,7 +43,7 @@ public class SoundManager : MonoBehaviour
     void Start()
     {
         playerController = PlayerManager.Instance.Player.controller;
-        DayTimeBGM();
+        NightTimeBGM();
     }
 
     void Update()

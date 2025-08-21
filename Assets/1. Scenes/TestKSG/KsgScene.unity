@@ -23106,6 +23106,14 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 3347219495034183826, guid: de9e5662f1b722943a2da416739e5bee, type: 3}
+      propertyPath: Day
+      value: 
+      objectReference: {fileID: 8300000, guid: b89e2a6d54f285a4490efb2486296a9f, type: 3}
+    - target: {fileID: 3347219495034183826, guid: de9e5662f1b722943a2da416739e5bee, type: 3}
+      propertyPath: Night
+      value: 
+      objectReference: {fileID: 8300000, guid: 14c5781d58cda844ab0acdf34fb5b9d5, type: 3}
+    - target: {fileID: 3347219495034183826, guid: de9e5662f1b722943a2da416739e5bee, type: 3}
       propertyPath: soundUI
       value: 
       objectReference: {fileID: 1874223335}

@@ -249,5 +249,5 @@ MonoBehaviour:
   - {fileID: 8300000, guid: c312687cc4c5ca940b1c9c736a5d4d46, type: 3}
   EffectClips:
   - {fileID: 8300000, guid: 2203773368e4340d98c114f55c2dd7fd, type: 3}
-  Day: {fileID: 8300000, guid: bb59483c1abec4f41881b66f9c8a09d5, type: 3}
-  Night: {fileID: 8300000, guid: ffc95b83c9f8344ebb6214eb5b0b3087, type: 3}
+  Day: {fileID: 8300000, guid: b89e2a6d54f285a4490efb2486296a9f, type: 3}
+  Night: {fileID: 8300000, guid: 14c5781d58cda844ab0acdf34fb5b9d5, type: 3}
