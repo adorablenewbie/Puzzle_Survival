@@ -70,7 +70,6 @@ public class WeaponManager : MonoBehaviour
             }
         }
     }
-
     private void PlaySE(AudioClip _clip)
     {
         audioSource.clip = _clip;

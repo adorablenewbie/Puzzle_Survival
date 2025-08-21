@@ -11,7 +11,7 @@ public class SceneFlowManager : MonoBehaviour
     {
         None,
         MainScene,
-        TietleScene,
+        TitleScene,
     }
 
     private void Awake()
