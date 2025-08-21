@@ -88,7 +88,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemToGive: {fileID: 11400000, guid: 1fefdd96251bfbf42896236a023eeb7f, type: 2}
   quantityPerHit: 1
-  capacity: 3
+  capacity: 1
 --- !u!54 &7279711454453050015
 Rigidbody:
   m_ObjectHideFlags: 0

@@ -121,7 +121,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 026d2f96838cf0a41b02cb038d232184, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  data: {fileID: 11400000, guid: a681880a84093d84ea494e570ae39d8e, type: 2}
+  data: {fileID: 11400000, guid: 87682b33f5fcec84c81e7386e6f87ea1, type: 2}
 --- !u!114 &3374517910343047892
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -134,7 +134,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2112ca82f85f4f41a3d610eba5df75a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemToGive: {fileID: 11400000, guid: 87682b33f5fcec84c81e7386e6f87ea1, type: 2}
+  itemToGive: {fileID: 11400000, guid: c56600ee94f404949993d8112b2d420c, type: 2}
   quantityPerHit: 1
   capacity: 3
 --- !u!54 &-3966888620412973844
