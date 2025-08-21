@@ -62,6 +62,17 @@ public class QuestManager : MonoBehaviour
         return activeQuests.Exists(q => q.questID == questID && q.status == QuestStatus.Completed);
     }
 
+    /// <summary>
+    /// 진행중인 퀘스트의 상태를 반환합니다.
+    /// </summary>
+    /// <param name="questID"></param>
+    /// <returns></returns>
+    public QuestStatus GetQuestStatus(string questID)
+    {
+        var quest = activeQuests.Find(q => q.questID == questID);
+        return quest != null ? quest.status : QuestStatus.NotStarted;
+    }
+
     public void ApplyDialogueChanges(List<NpcDialogueChange> changes)
     {
         foreach (var change in changes)
