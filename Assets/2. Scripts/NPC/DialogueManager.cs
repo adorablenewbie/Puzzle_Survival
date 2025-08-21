@@ -413,6 +413,7 @@ public class DialogueManager : MonoBehaviour
     {
         if (isSceneLoaded) 
         {
+            Debug.Log($"씬 로딩: {sceneName}");
             isSceneLoaded = false; // 대화 UI가 비활성화되면 씬 로드 상태 초기화
             npcLoadScene.LoadScene(sceneName); // NPC 로드 씬 스크립트로 씬 로드
         }

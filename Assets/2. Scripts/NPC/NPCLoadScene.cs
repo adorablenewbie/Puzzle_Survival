@@ -13,20 +13,24 @@ public class NPCLoadScene : MonoBehaviour
         "KillzoneScene"
     };
     private bool isSceneName = false;
+    public DialogueManager dialogueManager;
 
     private void Start()
     {
-        PlayerManager.Instance.Player.dialogueManager.npcLoadScene = this;
+        //PlayerManager.Instance.Player.dialogueManager.npcLoadScene = this;
+        dialogueManager.npcLoadScene = this;
     }
 
     public void LoadScene(string sceneName)
     {
         if (SceneManager.GetSceneByName(sceneName).isLoaded)
         {
+            Debug.Log("Áßº¹¾À");
             return;
         }
         foreach (string name in sceneNames)
         {
+            Debug.Log($"{name} : {sceneName}");
             if (name == sceneName)
             {
                 isSceneName = true;
