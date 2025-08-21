@@ -28,4 +28,11 @@ public class DialogueLine
     public int fontSize;
     public Color fontColor;
     public string sceneName;
+    public int[] transPosObjects; // 위치 변경 오브젝트 인덱스 배열
+    public int[] transPos;
+    public int[] destroyObjects; // 파괴할 오브젝트 인덱스 배열
+    public bool destroy;  //굳이 있을 필요는 없다 나중에 리팩터링 하자
+    public int[] spawnObjects; // 생성할 오브젝트 인덱스 배열
+    public bool[] permanentSpawn;
+    public int[] spawnPos; // 생성 위치 오브젝트 인덱스 배열
 }

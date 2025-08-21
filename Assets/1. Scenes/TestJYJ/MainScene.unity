@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 1024319088}
-  m_IndirectSpecularColor: {r: 0.73421663, g: 0.6856396, b: 0.69368535, a: 1}
+  m_IndirectSpecularColor: {r: 0.9331072, g: 0.87120503, b: 0.88123786, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -3068,6 +3068,12 @@ MonoBehaviour:
   - {fileID: 5123580909229770709, guid: 714b8f50c4a9a8748ab170b54493f39a, type: 3}
   - {fileID: 1232294267713403843, guid: 107873308b2f8284c945833b861c2326, type: 3}
   npcKey: 0
+  gameObjects:
+  - {fileID: 213130386}
+  - {fileID: 6392269469688908297, guid: dfa588d8f1866884e9507ceb6fb88d4d, type: 3}
+  npcPos:
+  - {x: -3, y: -2.77, z: 14.02}
+  - {x: 45.2, y: 4.27, z: 86.51}
 --- !u!65 &213130389
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4560,6 +4566,9 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  sunriseTime: 0
+  noonTime: 0
+  sunsetTime: 0
   moon: {fileID: 1972903723}
   moonColor:
     serializedVersion: 2
@@ -4633,6 +4642,8 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  moonriseTime: 0
+  moonsetTime: 0
   lightingIntensityMultiplier:
     serializedVersion: 2
     m_Curve:
@@ -4717,6 +4728,8 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  nightAmbientColor: {r: 0, g: 0, b: 0, a: 0}
+  dayAmbientColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!4 &273014836
 Transform:
   m_ObjectHideFlags: 0
@@ -5989,6 +6002,7 @@ GameObject:
   - component: {fileID: 385662394}
   - component: {fileID: 385662393}
   - component: {fileID: 385662395}
+  - component: {fileID: 385662396}
   m_Layer: 0
   m_Name: NPCManager
   m_TagString: Untagged
@@ -6033,6 +6047,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 20494bf52d44e0844b3bca0189ffe0fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &385662396
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 385662392}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6b3ecc4324102c47be1a3a6f1870f2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &400274234
@@ -19766,6 +19792,38 @@ MonoBehaviour:
   npcDialogueStateKey: 0
   npc: {fileID: 0}
   npcLoadScene: {fileID: 0}
+  transLine:
+    branch: 0
+    index: 0
+    npcName: 
+    text: 
+    actions: []
+    nextBranches: 
+    nextIndex: 
+    branchTransition: 0
+    indextransition: 0
+    questID: 
+    questState: 0
+    rewardRandom: 0
+    rewardCategories: 
+    rewardCounts: 
+    shake: 0
+    animation: 0
+    zoom: 0
+    typingSpeed: 0
+    fontSize: 0
+    fontColor: {r: 0, g: 0, b: 0, a: 0}
+    sceneName: 
+    transPosObjects: 
+    transPos: 
+    destroyObjects: 
+    destroy: 0
+    spawnObjects: 
+    permanentSpawn: 
+    spawnPos: 
+  isTransPos: 0
+  saveNPC: {fileID: 385662396}
+  sceneType: 0
 --- !u!1001 &1749285109
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -24000,7 +24058,7 @@ SceneRoots:
   - {fileID: 3782914337513845449}
   - {fileID: 133913232}
   - {fileID: 523497053}
-  - {fileID: 213130387}
   - {fileID: 385662394}
   - {fileID: 624945454}
   - {fileID: 938158508}
+  - {fileID: 213130387}
