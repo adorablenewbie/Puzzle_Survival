@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class DayNightCycle : MonoBehaviour
@@ -22,18 +20,45 @@ public class DayNightCycle : MonoBehaviour
     public Light sun;
     public Gradient sunColor; // 서서히 색이 변하는 걸 표현 
     public AnimationCurve sunIntensity; // 빛 강도 
+    public float sunriseTime;
+    public float noonTime;
+    public float sunsetTime;
 
     [Header("Moon")]
     public Light moon;
     public Gradient moonColor;
     public AnimationCurve moonIntensity;
+    public float moonriseTime;
+    public float moonsetTime;
 
     [Header("Other Lighting")]
     public AnimationCurve lightingIntensityMultiplier; // 간접광(씬 전체에 퍼지는 빛)
     public AnimationCurve reflectionIntensityMultiplier; // 반사광 
 
+    [Header("AmbientColor")]
+    public Color nightAmbientColor;
+    public Color dayAmbientColor;
+
     public event Action OnNight;
     public event Action OnDay;
+
+    private void Awake()
+    {
+        RenderSettings.skybox.SetFloat("_Exposure", 2.34f);
+
+        // ambient color initialize 
+        nightAmbientColor = Color.black;
+        dayAmbientColor = new Color(0.691f, 0.584f, 0.447f, 1.000f);
+
+        sunIntensity = new AnimationCurve();
+        sunIntensity.AddKey(sunriseTime, 0.0f);
+        sunIntensity.AddKey(noonTime, 1.0f);
+        sunIntensity.AddKey(sunsetTime, 0.0f);
+
+        moonIntensity = new AnimationCurve();
+        moonIntensity.AddKey(moonriseTime, 0.0f);
+        moonIntensity.AddKey(moonsetTime, 0.0f);
+    }
 
     void Start()
     {
@@ -48,10 +73,12 @@ public class DayNightCycle : MonoBehaviour
         // Ambient Color 변경 
         ChangeAmbientColor();
 
-        bool nowNight = (time >= 0.75f || time < 0.25f);
-        bool nowDay = (time >= 0.25 && time < 0.75f);
+        //bool nowNight = (time >= 0.75f || time < 0.25f);
+        bool nowNight = (time >= sunsetTime || time <= sunriseTime);
+        //bool nowDay = (time >= 0.25f && time < 0.75f);
+        bool nowDay = (sunriseTime <= time && time <= sunsetTime);
 
-        if(nowNight && !wasNight)
+        if (nowNight && !wasNight)
         {
             isNight = true;
             isDay = false;
@@ -82,7 +109,7 @@ public class DayNightCycle : MonoBehaviour
         // 빛 강도 계산
         float intensity = intensityCurve.Evaluate(time); 
 
-        // 조명의 각도 계산 
+        // 조명 각도 계산 
         lightSource.transform.eulerAngles = (time - (lightSource == sun ? 0.25f : 0.75f)) * noon * 4f;
 
         // 조명 색상 설정 
@@ -93,11 +120,11 @@ public class DayNightCycle : MonoBehaviour
 
         // 해가 넘어간 상태에서는 끄자. 
         GameObject go = lightSource.gameObject;
-        if(lightSource.intensity == 0 && go.activeInHierarchy) 
+        if (Mathf.Approximately(lightSource.intensity, 0f) && go.activeInHierarchy) // 빛 강도가 0에 가까워지면 오브젝트 끄기. 
         {
             go.SetActive(false);
         }
-        else if(lightSource.intensity > 0 && !go.activeInHierarchy)
+        else if (!Mathf.Approximately(lightSource.intensity, 0f) && !go.activeInHierarchy)
         {
             go.SetActive(true);
         }
@@ -105,13 +132,16 @@ public class DayNightCycle : MonoBehaviour
 
     private void ChangeAmbientColor()
     {
-        if (0.75f <= time || time <= 0.25f)
+        //if (0.75f <= time || time <= 0.25f) // time >= sunsetTime || time <= sunriseTime
+        if (time >= sunsetTime || time <= sunriseTime) 
         {
-            RenderSettings.ambientLight = Color.Lerp(RenderSettings.ambientLight, Color.black, Time.deltaTime * colorChangeSpeed);
+            RenderSettings.skybox.SetFloat("_Exposure", Mathf.Lerp(RenderSettings.skybox.GetFloat("_Exposure"), 0f, Time.deltaTime * colorChangeSpeed));
+            RenderSettings.ambientLight = Color.Lerp(RenderSettings.ambientLight, nightAmbientColor, Time.deltaTime * colorChangeSpeed);
         }
         else
         {
-            RenderSettings.ambientLight = Color.Lerp(RenderSettings.ambientLight, new Color(0.691f, 0.584f, 0.447f, 1.000f), Time.deltaTime * colorChangeSpeed);
+            RenderSettings.skybox.SetFloat("_Exposure", Mathf.Lerp(RenderSettings.skybox.GetFloat("_Exposure"), 1f, Time.deltaTime * colorChangeSpeed));
+            RenderSettings.ambientLight = Color.Lerp(RenderSettings.ambientLight, dayAmbientColor, Time.deltaTime * colorChangeSpeed);
         }
     }
 }

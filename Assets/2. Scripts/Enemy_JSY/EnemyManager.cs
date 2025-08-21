@@ -50,7 +50,7 @@ public class EnemyManager : MonoBehaviour
         {
             Enemy_Bear bear = Instantiate(bearPrefab, bearSpawns[i]);
             bears.Add(bear);
-            bear.OnDie += RespawnBear;
+            bear.OnDie += BearListUpdate;
         } 
     }
 
@@ -71,11 +71,10 @@ public class EnemyManager : MonoBehaviour
 
     public void RespawnBear()
     {
-        foreach (Transform spawn in bearSpawns)
-        {
-            Enemy_Bear bear = Instantiate(bearPrefab, spawn);
-            bears.Add(bear);
-        }
+        int index = Random.Range(0, bearSpawns.Length);
+        Enemy_Bear bear = Instantiate(bearPrefab, bearSpawns[index]);
+        bears.Add(bear);
+        bear.OnDie += BearListUpdate;
     }
 
 
@@ -123,5 +122,18 @@ public class EnemyManager : MonoBehaviour
             Destroy(bear.gameObject);
         }
         bears.Clear();
+    }
+
+    public void BearListUpdate(Enemy_Bear deadBear)
+    {
+        if(bears.Contains(deadBear))
+        {
+            bears.Remove(deadBear);
+        }
+
+        Transform spawn = deadBear.transform.parent;
+        Enemy_Bear newBear = Instantiate(bearPrefab, spawn);
+        bears.Add(newBear);
+        newBear.OnDie += BearListUpdate;
     }
 }
