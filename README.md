@@ -241,6 +241,11 @@ UI 애니메이션 추가
 
 
 ## 🧠트러블 슈팅  
+<img width="488" height="360" alt="image" src="https://github.com/user-attachments/assets/5f32ec3b-a5f3-4feb-bd26-be49290f14f1" />
+<p>이슈</p>
+- 다양한 적 종류를 만들고 EnemyManager를 구현하던 중 적들이 관리가 잘 안되어 Null 오류가 발생이 되었다.
+- 적들 사망시 한번만 이루어저야 할 동작(아이템 드랍 등)이 중복으로 발생되는 문제가 있었다.
+
 
 
 ## 😊 프로젝트 회고
