@@ -30,11 +30,15 @@ public class Turret : MonoBehaviour
     void Update()
     {
         FindNearestEnemy();
- 
-        if (Vector3.Distance(transform.position, target.position) > attackRange)
+
+        if (target != null)
         {
-            target = null;
-            return;
+
+            if (Vector3.Distance(transform.position, target.position) > attackRange)
+            {
+                target = null;
+                return;
+            }
         }
 
         if(target != null)
