@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4e6147cc37fd2040aec00d36b0b44a8, type: 3}
+  m_Name: Quest1
+  m_EditorClassIdentifier: 
+  questID: 1
+  questName: "\uB098\uC774\uD2B8\uAC00\uC774 \uC131\uD55C\uC758 \uAFC8"
+  description: "\uD5E4\uC73C\uC751\uAC70\uB9AC\uB294 \uB098\uC774\uD2B8\uAC00\uC774
+    \uC131\uD55C\uACFC \uC870\uC6B0\uD588\uB2E4. \uD5E4\uC73C\uC751\uC774 \uAF34\uBC1B\uC544\uC11C
+    \uC8FD\uC774\uB824\uACE0\uD55C\uB2E4. \uC5B4\uB518\uAC00\uC5D0 \uC788\uC744 \uB098\uC774\uD2B8\uAC00\uC774
+    \uC131\uD55C\uC744 \uCC3E\uC544\uBCF4\uC790. \uADF8\uB7F0\uB370 \uC8FD\uC774\uB294
+    \uAC83\uC774 \uB9DE\uB294 \uC120\uD0DD\uC77C\uAE4C?"
+  requiredAmount: 0
+  targetID: 
+  currentAmount: 0
+  targetNpc: 2
+  branch: 4
+  index: 1
+  targetDialogue: "\uC131\uD55C\uC744 \uCC3E\uC544\uBCF4\uC790."
+  status: 0
+  successChanges:
+  - npc: 0
+    newBranch: 10
+    newIndex: 1
+  failChanges:
+  - npc: 0
+    newBranch: 11
+    newIndex: 1

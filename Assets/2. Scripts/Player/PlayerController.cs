@@ -1,0 +1,231 @@
+using System;
+using UnityEngine;
+using UnityEngine.InputSystem;
+using Cinemachine;
+using System.Collections;
+
+public class PlayerController : MonoBehaviour
+{
+    [Header("Movement")]
+    public float moveSpeed;
+    private Vector2 curMovementInput;
+    public float jumpPower;
+    public float detectDistance;
+    public LayerMask groundLayerMask;
+
+    [Header("Look")]
+    public Transform cameraContainer;
+    public float minXLook;
+    public float maxXLook;
+    private float camCurXRot;
+    public float lookSensitivity;
+
+    [Header("Camera")]
+    public Transform cameraTransform; // 카메라 Transform을 인스펙터에서 할당
+
+    private Vector2 mouseDelta;
+
+    public bool canLook = true;
+    public Action inventory;
+    public Action quest;
+
+    private Rigidbody rigidbody;
+    private bool canDoubleJump = false;
+    public bool onDoubleJump = false;
+
+
+
+    private void Awake()
+    {
+        rigidbody = GetComponent<Rigidbody>();
+    }
+
+    void Start()
+    {
+        Cursor.lockState = CursorLockMode.Locked;
+    }
+ 
+
+    private void FixedUpdate()
+    {
+        Move();
+        //RotateToCamera(); // 추가
+    }
+
+    private void LateUpdate()
+    {
+        if (canLook)
+        {
+            CameraLook();
+        }
+    }
+
+    public void OnLookInput(InputAction.CallbackContext context)
+    {
+        mouseDelta = context.ReadValue<Vector2>();
+    }
+
+    public void OnMoveInput(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Performed)
+        {
+            curMovementInput = context.ReadValue<Vector2>();
+        }
+        else if (context.phase == InputActionPhase.Canceled)
+        {
+            curMovementInput = Vector2.zero;
+        }
+    }
+
+    public void OnJumpInput(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Started && canDoubleJump && onDoubleJump)
+        {
+            canDoubleJump = false; // 더블 점프 사용 후 불가능 상태로 설정
+            rigidbody.AddForce(Vector2.up * jumpPower, ForceMode.Impulse);
+        }
+        if (context.phase == InputActionPhase.Started && IsGrounded())
+        {
+            rigidbody.AddForce(Vector2.up * jumpPower, ForceMode.Impulse);
+            canDoubleJump = true; // 더블 점프 가능 상태로 설정
+        }
+
+    }
+    public void OnDeleteInput(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Started)
+        {
+            Debug.Log("Delete Input Triggered");
+            DeleteObject();
+            
+        }
+    }
+
+    private void DeleteObject()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2));
+        Debug.Log($"dddddd");
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray,out hit, 100f))
+        {
+            Debug.Log($"Deleted: {hit.collider.name}");
+            Destroy(hit.collider.gameObject);
+            
+        }
+    }
+
+
+
+    private void Move()
+    {
+        Vector3 dir = transform.forward * curMovementInput.y + transform.right * curMovementInput.x;
+        dir *= moveSpeed;
+        dir.y = rigidbody.velocity.y;
+
+        rigidbody.velocity = dir;
+    }
+
+    void CameraLook()
+    {
+        camCurXRot += mouseDelta.y * lookSensitivity;
+        camCurXRot = Mathf.Clamp(camCurXRot, minXLook, maxXLook);
+        cameraContainer.localEulerAngles = new Vector3(-camCurXRot, 0, 0);
+        transform.eulerAngles += new Vector3(0, mouseDelta.x * lookSensitivity, 0);
+    }
+
+ 
+    //private void RotateToCamera() //씨네머신 때문에 생긴거~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //{
+    //    // 전진 입력일 때만 회전 적용, 나중에 조금 손 보자
+    //    if (curMovementInput.sqrMagnitude > 0.01f && curMovementInput.y > 0)
+    //    {
+    //        Vector3 camForward = cameraTransform.forward;
+    //        camForward.y = 0;
+    //        camForward.Normalize();
+
+    //        Vector3 moveDir = camForward * curMovementInput.y + cameraTransform.right * curMovementInput.x;
+    //        moveDir.y = 0;
+
+    //        if (moveDir.sqrMagnitude > 0.01f)
+    //        {
+    //            Quaternion targetRotation = Quaternion.LookRotation(moveDir);
+    //            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 0.2f);
+    //        }
+    //    }
+    //}
+
+    bool IsGrounded()
+    {
+        Ray[] rays = new Ray[4]
+        {
+            new Ray(transform.position + (transform.forward * 0.2f) + (transform.up * 0.01f), Vector3.down),
+            new Ray(transform.position + (-transform.forward * 0.2f) + (transform.up * 0.01f), Vector3.down),
+            new Ray(transform.position + (transform.right * 0.2f) + (transform.up * 0.01f), Vector3.down),
+            new Ray(transform.position + (-transform.right * 0.2f) +(transform.up * 0.01f), Vector3.down)
+        };
+
+        for (int i = 0; i < rays.Length; i++)
+        {
+            if (Physics.Raycast(rays[i], detectDistance, groundLayerMask))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public void OnInventoryButton(InputAction.CallbackContext callbackContext)
+    {
+        if (callbackContext.phase == InputActionPhase.Started)
+        {
+            inventory?.Invoke();
+            ToggleCursor();
+        }
+    }
+
+    public void ToggleCursor()
+    {
+        bool toggle = Cursor.lockState == CursorLockMode.Locked;
+        Cursor.lockState = toggle ? CursorLockMode.None : CursorLockMode.Locked;
+        canLook = !toggle;
+    }
+
+    public void OnQuesttButton(InputAction.CallbackContext callbackContext)
+    {
+        if (callbackContext.phase == InputActionPhase.Started)
+        {
+            quest?.Invoke();
+            ToggleCursor();
+        }
+    }
+
+    public void SpeedUp(float value)
+    {
+        moveSpeed += value;
+    }
+    public void JumpUp(float value)
+    {
+        jumpPower += value;
+    }
+
+    public IEnumerator SpeedUpCoroutine(float value, float duration)
+    {
+        SpeedUp(value);
+        yield return new WaitForSeconds(duration);
+        moveSpeed -= value;
+    }
+    public IEnumerator JumpUpCoroutine(float value, float duration)
+    {
+        JumpUp(value);
+        yield return new WaitForSeconds(duration);
+        jumpPower -= value;
+    }
+    public IEnumerator DoubleJumpCoroutine(float duration)
+    {
+        onDoubleJump = true;
+        yield return new WaitForSeconds(duration);
+        onDoubleJump = false;
+    }
+}

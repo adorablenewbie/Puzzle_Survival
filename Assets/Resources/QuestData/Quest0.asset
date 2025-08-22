@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4e6147cc37fd2040aec00d36b0b44a8, type: 3}
+  m_Name: Quest0
+  m_EditorClassIdentifier: 
+  questID: 0
+  questName: "\uB0B4\uAE30\uC5D0\uC11C \uC774\uAE30\uAE30"
+  description: "\uC8FC\uC5BC\uB9AC\uC9F1\uC774 \uB0B4\uAE30\uC5D0\uC11C \uC84C\uB2E4\uACE0
+    \uC9D5\uC9D5\uAC70\uB9B0\uB2E4. \uC5D0\uD734 \uB3C4\uC640\uC8FC\uC790"
+  requiredAmount: 0
+  targetID: 
+  currentAmount: 1
+  targetNpc: 1
+  branch: 1
+  index: 2
+  targetDialogue: "\uAE40\uC8FC\uC548 \uD29C\uD130\uB2D8\uC744 \uC774\uAE30\uACE0
+    \uC624\uC790."
+  status: 0
+  successChanges:
+  - npc: 0
+    newBranch: 7
+    newIndex: 1
+  failChanges:
+  - npc: 0
+    newBranch: 9
+    newIndex: 1
