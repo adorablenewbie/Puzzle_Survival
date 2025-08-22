@@ -789,7 +789,7 @@ GameObject:
   - component: {fileID: 7708245843177743568}
   m_Layer: 11
   m_Name: Bear
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -849,6 +849,7 @@ MonoBehaviour:
   dropOnDeath:
   - {fileID: 11400000, guid: 87682b33f5fcec84c81e7386e6f87ea1, type: 2}
   - {fileID: 11400000, guid: 1077c817091735e478e1025602876dea, type: 2}
+  isDead: 0
   detectDistance: 5
   minWanderDistance: 5
   maxWanderDistance: 10
