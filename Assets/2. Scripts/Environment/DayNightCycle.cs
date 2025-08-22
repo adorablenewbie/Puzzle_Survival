@@ -118,7 +118,7 @@ public class DayNightCycle : MonoBehaviour
     private void UpdateLighting(Light lightSource, Gradient gradient, AnimationCurve intensityCurve)
     {
         // 빛 강도 계산
-        float intensity = intensityCurve.Evaluate(time);
+        float intensity = intensityCurve.Evaluate(time); 
 
         // 조명 각도 계산 
         lightSource.transform.eulerAngles = (time - (lightSource == sun ? 0.25f : 0.75f)) * noon * 4f;
@@ -144,7 +144,7 @@ public class DayNightCycle : MonoBehaviour
     private void ChangeAmbientColor()
     {
         //if (0.75f <= time || time <= 0.25f) // time >= sunsetTime || time <= sunriseTime
-        if (time >= sunsetTime || time <= sunriseTime)
+        if (time >= sunsetTime || time <= sunriseTime) 
         {
             RenderSettings.skybox.SetFloat("_Exposure", Mathf.Lerp(RenderSettings.skybox.GetFloat("_Exposure"), 0f, Time.deltaTime * colorChangeSpeed));
             RenderSettings.ambientLight = Color.Lerp(RenderSettings.ambientLight, nightAmbientColor, Time.deltaTime * colorChangeSpeed);
