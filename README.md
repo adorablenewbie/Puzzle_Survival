@@ -142,7 +142,7 @@ UI 애니메이션 추가
 📦 2. Scripts/
 ├── 📂 BuffData/ # 버프 스크립트
 │ └─ 📂 Data/ # 버프 Scriptable Object
-│ └─ Buff_DoubleJump.asset
+│ └─ Buff_DoubleJump.asset</br>
 │ └─ Buff_Heal.asset
 │ └─ Buff_JumpUp.asset
 │ └─ Buff_SpeedUp.asset
