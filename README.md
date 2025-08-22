@@ -139,7 +139,7 @@ UI 애니메이션 추가
 
 ## 📂 프로젝트 폴더 구조  
 
-📦 2. Scripts/
+📦 2. Scripts/</br>
 ├── 📂 BuffData/ # 버프 스크립트</br>
 │ └─ 📂 Data/ # 버프 Scriptable Object</br>
 │ └─ Buff_DoubleJump.asset</br>
