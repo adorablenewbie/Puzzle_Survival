@@ -144,7 +144,7 @@ public class PlayerCondition : MonoBehaviour, IDamagable, IPlayerCondition
 
     public void TakePhysicalDamage(int damageAmount)
     {
-        health.Subtract(damageAmount);
+        Damage(damageAmount);
         onTakeDamage?.Invoke();
     }
 
