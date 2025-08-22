@@ -241,19 +241,15 @@ UI 애니메이션 추가
 
 
 ## 🧠트러블 슈팅  
-<p>이슈</p>
-- 다양한 적 종류를 만들고 EnemyManager를 구현하던 중 적들이 관리가 잘 안되어 Null 오류가 발생이 되었다. 
-- 적들 사망시 한번만 이루어저야 할 동작(아이템 드랍 등)이 중복으로 발생되는 문제가 있었다.
+<img width="958" height="667" alt="image" src="https://github.com/user-attachments/assets/5f56623b-38ac-4903-8faf-075168023d17" />
 
-<p>원인</p>
-- 안일한 코드의 짜임새로 발생된 것인데 재생성 되고 파괴되는 적들을 List에 삽입하여 제대로 관리해주지 못한것이 원인
-- 사망한 적들의 콜라이더가 존재하여 동작이 계속 되는 것이 원인 이었다.
+<img width="962" height="507" alt="image" src="https://github.com/user-attachments/assets/db566ac8-492a-444a-b01f-53099f51c95a" />
 
-<p>방법</p>
-- 델리게이트를 활용하여 적들이 생성되고 사망했을 시에 List로 관리할 코드를 추가하여 확실하게 관리 할 수 있도록 했고 같은 메서드에 콜라이더와 사망시 정지해야할 동작들의 컴포넌트를 비활성화 해주는 방식을 취했다.
+<img width="960" height="623" alt="image" src="https://github.com/user-attachments/assets/8a974554-8f12-49f6-b87a-1df4b8522164" />
 
-<p>결과</p>
-- 모두 의도했던 대로 사망시 한번만 동작 → 생성되었던 List에서 삭제함으로서 원활하게 작동하였고 만족스러운 결과를 얻었다.
+<img width="962" height="597" alt="image" src="https://github.com/user-attachments/assets/a61b25bf-5d25-4c43-ba1d-837d735361db" />
+
+<img width="960" height="531" alt="image" src="https://github.com/user-attachments/assets/7750cc93-9827-4945-b94b-761fe6b26130" />
 
 
 ## 😊 프로젝트 회고
