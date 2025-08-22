@@ -48,7 +48,7 @@ public class WeaponManager : MonoBehaviour
 
     private void Shoot()
     {
-        //PlaySE(currentGun.fire_Sound);
+        PlaySE(currentGun.fire_Sound);
         if (currentGun.muzzleFlash != null )
         {
             currentGun.muzzleFlash.Play();
