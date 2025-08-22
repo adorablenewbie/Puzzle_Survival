@@ -10,9 +10,12 @@ public class ResorceSpawnManager : MonoBehaviour
     // 스폰 포인트를 지정할 수 있는 리스트
     public List<GameObject> spawnPoint;
 
-    [Header("아이템 넣을께")]
+    [Header("최대 최소 아이템 갯수")]
     public int maxItemCount;
     public int minItemCount;
+
+    [Header("부모 객체")]
+    public GameObject SpawnedResourceList;
 
     private readonly HashSet<Resource> alive = new();
 
@@ -56,7 +59,7 @@ public class ResorceSpawnManager : MonoBehaviour
         var prefrab = harvestablePrefab[randomIndex];
 
         Vector3 pos = GetRandomSpawnPosition();
-        var go = Instantiate(prefrab, pos, Quaternion.identity);
+        var go = Instantiate(prefrab, pos, Quaternion.identity, SpawnedResourceList.transform);
         
         Resource resource = go.GetComponent<Resource>();
         if(resource != null)
