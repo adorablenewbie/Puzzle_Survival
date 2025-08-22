@@ -42,6 +42,17 @@ public class DayNightCycle : MonoBehaviour
     public event Action OnNight;
     public event Action OnDay;
 
+    private void OnEnable()
+    {
+        OnDay += DayTimeSound;
+        OnNight += NightTimeSound;
+    }
+    private void OnDisable()
+    {
+        OnDay -= DayTimeSound;
+        OnNight -= NightTimeSound;
+    }
+
     private void Awake()
     {
         RenderSettings.skybox.SetFloat("_Exposure", 2.34f);
@@ -143,5 +154,17 @@ public class DayNightCycle : MonoBehaviour
             RenderSettings.skybox.SetFloat("_Exposure", Mathf.Lerp(RenderSettings.skybox.GetFloat("_Exposure"), 1f, Time.deltaTime * colorChangeSpeed));
             RenderSettings.ambientLight = Color.Lerp(RenderSettings.ambientLight, dayAmbientColor, Time.deltaTime * colorChangeSpeed);
         }
+    }
+
+    private void DayTimeSound()
+    {
+        SoundManager.Instance.BgmEnd();
+        SoundManager.Instance.DayTimeBGM();
+    }
+
+    private void NightTimeSound()
+    {
+        SoundManager.Instance.BgmEnd();
+        SoundManager.Instance.NightTimeBGM();
     }
 }

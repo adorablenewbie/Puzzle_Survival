@@ -22,7 +22,7 @@ public class WeaponGun : MonoBehaviour
     public Vector3 fineSightOriginpos;
 
     public ParticleSystem muzzleFlash;
-
+    public AudioClip fire_Sound;
 
 
 

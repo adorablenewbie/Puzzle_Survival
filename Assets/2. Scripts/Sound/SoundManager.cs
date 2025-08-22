@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class SoundManager : MonoBehaviour
@@ -42,13 +43,22 @@ public class SoundManager : MonoBehaviour
     }
     void Start()
     {
-        playerController = PlayerManager.Instance.Player.controller;
-        NightTimeBGM();
+        if(!(SceneManager.GetActiveScene().name == "TitleScene"))
+        {
+            playerController = PlayerManager.Instance.Player.controller;
+        }
     }
 
     void Update()
     {
-        OpenSoundUI();
+        if (!(SceneManager.GetActiveScene().name == "TitleScene"))
+        {
+            if (PlayerManager.Instance.Player.controller != null)
+            {
+                playerController = PlayerManager.Instance.Player.controller;
+            }
+            OpenSoundUI();
+        }
     }
 
     public void OpenSoundUI()
@@ -62,8 +72,8 @@ public class SoundManager : MonoBehaviour
             }
             else
             {
-                playerController.ToggleCursor();
                 soundUI.SetActive(false);               
+                playerController.ToggleCursor();
             }
         }
     }
@@ -93,6 +103,12 @@ public class SoundManager : MonoBehaviour
     public void NightTimeBGM()
     {
         BgmSound.clip = Night;
+        BgmSound.Play();
+    }
+
+    public void TitleBGM()
+    {
+        BgmSound.clip = BgmClips[1];
         BgmSound.Play();
     }
     public void MazeBGM()

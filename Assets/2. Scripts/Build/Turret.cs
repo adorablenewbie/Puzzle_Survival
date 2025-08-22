@@ -30,11 +30,15 @@ public class Turret : MonoBehaviour
     void Update()
     {
         FindNearestEnemy();
- 
-        if (Vector3.Distance(transform.position, target.position) > attackRange)
+
+        if (target != null)
         {
-            target = null;
-            return;
+
+            if (Vector3.Distance(transform.position, target.position) > attackRange)
+            {
+                target = null;
+                return;
+            }
         }
 
         if(target != null)
@@ -74,13 +78,12 @@ public class Turret : MonoBehaviour
         {
             target = nearestEnemy;
             Debug.Log(target);
+            Vector3 dir = target.position - transform.position;
+            Quaternion lookRot = Quaternion.LookRotation(dir);
+
+            gun.rotation = lookRot;
+
         }
-
-        Vector3 dir = target.position - transform.position;
-        Quaternion lookRot = Quaternion.LookRotation(dir);
-
-        gun.rotation = lookRot;
-
     }
 
 
