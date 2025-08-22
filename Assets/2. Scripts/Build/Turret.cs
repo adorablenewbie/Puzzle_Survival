@@ -74,13 +74,12 @@ public class Turret : MonoBehaviour
         {
             target = nearestEnemy;
             Debug.Log(target);
+            Vector3 dir = target.position - transform.position;
+            Quaternion lookRot = Quaternion.LookRotation(dir);
+
+            gun.rotation = lookRot;
+
         }
-
-        Vector3 dir = target.position - transform.position;
-        Quaternion lookRot = Quaternion.LookRotation(dir);
-
-        gun.rotation = lookRot;
-
     }
 
 
