@@ -140,96 +140,96 @@ UI 애니메이션 추가
 ## 📂 프로젝트 폴더 구조  
 
 📦 2. Scripts/
-├── 📂 BuffData/ # 버프 스크립트
-│ └─ 📂 Data/ # 버프 Scriptable Object
+├── 📂 BuffData/ # 버프 스크립트</br>
+│ └─ 📂 Data/ # 버프 Scriptable Object</br>
 │ └─ Buff_DoubleJump.asset</br>
-│ └─ Buff_Heal.asset
-│ └─ Buff_JumpUp.asset
-│ └─ Buff_SpeedUp.asset
-│ └─ Buff_Venom.asset
-│ └─ BuffData.cs
-├── 📂 Build/ # 건축 스크립트
-│ └─ Build.cs
-│ └─ BuildSnapPoints.cs
-│ └─ PreviewObject.cs
-│ └─ Turret.cs
-├── 📂 Enemy/ # Enemy 스크립트
-│ └─ Enemy_Bear.cs
-│ └─ Enemy_Zombie.cs
-│ └─ EnemyManager.cs
-├── 📂 Environment/ # 환경 스크립트
-│ └─ DayNightCycle.cs
-│ └─ SceneFlowManager.cs
-│ └─ TitleManager.cs
-├── 📂 Global/ # 공통 스크립트
-│ └─ Constant.cs
-├── 📂 Item/ # 아이템 관련 스크립트
-│ └─ Equip.cs
-│ └─ EquipTool.cs
-│ └─ Interactable.cs
-│ └─ ItemObject.cs
-│ └─ ResorceSpawnManager.cs
-│ └─ Resource.cs
-│ └─ WeaponGun.cs
-│ └─ WeaponManager.cs
-├── 📂 ItemData/ # 아이템 Scriptable Object
-│ └─ 📂 Data/
-│ └─ 📂 Consumable/ # 소비 아이템
-│ └─ Item_Potion.asset
-│ └─ Item_Rock.asset
-│ └─ Item_Soup.asset
-│ └─ 📂 Equipments/ # 장착 아이템
-│ └─ Item_Axe.asset
-│ └─ Item_SubMachinGunLong.asset
-│ └─ Item_SubMachinGunShort.asset
-│ └─ Item_Sword.asset
-│ └─ Item_Wood.asset
-│ └─ 📂 Harvestables/ # 드랍 아이템
-│ └─ Item_Grass_HarvestableObject.asset
-│ └─ Item_Rock_HarvestableObject.asset
-│ └─ Item_Tree_HarvestableObject.asset
-│ └─ 📂 Resources/ # 자원 아이템
-│ └─ Item_Grass.asset
-│ └─ Item_RockRsourse.asset
-│ └─ Item_Woods.asset
-│ └─ ItemData.cs
-├── 📂 NPC/ # NPC 스크립트
-│ └─ DialogueLine.cs
-│ └─ DialogueManager.cs
-│ └─ MazeGenerator.cs
-│ └─ MazeTeleport.cs
-│ └─ NPC.cs
-│ └─ NPCDialogueDataManager.cs
-│ └─ NPCLoadScene.cs
-│ └─ SaveNPC.cs
-├── 📂 Platform/ # 발판 스크립트
-│ └─ JumpPlatform.cs
-├── 📂 Player/ # 플레이어 스크립트
-│ └─ Condition.cs
-│ └─ Equipment.cs
-│ └─ Interaction.cs
-│ └─ Player.cs
-│ └─ PlayerCondition.cs
-│ └─ PlayerController.cs
-│ └─ PlayerManager.cs
-├── 📂 Quest/ # 퀘스트 스크립트
-│ └─ QuestData.cs
-│ └─ QuestManager.cs
-├── 📂 Sound/ # 사운드 스크립트
-│ └─ SoundControler.cs
-│ └─ SoundManager.cs
-├── 📂 UI/ # UI 스크립트
-│ └─ CraftUIManager.cs
-│ └─ ItemSlot.cs
-│ └─ UIBuff.cs
-│ └─ UIBuffManager.cs
-│ └─ UIBuild.cs
-│ └─ UICondition.cs
-│ └─ UICraft.cs
-│ └─ UIInventory.cs
-│ └─ UIMaze.cs
-│ └─ UIProduction.cs
-│ └─ UIQuest.cs
+│ └─ Buff_Heal.asset</br>
+│ └─ Buff_JumpUp.asset</br>
+│ └─ Buff_SpeedUp.asset</br>
+│ └─ Buff_Venom.asset</br>
+│ └─ BuffData.cs</br>
+├── 📂 Build/ # 건축 스크립트</br>
+│ └─ Build.cs</br>
+│ └─ BuildSnapPoints.cs</br>
+│ └─ PreviewObject.cs</br>
+│ └─ Turret.cs</br>
+├── 📂 Enemy/ # Enemy 스크립트</br>
+│ └─ Enemy_Bear.cs</br>
+│ └─ Enemy_Zombie.cs</br>
+│ └─ EnemyManager.cs</br>
+├── 📂 Environment/ # 환경 스크립트</br>
+│ └─ DayNightCycle.cs</br>
+│ └─ SceneFlowManager.cs</br>
+│ └─ TitleManager.cs</br>
+├── 📂 Global/ # 공통 스크립트</br>
+│ └─ Constant.cs</br>
+├── 📂 Item/ # 아이템 관련 스크립트</br>
+│ └─ Equip.cs</br>
+│ └─ EquipTool.cs</br>
+│ └─ Interactable.cs</br>
+│ └─ ItemObject.cs</br>
+│ └─ ResorceSpawnManager.cs</br>
+│ └─ Resource.cs</br>
+│ └─ WeaponGun.cs</br>
+│ └─ WeaponManager.cs</br>
+├── 📂 ItemData/ # 아이템 Scriptable Object</br>
+│ └─ 📂 Data/</br>
+│ └─ 📂 Consumable/ # 소비 아이템</br>
+│ └─ Item_Potion.asset</br>
+│ └─ Item_Rock.asset</br>
+│ └─ Item_Soup.asset</br>
+│ └─ 📂 Equipments/ # 장착 아이템</br>
+│ └─ Item_Axe.asset</br>
+│ └─ Item_SubMachinGunLong.asset</br>
+│ └─ Item_SubMachinGunShort.asset</br>
+│ └─ Item_Sword.asset</br>
+│ └─ Item_Wood.asset</br>
+│ └─ 📂 Harvestables/ # 드랍 아이템</br>
+│ └─ Item_Grass_HarvestableObject.asset</br>
+│ └─ Item_Rock_HarvestableObject.asset</br>
+│ └─ Item_Tree_HarvestableObject.asset</br>
+│ └─ 📂 Resources/ # 자원 아이템</br>
+│ └─ Item_Grass.asset</br>
+│ └─ Item_RockRsourse.asset</br>
+│ └─ Item_Woods.asset</br>
+│ └─ ItemData.cs</br>
+├── 📂 NPC/ # NPC 스크립트</br>
+│ └─ DialogueLine.cs</br>
+│ └─ DialogueManager.cs</br>
+│ └─ MazeGenerator.cs</br>
+│ └─ MazeTeleport.cs</br>
+│ └─ NPC.cs</br>
+│ └─ NPCDialogueDataManager.cs</br>
+│ └─ NPCLoadScene.cs</br>
+│ └─ SaveNPC.cs</br>
+├── 📂 Platform/ # 발판 스크립트</br>
+│ └─ JumpPlatform.cs</br>
+├── 📂 Player/ # 플레이어 스크립트</br>
+│ └─ Condition.cs</br>
+│ └─ Equipment.cs</br>
+│ └─ Interaction.cs</br>
+│ └─ Player.cs</br>
+│ └─ PlayerCondition.cs</br>
+│ └─ PlayerController.cs</br>
+│ └─ PlayerManager.cs</br>
+├── 📂 Quest/ # 퀘스트 스크립트</br>
+│ └─ QuestData.cs</br>
+│ └─ QuestManager.cs</br>
+├── 📂 Sound/ # 사운드 스크립트</br>
+│ └─ SoundControler.cs</br>
+│ └─ SoundManager.cs</br>
+├── 📂 UI/ # UI 스크립트</br>
+│ └─ CraftUIManager.cs</br>
+│ └─ ItemSlot.cs</br>
+│ └─ UIBuff.cs</br>
+│ └─ UIBuffManager.cs</br>
+│ └─ UIBuild.cs</br>
+│ └─ UICondition.cs</br>
+│ └─ UICraft.cs</br>
+│ └─ UIInventory.cs</br>
+│ └─ UIMaze.cs</br>
+│ └─ UIProduction.cs</br>
+│ └─ UIQuest.cs</br>
 
 
 ## 👤 개발자
