@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 1024319088}
-  m_IndirectSpecularColor: {r: 0.68765366, g: 0.64070874, b: 0.6560317, a: 1}
+  m_IndirectSpecularColor: {r: 0.70321983, g: 0.65522665, b: 0.67089015, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -5573,6 +5573,10 @@ PrefabInstance:
     - target: {fileID: 1232294267713403843, guid: 107873308b2f8284c945833b861c2326, type: 3}
       propertyPath: m_Name
       value: Item_SubMachineGunShrot
+      objectReference: {fileID: 0}
+    - target: {fileID: 1232294267713403843, guid: 107873308b2f8284c945833b861c2326, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8296189378644560037, guid: 107873308b2f8284c945833b861c2326, type: 3}
       propertyPath: m_LocalPosition.x

@@ -53,6 +53,7 @@ public class WeaponManager : MonoBehaviour
         {
             currentGun.muzzleFlash.Play();
         }
+        SoundManager.Instance.ShootingSound();
         Ray ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width /2, Screen.height /2));
 
         if(Physics.Raycast(ray, out RaycastHit hit, currentGun.range))
@@ -69,10 +70,5 @@ public class WeaponManager : MonoBehaviour
                 return;
             }
         }
-    }
-    private void PlaySE(AudioClip _clip)
-    {
-        audioSource.clip = _clip;
-        audioSource.Play();
     }
 }

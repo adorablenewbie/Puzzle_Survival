@@ -42,6 +42,17 @@ public class DayNightCycle : MonoBehaviour
     public event Action OnNight;
     public event Action OnDay;
 
+    private void OnEnable()
+    {
+        OnDay += DayTimeSound;
+        OnNight += NightTimeSound;
+    }
+    private void OnDisable()
+    {
+        OnDay -= DayTimeSound;
+        OnNight -= NightTimeSound;
+    }
+
     private void Awake()
     {
         RenderSettings.skybox.SetFloat("_Exposure", 2.34f);
@@ -107,7 +118,7 @@ public class DayNightCycle : MonoBehaviour
     private void UpdateLighting(Light lightSource, Gradient gradient, AnimationCurve intensityCurve)
     {
         // 빛 강도 계산
-        float intensity = intensityCurve.Evaluate(time); 
+        float intensity = intensityCurve.Evaluate(time);
 
         // 조명 각도 계산 
         lightSource.transform.eulerAngles = (time - (lightSource == sun ? 0.25f : 0.75f)) * noon * 4f;
@@ -133,7 +144,7 @@ public class DayNightCycle : MonoBehaviour
     private void ChangeAmbientColor()
     {
         //if (0.75f <= time || time <= 0.25f) // time >= sunsetTime || time <= sunriseTime
-        if (time >= sunsetTime || time <= sunriseTime) 
+        if (time >= sunsetTime || time <= sunriseTime)
         {
             RenderSettings.skybox.SetFloat("_Exposure", Mathf.Lerp(RenderSettings.skybox.GetFloat("_Exposure"), 0f, Time.deltaTime * colorChangeSpeed));
             RenderSettings.ambientLight = Color.Lerp(RenderSettings.ambientLight, nightAmbientColor, Time.deltaTime * colorChangeSpeed);
@@ -143,5 +154,17 @@ public class DayNightCycle : MonoBehaviour
             RenderSettings.skybox.SetFloat("_Exposure", Mathf.Lerp(RenderSettings.skybox.GetFloat("_Exposure"), 1f, Time.deltaTime * colorChangeSpeed));
             RenderSettings.ambientLight = Color.Lerp(RenderSettings.ambientLight, dayAmbientColor, Time.deltaTime * colorChangeSpeed);
         }
+    }
+
+    private void DayTimeSound()
+    {
+        SoundManager.Instance.BgmEnd();
+        SoundManager.Instance.DayTimeBGM();
+    }
+
+    private void NightTimeSound()
+    {
+        SoundManager.Instance.BgmEnd();
+        SoundManager.Instance.NightTimeBGM();
     }
 }

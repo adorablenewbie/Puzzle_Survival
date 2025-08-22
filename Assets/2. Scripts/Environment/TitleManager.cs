@@ -16,6 +16,7 @@ public class TitleManager : MonoBehaviour
     private void Start()
     {
         MoveImage(imageEndPos, duration);
+        SoundManager.Instance.TitleBGM();
     }
 
 
