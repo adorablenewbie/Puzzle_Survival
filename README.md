@@ -184,7 +184,7 @@ UI 애니메이션 추가
 │ └─ Item_SubMachinGunShort.asset
 │ └─ Item_Sword.asset
 │ └─ Item_Wood.asset
-│ └─ 📂 harvestables/ # 드랍 아이템
+│ └─ 📂 Harvestables/ # 드랍 아이템
 │ └─ Item_Grass_HarvestableObject.asset
 │ └─ Item_Rock_HarvestableObject.asset
 │ └─ Item_Tree_HarvestableObject.asset
