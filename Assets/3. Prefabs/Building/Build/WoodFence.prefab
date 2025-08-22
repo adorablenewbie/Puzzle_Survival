@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1025681519534048718}
   - component: {fileID: 1025681519535179534}
   - component: {fileID: 8735996197453701664}
-  m_Layer: 12
+  m_Layer: 6
   m_Name: WoodFence
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -118,7 +118,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4891268634959433297}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: SnapPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -149,7 +149,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6850815495712578277}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: SnapPoint (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -180,7 +180,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5922751429715786989}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: SnapPoint (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -211,7 +211,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 667058605161853849}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: SnapPoint (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
